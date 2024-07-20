@@ -19,6 +19,8 @@ import DefaultLayout from './layout/DefaultLayout';
 import Home from './pages/Home';
 import { useUser } from '@clerk/clerk-react';
 import Campaigns from './pages/Campaign';
+import Summary from './pages/Summary';
+import Strategy from './pages/Strategy';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -69,11 +71,20 @@ function App() {
             }
           />
           <Route
-            path="profile"
+            path="strategy"
+            element={
+              <>
+                <PageTitle title="Campaign | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                <Strategy />
+              </>
+            }
+          />
+          <Route
+            path="summary"
             element={
               <>
                 <PageTitle title="Profile | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <Profile />
+                <Summary />
               </>
             }
           />

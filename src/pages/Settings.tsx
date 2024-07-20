@@ -1,3 +1,4 @@
+import { UserButton } from '@clerk/clerk-react';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import userThree from '../images/user/user-03.png';
 
@@ -219,8 +220,8 @@ const Settings = () => {
               <div className="p-7">
                 <form action="#">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="h-14 w-14 rounded-full">
-                      <img src={userThree} alt="User" />
+                    <div className="h-10 w-10 rounded-full">
+                      <UserButton />
                     </div>
                     <div>
                       <span className="mb-1.5 text-black dark:text-white">
