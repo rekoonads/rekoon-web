@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import SignInPage from './auth/sign-in';
 import SignUpPage from './auth/sign-up';
-import Calendar from './pages/Calendar';
+
 import Chart from './pages/Chart';
 import ECommerce from './pages/Dashboard/ECommerce';
 import FormElements from './pages/Form/FormElements';
@@ -18,9 +18,10 @@ import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
 import Home from './pages/Home';
 import { useUser } from '@clerk/clerk-react';
+import Campaigns from './pages/Campaign';
 
 function App() {
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const { pathname } = useLocation();
   const { user, isLoaded, isSignedIn } = useUser();
 
@@ -32,33 +33,22 @@ function App() {
     setTimeout(() => setLoading(false), 1000);
   }, []);
 
-  if (isLoaded) {
-    // Redirect logged-in users away from the sign-in and sign-up pages
-    if (
-      isSignedIn &&
-      (pathname === '/auth/sign-in' || pathname === '/auth/sign-up')
-    ) {
-      return <Navigate to="/" />;
+  useEffect(() => {
+    if (isLoaded && isSignedIn && pathname === '/') {
+      window.location.replace('/dashboard');
     }
+  }, [isLoaded, isSignedIn, pathname]);
 
-    // Redirect not logged-in users to the sign-in page for protected routes
-    if (
-      !isSignedIn &&
-      pathname !== '/auth/sign-in' &&
-      pathname !== '/auth/sign-up'
-    ) {
-      return <Navigate to="/auth/sign-in" />;
-    }
+  if (loading) {
+    return <Loader />;
   }
 
-  return loading ? (
-    <Loader />
-  ) : (
+  return (
     <Routes>
       <Route path="/" element={<Home />} />
-      {!isSignedIn && <Route path="/auth/sign-in" element={<SignInPage />} />}
-      {!isSignedIn && <Route path="auth/sign-up" element={<SignUpPage />} />}
-      {isSignedIn && (
+      <Route path="/auth/sign-in" element={<SignInPage />} />
+      <Route path="/auth/sign-up" element={<SignUpPage />} />
+      {isSignedIn ? (
         <Route path="/" element={<DefaultLayout />}>
           <Route
             path="dashboard"
@@ -70,11 +60,11 @@ function App() {
             }
           />
           <Route
-            path="calendar"
+            path="campaign"
             element={
               <>
-                <PageTitle title="Calendar | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <Calendar />
+                <PageTitle title="Campaign | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                <Campaigns />
               </>
             }
           />
@@ -151,6 +141,11 @@ function App() {
             }
           />
         </Route>
+      ) : (
+        <>
+          <Route path="/auth/sign-in" element={<SignInPage />} />
+          <Route path="/auth/sign-up" element={<SignUpPage />} />
+        </>
       )}
     </Routes>
   );
