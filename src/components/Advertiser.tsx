@@ -21,12 +21,14 @@ import {
   CurrencyIcon,
   InfoIcon,
 } from 'lucide-react';
+import CheckboxTwo from './Checkboxes/CheckboxTwo';
+import SelectGroupOne from './Forms/SelectGroup/SelectGroupOne';
 
 export default function Advertiser() {
   return (
     <div className="space-y-6 p-4">
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
+        <div>
           <Card className="border border-gray-200 rounded-lg w-full">
             <CardHeader className="flex items-center justify-between p-4">
               <div className="flex items-center space-x-2">
@@ -39,30 +41,14 @@ export default function Advertiser() {
             </CardHeader>
             <CardContent className="flex items-center justify-between p-4">
               <div className="flex items-center space-x-4">
-                <Building className="w-10 h-10 text-muted-foreground" />
-                <div>
-                  <div className="text-sm font-medium">yashika</div>
-                  <div className="text-sm text-muted-foreground">
-                    Business - https://taare.rekoon.tech/
-                  </div>
-                </div>
+                <SelectGroupOne />
               </div>
               <ChevronDownIcon className="w-5 h-5 text-muted-foreground" />
             </CardContent>
           </Card>
-        </DropdownMenuTrigger>
+        </div>
         <DropdownMenuContent className="w-full">
-          <DropdownMenuItem>
-            <div className="flex items-center space-x-4">
-              <BuildingIcon className="w-10 h-10 text-muted-foreground" />
-              <div>
-                <div className="text-sm font-medium">yashika</div>
-                <div className="text-sm text-muted-foreground">
-                  Business - https://taare.rekoon.tech/
-                </div>
-              </div>
-            </div>
-          </DropdownMenuItem>
+          <DropdownMenuItem></DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <Card className="border border-gray-200 rounded-lg">
@@ -76,49 +62,12 @@ export default function Advertiser() {
           </div>
         </CardHeader>
         <CardContent className="p-4 space-y-4">
-          <RadioGroup defaultValue="daily">
-            <div className="flex space-x-4">
-              <div className="flex items-start space-x-2">
-                <RadioGroupItem
-                  value="daily"
-                  id="daily"
-                  className="w-5 h-5 rounded-full border-gray-300 checked:bg-primary checked:border-primary focus:ring-0"
-                />
-                <div>
-                  <Label
-                    htmlFor="daily"
-                    className="text-sm font-medium leading-none"
-                  >
-                    Daily Budget
-                  </Label>
-                  <p className="text-sm text-muted-foreground">
-                    Set a maximum amount of budget you are willing to spend per
-                    day.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-2">
-                <RadioGroupItem
-                  value="lifetime"
-                  id="lifetime"
-                  className="w-5 h-5 rounded-full border-gray-300 checked:bg-primary checked:border-primary focus:ring-0"
-                />
-                <div>
-                  <Label
-                    htmlFor="lifetime"
-                    className="text-sm font-medium leading-none"
-                  >
-                    Lifetime Budget
-                  </Label>
-                  <p className="text-sm text-muted-foreground">
-                    Set a maximum amount of budget you are willing to spend over
-                    the lifetime of the campaign.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </RadioGroup>
-          <div className="flex flex-col gap-5.5 p-6.5">
+          <div className="flex items-center gap-4">
+            <CheckboxTwo />
+            <CheckboxTwo />
+          </div>
+
+          <div className="flex flex-col gap-5.5">
             <div>
               <label className="mb-3 block text-black dark:text-white">
                 Budget

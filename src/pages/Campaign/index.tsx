@@ -1,17 +1,12 @@
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import CheckboxFive from '../../components/Checkboxes/CheckboxFive';
-import CheckboxFour from '../../components/Checkboxes/CheckboxFour';
-import CheckboxOne from '../../components/Checkboxes/CheckboxOne';
-import CheckboxThree from '../../components/Checkboxes/CheckboxThree';
-import CheckboxTwo from '../../components/Checkboxes/CheckboxTwo';
 
-import DatePickerOne from '../../components/Forms/DatePicker/DatePickerOne';
-import DatePickerTwo from '../../components/Forms/DatePicker/DatePickerTwo';
-import SelectGroupTwo from '../../components/Forms/SelectGroup/SelectGroupTwo';
-import MultiSelect from '../../components/Forms/MultiSelect';
-import CampaignGoalSelector from '../../components/CampaignGoalSelector';
-import RightSideCard from '../../components/RightSideCard';
 import Advertiser from '../../components/Advertiser';
+import CampaignGoalSelector from '../../components/CampaignGoalSelector';
+import DatePickerOne from '../../components/Forms/DatePicker/DatePickerOne';
+import MultiSelect from '../../components/Forms/MultiSelect';
+import SelectGroupTwo from '../../components/Forms/SelectGroup/SelectGroupTwo';
+import RightSideCard from '../../components/RightSideCard';
+import { Button } from '../../components/ui/button';
 
 const Campaigns = () => {
   return (
@@ -116,6 +111,7 @@ const Campaigns = () => {
               <MultiSelect id="multiSelect" />
             </div>
           </div>
+          <Button className="w-30 text-white">Go to Strategy</Button>
         </div>
       </div>
     </>
