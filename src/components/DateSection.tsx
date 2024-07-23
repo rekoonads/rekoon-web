@@ -14,6 +14,7 @@ import {
   SelectContent,
   SelectItem,
 } from '../components/ui/select';
+import SelectGroupOne from './Forms/SelectGroup/SelectGroupOne';
 
 export default function DateSection() {
   return (
@@ -84,79 +85,39 @@ export default function DateSection() {
               </label>
             </div>
             <div className="flex items-center gap-2">
-              <Select>
-                <SelectTrigger
-                  id={`${day.toLowerCase()}-start`}
-                  aria-label="Start Time"
-                  className="relative z-10"
-                >
-                  <SelectValue placeholder="12:00 am" />
-                </SelectTrigger>
-                <SelectContent className="absolute z-20 mt-2">
-                  <SelectItem value="12:00 am">12:00 am</SelectItem>
-                  <SelectItem value="1:00 am">1:00 am</SelectItem>
-                  <SelectItem value="2:00 am">2:00 am</SelectItem>
-                  <SelectItem value="3:00 am">3:00 am</SelectItem>
-                  <SelectItem value="4:00 am">4:00 am</SelectItem>
-                  <SelectItem value="5:00 am">5:00 am</SelectItem>
-                  <SelectItem value="6:00 am">6:00 am</SelectItem>
-                  <SelectItem value="7:00 am">7:00 am</SelectItem>
-                  <SelectItem value="8:00 am">8:00 am</SelectItem>
-                  <SelectItem value="9:00 am">9:00 am</SelectItem>
-                  <SelectItem value="10:00 am">10:00 am</SelectItem>
-                  <SelectItem value="11:00 am">11:00 am</SelectItem>
-                  <SelectItem value="12:00 pm">12:00 pm</SelectItem>
-                  <SelectItem value="1:00 pm">1:00 pm</SelectItem>
-                  <SelectItem value="2:00 pm">2:00 pm</SelectItem>
-                  <SelectItem value="3:00 pm">3:00 pm</SelectItem>
-                  <SelectItem value="4:00 pm">4:00 pm</SelectItem>
-                  <SelectItem value="5:00 pm">5:00 pm</SelectItem>
-                  <SelectItem value="6:00 pm">6:00 pm</SelectItem>
-                  <SelectItem value="7:00 pm">7:00 pm</SelectItem>
-                  <SelectItem value="8:00 pm">8:00 pm</SelectItem>
-                  <SelectItem value="9:00 pm">9:00 pm</SelectItem>
-                  <SelectItem value="10:00 pm">10:00 pm</SelectItem>
-                  <SelectItem value="11:00 pm">11:00 pm</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select>
-                <SelectTrigger
-                  id={`${day.toLowerCase()}-end`}
-                  aria-label="End Time"
-                  className="relative z-10"
-                >
-                  <SelectValue placeholder="11:59 pm" />
-                </SelectTrigger>
-                <SelectContent className="absolute mt-2">
-                  <SelectItem value="12:00 am">12:00 am</SelectItem>
-                  <SelectItem value="1:00 am">1:00 am</SelectItem>
-                  <SelectItem value="2:00 am">2:00 am</SelectItem>
-                  <SelectItem value="3:00 am">3:00 am</SelectItem>
-                  <SelectItem value="4:00 am">4:00 am</SelectItem>
-                  <SelectItem value="5:00 am">5:00 am</SelectItem>
-                  <SelectItem value="6:00 am">6:00 am</SelectItem>
-                  <SelectItem value="7:00 am">7:00 am</SelectItem>
-                  <SelectItem value="8:00 am">8:00 am</SelectItem>
-                  <SelectItem value="9:00 am">9:00 am</SelectItem>
-                  <SelectItem value="10:00 am">10:00 am</SelectItem>
-                  <SelectItem value="11:00 am">11:00 am</SelectItem>
-                  <SelectItem value="12:00 pm">12:00 pm</SelectItem>
-                  <SelectItem value="1:00 pm">1:00 pm</SelectItem>
-                  <SelectItem value="2:00 pm">2:00 pm</SelectItem>
-                  <SelectItem value="3:00 pm">3:00 pm</SelectItem>
-                  <SelectItem value="4:00 pm">4:00 pm</SelectItem>
-                  <SelectItem value="5:00 pm">5:00 pm</SelectItem>
-                  <SelectItem value="6:00 pm">6:00 pm</SelectItem>
-                  <SelectItem value="7:00 pm">7:00 pm</SelectItem>
-                  <SelectItem value="8:00 pm">8:00 pm</SelectItem>
-                  <SelectItem value="9:00 pm">9:00 pm</SelectItem>
-                  <SelectItem value="10:00 pm">10:00 pm</SelectItem>
-                  <SelectItem value="11:00 pm">11:00 pm</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="outline" size="icon">
-                <PlusIcon className="w-4 h-4" />
-              </Button>
+              <SelectGroupOne
+                options={[
+                  { value: '12:00pm', label: '12:00pm' },
+                  { value: '1:00pm', label: '1:00pm' },
+                  { value: '2:00pm', label: '2:00pm' },
+                  { value: '3:00pm', label: '3:00pm' },
+                  { value: '4:00pm', label: '4:00pm' },
+                  { value: '5:00pm', label: '5:00pm' },
+                  { value: '6:00pm', label: '6:00pm' },
+                  { value: '7:00pm', label: '7:00pm' },
+                  { value: '8:00pm', label: '8:00pm' },
+                  { value: '9:00pm', label: '9:00pm' },
+                  { value: '10:00pm', label: '10:00pm' },
+                  { value: '11:00pm', label: '11:00pm' },
+                ]}
+              />
+              <SelectGroupOne
+                options={[
+                  { value: '11:59pm', label: '11:59pm' },
+                  { value: '12:00am', label: '12:00am' },
+                  { value: '1:00am', label: '1:00am' },
+                  { value: '2:00am', label: '2:00am' },
+                  { value: '3:00am', label: '3:00am' },
+                  { value: '4:00am', label: '4:00am' },
+                  { value: '5:00am', label: '5:00am' },
+                  { value: '6:00am', label: '6:00am' },
+                  { value: '7:00am', label: '7:00am' },
+                  { value: '8:00am', label: '8:00am' },
+                  { value: '9:00am', label: '9:00am' },
+                  { value: '10:00am', label: '10:00am' },
+                  { value: '11:00am', label: '11:00am' },
+                ]}
+              />
             </div>
           </div>
         ))}

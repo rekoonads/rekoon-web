@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
@@ -10,7 +10,6 @@ import Chart from './pages/Chart';
 import ECommerce from './pages/Dashboard/ECommerce';
 import FormElements from './pages/Form/FormElements';
 import FormLayout from './pages/Form/FormLayout';
-import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
@@ -21,11 +20,15 @@ import { useUser } from '@clerk/clerk-react';
 import Campaigns from './pages/Campaign';
 import Summary from './pages/Summary';
 import Strategy from './pages/Strategy';
+import LoginWays from './pages/LoginWays';
+
+import AdvertiseManagement from './pages/AdvertiseManagement';
 
 function App() {
   const [loading, setLoading] = useState(true);
   const { pathname } = useLocation();
   const { user, isLoaded, isSignedIn } = useUser();
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -36,10 +39,12 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (isLoaded && isSignedIn && pathname === '/') {
-      window.location.replace('/dashboard');
+    if (isLoaded && isSignedIn) {
+      if (pathname === '/') {
+        navigate('/login-options');
+      }
     }
-  }, [isLoaded, isSignedIn, pathname]);
+  }, [isLoaded, isSignedIn, pathname, navigate]);
 
   if (loading) {
     return <Loader />;
@@ -48,6 +53,8 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/login-options" element={<LoginWays />} />
+      <Route path="/manage-advertise" element={<AdvertiseManagement />} />
       <Route path="/auth/sign-in" element={<SignInPage />} />
       <Route path="/auth/sign-up" element={<SignUpPage />} />
       {isSignedIn ? (
@@ -74,7 +81,7 @@ function App() {
             path="strategy"
             element={
               <>
-                <PageTitle title="Campaign | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                <PageTitle title="Strategy | TailAdmin - Tailwind CSS Admin Dashboard Template" />
                 <Strategy />
               </>
             }
@@ -83,7 +90,7 @@ function App() {
             path="summary"
             element={
               <>
-                <PageTitle title="Profile | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                <PageTitle title="Summary | TailAdmin - Tailwind CSS Admin Dashboard Template" />
                 <Summary />
               </>
             }

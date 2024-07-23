@@ -1,28 +1,20 @@
-import { useState } from 'react';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import CheckboxFive from '../../components/Checkboxes/CheckboxFive';
-import CheckboxFour from '../../components/Checkboxes/CheckboxFour';
-import CheckboxOne from '../../components/Checkboxes/CheckboxOne';
-import CheckboxThree from '../../components/Checkboxes/CheckboxThree';
-import CheckboxTwo from '../../components/Checkboxes/CheckboxTwo';
 import { TabsTrigger } from '@radix-ui/react-tabs';
-import { ArrowUp, Check, Redo2, Smartphone, Tablet, Tv } from 'lucide-react';
-import MultiSelect from '../../components/Forms/MultiSelect';
-import SelectGroupTwo from '../../components/Forms/SelectGroup/SelectGroupTwo';
+import { ArrowUp, Redo2, Smartphone, Tablet, Tv } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import Channels from '../../components/Apps&Channels';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import CheckboxOne from '../../components/Checkboxes/CheckboxOne';
+import DateSection from '../../components/DateSection';
 import { Button } from '../../components/ui/button';
 import { Tabs, TabsList } from '../../components/ui/tabs';
-import Channels from '../../components/Apps&Channels';
-import DateSection from '../../components/DateSection';
 
-import { FaInfoCircle, FaPlay } from 'react-icons/fa';
-import { HiOutlineComputerDesktop } from 'react-icons/hi2';
-import { IoMdRefreshCircle } from 'react-icons/io';
-import { LuAirplay, LuRadioReceiver, LuSmartphone } from 'react-icons/lu';
-import { Card, CardContent } from '../../components/ui/card';
 import { BsThunderboltFill } from 'react-icons/bs';
-import RightSideCard from '../../components/RightSideCard';
-import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
+import { FaInfoCircle } from 'react-icons/fa';
+import { LuRadioReceiver } from 'react-icons/lu';
 import { RiCheckFill } from 'react-icons/ri';
+import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
+import RightSideCard from '../../components/RightSideCard';
+import { Card, CardContent } from '../../components/ui/card';
 
 interface Goal {
   id: string;
@@ -48,10 +40,16 @@ const goals: Goal[] = [
 
 const Strategy = () => {
   const [selectedTab, setSelectedTab] = useState('18-20');
+  const [selectedGender, setSelectedGender] = useState('Women');
+  const [selectedDevice, setSelectedDevice] = useState('TV');
   const [selectedCheckbox, setSelectedCheckbox] = useState<string | null>(null);
+  const [isScrollingDown, setIsScrollingDown] = useState(false);
+  const [lastScrollTop, setLastScrollTop] = useState(0);
 
   const handleReset = () => {
     setSelectedTab('18-20');
+    setSelectedGender('Women');
+    setSelectedDevice('TV');
   };
 
   const handleCheckboxChange = (text: string, isChecked: boolean) => {
@@ -61,6 +59,25 @@ const Strategy = () => {
       setSelectedCheckbox(null);
     }
   };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollTop =
+        window.scrollY || document.documentElement.scrollTop;
+
+      if (currentScrollTop > lastScrollTop) {
+        setIsScrollingDown(true);
+      } else if (currentScrollTop < lastScrollTop) {
+        setIsScrollingDown(false);
+      }
+      setLastScrollTop(currentScrollTop <= 0 ? 0 : currentScrollTop);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [lastScrollTop]);
 
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
 
@@ -176,8 +193,8 @@ const Strategy = () => {
               </div>
             </div>
           </div>
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="flex gap-5.5 p-6.5">
+          {isScrollingDown && (
+            <div className="fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-boxdark shadow-md flex justify-center">
               <Button variant={'outline'} className="gap-2">
                 <ArrowUp /> Back to campaign settings
               </Button>
@@ -185,7 +202,7 @@ const Strategy = () => {
                 Continue to Summary
               </Button>
             </div>
-          </div>
+          )}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <h3 className="font-medium text-black dark:text-white">
@@ -194,8 +211,8 @@ const Strategy = () => {
             </div>
             <div className="flex flex-col gap-5.5 p-6.5">
               <Tabs
-                value={selectedTab}
-                onValueChange={setSelectedTab}
+                value={selectedGender}
+                onValueChange={setSelectedGender}
                 className="flex flex-col justify-between"
               >
                 <TabsList className="space-x-4">
@@ -384,6 +401,481 @@ const Strategy = () => {
                   <CheckboxOne text="Eldcare" />
                 </>
               )}
+              <CheckboxOne
+                text="Health & Fitness"
+                className="font-bold"
+                onChange={(text, isChecked) =>
+                  handleCheckboxChange(text, isChecked)
+                }
+              />
+              {selectedCheckbox === 'Health & Fitness' && (
+                <>
+                  <CheckboxOne text="Exercise" />
+                  <CheckboxOne text="ADD" />
+                  <CheckboxOne text="AIDS/HIV" />
+                  <CheckboxOne text="Allergies" />
+                  <CheckboxOne text="Alternative Medicine" />
+                  <CheckboxOne text="Arthritis" />
+                  <CheckboxOne text="Asthma" />
+                  <CheckboxOne text="Autism/PDD" />
+                  <CheckboxOne text="Bipolar Disorder" />
+                  <CheckboxOne text="Brain Tumor" />
+                  <CheckboxOne text="Cancer" />
+                  <CheckboxOne text="Cholesterol" />
+                  <CheckboxOne text="Chronic Fatigue Syndrome" />
+                  <CheckboxOne text="Chronic Pain" />
+                  <CheckboxOne text="Deafness" />
+                  <CheckboxOne text="Dental Care" />
+                  <CheckboxOne text="Depression" />
+                  <CheckboxOne text="Dermatology" />
+                  <CheckboxOne text="Diabetes" />
+                  <CheckboxOne text="Epilepsy" />
+                  <CheckboxOne text="GERD/Acid Reflux" />
+                  <CheckboxOne text="Headaches/Migraines" />
+                  <CheckboxOne text="Heart Disease" />
+                  <CheckboxOne text="Herbs for Health" />
+                  <CheckboxOne text="Holistic Healing" />
+                  <CheckboxOne text="IBS/Crohn’s Disease" />
+                  <CheckboxOne text="Incest/Abuse Support" />
+                  <CheckboxOne text="Incontinence" />
+                  <CheckboxOne text="Infertility" />
+                  <CheckboxOne text="Men’s Health" />
+                  <CheckboxOne text="Nutrition" />
+                  <CheckboxOne text="Orthopedics" />
+                  <CheckboxOne text="Panic/Anxiety Disorders" />
+                  <CheckboxOne text="Pediatrics" />
+                  <CheckboxOne text="Physical Therapy" />
+                  <CheckboxOne text="Psychology/Psychiatry" />
+                  <CheckboxOne text="Senior Health" />
+                  <CheckboxOne text="Sexuality" />
+                  <CheckboxOne text="Sleep Disorders" />
+                  <CheckboxOne text="Smoking Cessation" />
+                  <CheckboxOne text="Substance Abuse" />
+                  <CheckboxOne text="Thyroid Disease" />
+                  <CheckboxOne text="Weight Loss" />
+                  <CheckboxOne text="Women's Health" />
+                </>
+              )}
+
+              <CheckboxOne
+                text="Hobbies & Interests"
+                className="font-bold"
+                onChange={(text, isChecked) =>
+                  handleCheckboxChange(text, isChecked)
+                }
+              />
+              {selectedCheckbox === 'Hobbies & Interests' && (
+                <>
+                  <CheckboxOne text="Art/Technology" />
+                  <CheckboxOne text="Arts & Crafts" />
+                  <CheckboxOne text="Beadwork" />
+                  <CheckboxOne text="Bird-Watching" />
+                  <CheckboxOne text="Board Games/Puzzles" />
+                  <CheckboxOne text="Candle & Soap Making" />
+                  <CheckboxOne text="Cuisine-Specific" />
+                  <CheckboxOne text="Card Games" />
+                  <CheckboxOne text="Chess" />
+                  <CheckboxOne text="Cigars" />
+                  <CheckboxOne text="Collecting" />
+                  <CheckboxOne text="Comic Books" />
+                  <CheckboxOne text="Drawing/Sketching" />
+                  <CheckboxOne text="Freelance Writing" />
+                  <CheckboxOne text="Genealogy" />
+                  <CheckboxOne text="Getting Published" />
+                  <CheckboxOne text="Guitar" />
+                  <CheckboxOne text="Home Recording" />
+                  <CheckboxOne text="Investors & Patents" />
+                  <CheckboxOne text="Jewelry Making" />
+                  <CheckboxOne text="Magic & Illusion" />
+                  <CheckboxOne text="Needlework" />
+                  <CheckboxOne text="Painting" />
+                  <CheckboxOne text="Photography" />
+                  <CheckboxOne text="Radio" />
+                  <CheckboxOne text="Roleplaying Games" />
+                  <CheckboxOne text="Sci-Fi & Fantasy" />
+                  <CheckboxOne text="Scrapbooking" />
+                  <CheckboxOne text="Screenwriting" />
+                  <CheckboxOne text="Stamps & Coins" />
+                  <CheckboxOne text="Video & Computer Games" />
+                  <CheckboxOne text="Woodworking" />
+                </>
+              )}
+              <CheckboxOne
+                text="Home & Garden"
+                className="font-bold"
+                onChange={(text, isChecked) =>
+                  handleCheckboxChange(text, isChecked)
+                }
+              />
+              {selectedCheckbox === 'Home & Garden' && (
+                <>
+                  <CheckboxOne text="Appliances" />
+                  <CheckboxOne text="Entertaining" />
+                  <CheckboxOne text="Environmental Safety" />
+                  <CheckboxOne text="Gardening" />
+                  <CheckboxOne text="Home Repair" />
+                  <CheckboxOne text="Home Theater" />
+                  <CheckboxOne text="Interior Decorating" />
+                  <CheckboxOne text="Landscaping" />
+                  <CheckboxOne text="Remodeling & Construction" />
+                </>
+              )}
+              <CheckboxOne
+                text="Law, Government, & Politics"
+                className="font-bold"
+                onChange={(text, isChecked) =>
+                  handleCheckboxChange(text, isChecked)
+                }
+              />
+              {selectedCheckbox === 'Law, Government, & Politics' && (
+                <>
+                  <CheckboxOne text="Immigration" />
+                  <CheckboxOne text="Legal Issues" />
+                  <CheckboxOne text="U.S. Government Resources" />
+                  <CheckboxOne text="Politics" />
+                  <CheckboxOne text="Commentary" />
+                </>
+              )}
+              <CheckboxOne
+                text="News"
+                className="font-bold"
+                onChange={(text, isChecked) =>
+                  handleCheckboxChange(text, isChecked)
+                }
+              />
+              {selectedCheckbox === 'News' && (
+                <>
+                  <CheckboxOne text="International News" />
+                  <CheckboxOne text="National News" />
+                  <CheckboxOne text="Local News" />=
+                </>
+              )}
+              <CheckboxOne
+                text="Personal Finance"
+                className="font-bold"
+                onChange={(text, isChecked) =>
+                  handleCheckboxChange(text, isChecked)
+                }
+              />
+              {selectedCheckbox === 'Personal Finance' && (
+                <>
+                  <CheckboxOne text="Beginning Investing" />
+                  <CheckboxOne text="Credit/Debt & Loans" />
+                  <CheckboxOne text="Financial News" />
+                  <CheckboxOne text="Financial Planning" />
+                  <CheckboxOne text="Hedge Fund" />
+                  <CheckboxOne text="Insurance" />
+                  <CheckboxOne text="Investing" />
+                  <CheckboxOne text="Mutual Funds" />
+                  <CheckboxOne text="Options" />
+                  <CheckboxOne text="Retirement Planning" />
+                  <CheckboxOne text="Stocks" />
+                  <CheckboxOne text="Tax Planning" />
+                </>
+              )}
+              <CheckboxOne
+                text="Society"
+                className="font-bold"
+                onChange={(text, isChecked) =>
+                  handleCheckboxChange(text, isChecked)
+                }
+              />
+              {selectedCheckbox === 'Society' && (
+                <>
+                  <CheckboxOne text="Dating" />
+                  <CheckboxOne text="Divorce Support" />
+                  <CheckboxOne text="Gay Life" />
+                  <CheckboxOne text="Marriage" />
+                  <CheckboxOne text="Senior Living" />
+                  <CheckboxOne text="Teens" />
+                  <CheckboxOne text="Weddings" />
+                  <CheckboxOne text="Ethnic Specific" />
+                </>
+              )}
+              <CheckboxOne
+                text="Science"
+                className="font-bold"
+                onChange={(text, isChecked) =>
+                  handleCheckboxChange(text, isChecked)
+                }
+              />
+              {selectedCheckbox === 'Science' && (
+                <>
+                  <CheckboxOne text="Astrology" />
+                  <CheckboxOne text="Biology" />
+                  <CheckboxOne text="Chemistry" />
+                  <CheckboxOne text="Geology" />
+                  <CheckboxOne text="Paranormal Phenomena" />
+                  <CheckboxOne text="Physics" />
+                  <CheckboxOne text="Space/Astronomy" />
+                  <CheckboxOne text="Geography" />
+                  <CheckboxOne text="Botany" />
+                  <CheckboxOne text="Weather" />
+                </>
+              )}
+              <CheckboxOne
+                text="Pets"
+                className="font-bold"
+                onChange={(text, isChecked) =>
+                  handleCheckboxChange(text, isChecked)
+                }
+              />
+              {selectedCheckbox === 'Pets' && (
+                <>
+                  <CheckboxOne text="Aquariums" />
+                  <CheckboxOne text="Birds" />
+                  <CheckboxOne text="Cats" />
+                  <CheckboxOne text="Dogs" />
+                  <CheckboxOne text="Large Animals" />
+                  <CheckboxOne text="Reptiles" />
+                  <CheckboxOne text="Veterinary Medicine" />
+                </>
+              )}
+              <CheckboxOne
+                text="Sports"
+                className="font-bold"
+                onChange={(text, isChecked) =>
+                  handleCheckboxChange(text, isChecked)
+                }
+              />
+              {selectedCheckbox === 'Sports' && (
+                <>
+                  <CheckboxOne text="Auto Racing" />
+                  <CheckboxOne text="Baseball" />
+                  <CheckboxOne text="Bicycling" />
+                  <CheckboxOne text="Bodybuilding" />
+                  <CheckboxOne text="Boxing" />
+                  <CheckboxOne text="Canoeing/Kayaking" />
+                  <CheckboxOne text="Cheerleading" />
+                  <CheckboxOne text="Climbing" />
+                  <CheckboxOne text="Cricket" />
+                  <CheckboxOne text="Figure Skating" />
+                  <CheckboxOne text="Fly Fishing" />
+                  <CheckboxOne text="Football" />
+                  <CheckboxOne text="Freshwater Fishing" />
+                  <CheckboxOne text="Game & Fish" />
+                  <CheckboxOne text="Golf" />
+                  <CheckboxOne text="Horse Racing" />
+                  <CheckboxOne text="Horses" />
+                  <CheckboxOne text="Hunting/Shooting" />
+                  <CheckboxOne text="Inline Skating" />
+                  <CheckboxOne text="Martial Arts" />
+                  <CheckboxOne text="Mountain Biking" />
+                  <CheckboxOne text="NASCAR Racing" />
+                  <CheckboxOne text="Olympics" />
+                  <CheckboxOne text="Paintball" />
+                  <CheckboxOne text="Power & Motorcycles" />
+                  <CheckboxOne text="Pro Basketball" />
+                  <CheckboxOne text="Pro Ice Hockey" />
+                  <CheckboxOne text="Rodeo" />
+                  <CheckboxOne text="Rugby" />
+                  <CheckboxOne text="Running/Jogging" />
+                  <CheckboxOne text="Sailing" />
+                  <CheckboxOne text="Saltwater Fishing" />
+                  <CheckboxOne text="Scuba Diving" />
+                  <CheckboxOne text="Skateboarding" />
+                  <CheckboxOne text="Snowboarding" />
+                  <CheckboxOne text="Surfing/Body-Boarding" />
+                  <CheckboxOne text="Swimming" />
+                  <CheckboxOne text="Table Tennis/Ping-Pong" />
+                  <CheckboxOne text="Tennis" />
+                  <CheckboxOne text="Volleyball" />
+                  <CheckboxOne text="Walking" />
+                  <CheckboxOne text="Waterski/Wakeboard" />
+                  <CheckboxOne text="World Soccer" />
+                </>
+              )}
+              <CheckboxOne
+                text="Style & Fashion"
+                className="font-bold"
+                onChange={(text, isChecked) =>
+                  handleCheckboxChange(text, isChecked)
+                }
+              />
+              {selectedCheckbox === 'Style & Fashion' && (
+                <>
+                  <CheckboxOne text="Beauty" />
+                  <CheckboxOne text="Body Art" />
+                  <CheckboxOne text="Fashion" />
+                  <CheckboxOne text="Jewelry" />
+                  <CheckboxOne text="Clothing" />
+                  <CheckboxOne text="Accessories" />
+                </>
+              )}
+              <CheckboxOne
+                text="Technology & Computing"
+                className="font-bold"
+                onChange={(text, isChecked) =>
+                  handleCheckboxChange(text, isChecked)
+                }
+              />
+              {selectedCheckbox === 'Technology & Computing' && (
+                <>
+                  <CheckboxOne text="3-D Graphics" />
+                  <CheckboxOne text="Animation" />
+                  <CheckboxOne text="Antivirus Software" />
+                  <CheckboxOne text="C/C++" />
+                  <CheckboxOne text="Cameras & Camcorders" />
+                  <CheckboxOne text="Cell Phones" />
+                  <CheckboxOne text="Computer Certification" />
+                  <CheckboxOne text="Computer Networking" />
+                  <CheckboxOne text="Computer Peripherals" />
+                  <CheckboxOne text="Computer Reviews" />
+                  <CheckboxOne text="Data Centers" />
+                  <CheckboxOne text="Databases" />
+                  <CheckboxOne text="Desktop Publishing" />
+                  <CheckboxOne text="Desktop Video" />
+                  <CheckboxOne text="Email" />
+                  <CheckboxOne text="Graphics Software" />
+                  <CheckboxOne text="Home Video/DVD" />
+                  <CheckboxOne text="Internet Technology" />
+                  <CheckboxOne text="Java" />
+                  <CheckboxOne text="JavaScript" />
+                  <CheckboxOne text="Mac Support" />
+                  <CheckboxOne text="MP3/MIDI" />
+                  <CheckboxOne text="Net Conferencing" />
+                  <CheckboxOne text="Net for Beginners" />
+                  <CheckboxOne text="Network Security" />
+                  <CheckboxOne text="Palmtops/PDAs" />
+                  <CheckboxOne text="PC Support" />
+                  <CheckboxOne text="Portable" />
+                  <CheckboxOne text="Entertainment" />
+                  <CheckboxOne text="Shareware/Freeware" />
+                  <CheckboxOne text="Unix" />
+                  <CheckboxOne text="Visual Basic" />
+                  <CheckboxOne text="Web Clip Art" />
+                  <CheckboxOne text="Web Search" />
+                  <CheckboxOne text="Windows" />
+                </>
+              )}
+              <CheckboxOne
+                text="Travel"
+                className="font-bold"
+                onChange={(text, isChecked) =>
+                  handleCheckboxChange(text, isChecked)
+                }
+              />
+              {selectedCheckbox === 'Travel' && (
+                <>
+                  <CheckboxOne text="Adventure Trave" />
+                  <CheckboxOne text="Africa" />
+                  <CheckboxOne text="Air Travel" />
+                  <CheckboxOne text="Australia & New Zealand" />
+                  <CheckboxOne text="Bed & Breakfasts" />
+                  <CheckboxOne text="Budget Travel" />
+                  <CheckboxOne text="Business Travel" />
+                  <CheckboxOne text="By US Locale" />
+                  <CheckboxOne text="Camping" />
+                  <CheckboxOne text="Canada" />
+                  <CheckboxOne text="Caribbean" />
+                  <CheckboxOne text="Cruises" />
+                  <CheckboxOne text="Eastern Europe" />
+                  <CheckboxOne text="Europe" />
+                  <CheckboxOne text="France" />
+                  <CheckboxOne text="Greece" />
+                  <CheckboxOne text="Honeymoons/Getaways" />
+                  <CheckboxOne text="Hotels" />
+                  <CheckboxOne text="Italy" />
+                  <CheckboxOne text="Japan" />
+                  <CheckboxOne text="Mexico & Central America" />
+                  <CheckboxOne text="National Parks" />
+                  <CheckboxOne text="South America" />
+                  <CheckboxOne text="Spas" />
+                  <CheckboxOne text="Theme Parks" />
+                  <CheckboxOne text="Traveling with Kids" />
+                  <CheckboxOne text="United Kingdom" />
+                </>
+              )}
+              <CheckboxOne
+                text="Real Estate"
+                className="font-bold"
+                onChange={(text, isChecked) =>
+                  handleCheckboxChange(text, isChecked)
+                }
+              />
+              {selectedCheckbox === 'Real Estate' && (
+                <>
+                  <CheckboxOne text="Apartments" />
+                  <CheckboxOne text="Architects" />
+                  <CheckboxOne text="Buying/Selling Homes" />
+                </>
+              )}
+              <CheckboxOne
+                text="Shopping"
+                className="font-bold"
+                onChange={(text, isChecked) =>
+                  handleCheckboxChange(text, isChecked)
+                }
+              />
+              {selectedCheckbox === 'Shopping' && (
+                <>
+                  <CheckboxOne text="Contests & Freebies" />
+                  <CheckboxOne text="Couponing" />
+                  <CheckboxOne text="Comparison" />
+                  <CheckboxOne text="Engines" />
+                </>
+              )}
+              <CheckboxOne
+                text="Religion & Spirituality"
+                className="font-bold"
+                onChange={(text, isChecked) =>
+                  handleCheckboxChange(text, isChecked)
+                }
+              />
+              {selectedCheckbox === 'Religion & Spirituality' && (
+                <>
+                  <CheckboxOne text="Alternative Religions" />
+                  <CheckboxOne text="Atheism/Agnosticism" />
+                  <CheckboxOne text="Buddhism" />
+                  <CheckboxOne text="Catholicism" />
+                  <CheckboxOne text="Christianity" />
+                  <CheckboxOne text="Hinduism" />
+                  <CheckboxOne text="Islam" />
+                  <CheckboxOne text="Judaism" />
+                  <CheckboxOne text="Latter-Day Saints" />
+                  <CheckboxOne text="Pagan/Wiccan" />
+                </>
+              )}
+              <CheckboxOne
+                text="Uncategorized"
+                className="font-bold"
+                onChange={(text, isChecked) =>
+                  handleCheckboxChange(text, isChecked)
+                }
+              />
+              <CheckboxOne
+                text="Non-Standard Conten"
+                className="font-bold"
+                onChange={(text, isChecked) =>
+                  handleCheckboxChange(text, isChecked)
+                }
+              />
+              {selectedCheckbox === 'Non-Standard Content' && (
+                <>
+                  <CheckboxOne text="Unmoderated UGC" />
+                  <CheckboxOne text="Extreme Graphic/Explicit Violence" />
+                  <CheckboxOne text="Pornography" />
+                  <CheckboxOne text="Profane Content" />
+                  <CheckboxOne text="Hate Content" />
+                  <CheckboxOne text="Under Construction" />
+                  <CheckboxOne text="Incentivized" />
+                </>
+              )}
+              <CheckboxOne
+                text="Illegal Content"
+                className="font-bold"
+                onChange={(text, isChecked) =>
+                  handleCheckboxChange(text, isChecked)
+                }
+              />
+              {selectedCheckbox === 'Illegal Content' && (
+                <>
+                  <CheckboxOne text="Illegal Content" />
+                  <CheckboxOne text="Warez" />
+                  <CheckboxOne text="Spyware/Malware" />
+                  <CheckboxOne text="Copyright Infringemen" />
+                </>
+              )}
               <div className="border-t border-stroke py-4 px-6.5 dark:border-strokedark">
                 <div className="flex items-center gap-2 justify-between font-medium text-black dark:text-white">
                   <h2>Audience located in</h2>
@@ -421,8 +913,8 @@ const Strategy = () => {
             </div>
             <div className="flex flex-col gap-5.5 p-6.5">
               <Tabs
-                value={selectedTab}
-                onValueChange={setSelectedTab}
+                value={selectedDevice}
+                onValueChange={setSelectedDevice}
                 className="flex flex-col justify-between"
               >
                 <TabsList className="space-x-4">

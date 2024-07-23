@@ -8,7 +8,7 @@ import { Card, CardContent } from '../components/ui/card';
 // Define a type for the campaign goal
 interface Goal {
   id: string;
-  icon: React.ElementType[];
+  icon: React.ElementType;
   title: string;
   description: string;
 }
@@ -16,37 +16,42 @@ interface Goal {
 const goals: Goal[] = [
   {
     id: 'awareness',
-    icon: [LuRadioReceiver, LuAirplay],
+    icon: LuRadioReceiver,
     title: 'Build awareness',
     description: 'I want to reach as many different viewers as possible.',
   },
   {
     id: 'traffic',
-    icon: [LuRadioReceiver, HiOutlineComputerDesktop],
+    icon: HiOutlineComputerDesktop,
     title: 'Website traffic',
     description: 'I want TV audiences to visit my website.',
   },
   {
     id: 'retargeting',
-    icon: [LuRadioReceiver, IoMdRefreshCircle],
+    icon: IoMdRefreshCircle,
     title: 'Website retargeting',
     description: 'I want to convert my website visitors.',
   },
   {
     id: 'revenue',
-    icon: [LuRadioReceiver, LuSmartphone],
+    icon: LuSmartphone,
     title: 'Drive app revenue',
     description: 'I want TV viewers to download my app.',
   },
 ];
 
-export default function CampaignGoalSelector() {
-  // Explicitly type the state as a string or null
+interface CampaignGoalSelectorProps {
+  onSelect: (goalId: string) => void;
+}
+
+export default function CampaignGoalSelector({
+  onSelect,
+}: CampaignGoalSelectorProps) {
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
 
-  // Explicitly type the parameter as a string
   const handleSelect = (goalId: string) => {
     setSelectedGoal(goalId);
+    onSelect(goalId); // Notify parent component
   };
 
   return (
@@ -67,16 +72,13 @@ export default function CampaignGoalSelector() {
           >
             <CardContent className="space-y-2 mt-2">
               <div className="flex items-center space-x-2">
-                {goal.icon.map((Icon, index) => (
-                  <Icon
-                    key={index}
-                    className={`h-5 w-5 ${
-                      selectedGoal === goal.id
-                        ? 'text-primary'
-                        : 'text-muted-foreground'
-                    }`}
-                  />
-                ))}
+                <goal.icon
+                  className={`h-5 w-5 ${
+                    selectedGoal === goal.id
+                      ? 'text-primary'
+                      : 'text-muted-foreground'
+                  }`}
+                />
               </div>
               <h3 className="text-base font-semibold">{goal.title}</h3>
               <p className="text-sm text-muted-foreground">
