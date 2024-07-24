@@ -8,6 +8,10 @@ import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
 import RightSideCard from '../../components/RightSideCard';
 import { Button } from '../../components/ui/button';
 import { Link } from 'react-router-dom';
+import { MdCampaign } from "react-icons/md";
+import { FaAdversal } from "react-icons/fa";
+import { FaUserClock } from "react-icons/fa";
+import { FaFileUpload } from "react-icons/fa";
 
 const Campaigns = () => {
   const [campaignName, setCampaignName] = useState('');
@@ -38,15 +42,17 @@ const Campaigns = () => {
 
   return (
     <>
+      
       <Breadcrumb pageName="Campaigns" />
 
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
         <div className="flex flex-col gap-9">
           {/* <!-- Campaign Name --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+            <div className="flex items-center gap-2 border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+            <MdCampaign className='text-[20px]'/>
               <h3 className="font-medium text-black dark:text-white">
-                Campaign Name
+              Campaign Name
               </h3>
             </div>
             <div className="flex flex-col gap-5.5 p-6.5">
@@ -81,8 +87,10 @@ const Campaigns = () => {
 
           {/* <!-- Advertiser --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+            <div className=" flex items-center gap-2 border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+            <FaAdversal className='text-[20px]' />
               <h3 className="font-medium text-black dark:text-white">
+              
                 Advertiser
               </h3>
             </div>
@@ -93,21 +101,27 @@ const Campaigns = () => {
 
           {/* <!-- Date Picker --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+            <div className=" flex items-center gap-2 border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+            <FaUserClock className='text-[20px]' />
               <h3 className="font-medium text-black dark:text-white">
+             
                 Time and date
               </h3>
             </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
-              <DatePickerOne onDateSelect={setDate} />
+            <div className="flex text-center gap-7 p-6.5">
+              <div></div>
+              <DatePickerOne onDateSelect={setDate} text='Start Date'/>
+              <DatePickerOne onDateSelect={setDate} text='End Date'/>
             </div>
           </div>
 
           {/* <!-- File Upload --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+            <div className="flex items-center gap-2 border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+            <FaFileUpload className='text-[20px]'/>
               <h3 className="font-medium text-black dark:text-white">
-                File upload
+              
+               File upload
               </h3>
             </div>
             <div className="flex flex-col gap-5.5 p-6.5">

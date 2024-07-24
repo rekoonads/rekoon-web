@@ -15,6 +15,12 @@ import { RiCheckFill } from 'react-icons/ri';
 import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
 import RightSideCard from '../../components/RightSideCard';
 import { Card, CardContent } from '../../components/ui/card';
+import { GiBrain } from "react-icons/gi";
+import { FaSearchDollar } from "react-icons/fa";
+import { LuHeartHandshake } from "react-icons/lu";
+import { FaGenderless } from "react-icons/fa";
+import { FaPeopleArrows } from "react-icons/fa";
+import { MdOutlineScreenshotMonitor } from "react-icons/md";
 
 interface Goal {
   id: string;
@@ -93,8 +99,10 @@ const Strategy = () => {
         <div className="flex flex-col gap-9">
           {/* <!-- Input Fields --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+            <div className="flex gap-2 items-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+            <GiBrain className='text-[20px]' />
               <h3 className="font-medium text-black dark:text-white">
+                
                 Strategy Name
               </h3>
             </div>
@@ -111,7 +119,8 @@ const Strategy = () => {
           {/* <!-- Time and date --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
+              <h3 className="flex gap-2 item-center font-medium text-black dark:text-white">
+                <FaSearchDollar className='text-[20px]' />
                 Strategy Daily Budget
               </h3>
             </div>
@@ -128,7 +137,8 @@ const Strategy = () => {
           </div>
           {/* <!-- File upload --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+            <div className=" flex gap-2 item-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+              <LuHeartHandshake className='text-[20px]'/>
               <h3 className="font-medium text-black dark:text-white">Ages</h3>
             </div>
             <div className="flex flex-col gap-5.5 p-6.5">
@@ -204,8 +214,10 @@ const Strategy = () => {
             </div>
           )}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+            <div className="flex gap-1 item-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+            <FaGenderless className='text-[22px]' />
               <h3 className="font-medium text-black dark:text-white">
+                
                 Genders
               </h3>
             </div>
@@ -242,7 +254,8 @@ const Strategy = () => {
             </div>
           </div>
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+            <div className=" flex gap-2 item-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+            <FaPeopleArrows className='text-[20px]' />
               <h3 className="font-medium text-black dark:text-white">
                 Audiences
               </h3>
@@ -906,7 +919,8 @@ const Strategy = () => {
             </div>
           </div>
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+            <div className="flex gap-2 item-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+              <MdOutlineScreenshotMonitor className='text-[20px]' />
               <h3 className="font-medium text-black dark:text-white">
                 Screens
               </h3>
