@@ -46,7 +46,7 @@ export default function ManageAdvertise() {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <DropdownMenuDemo />
+          <DropdownMenuDemo name='Kunal' email='mkkm@gmail.com'/>
           <Link to={'/dashboard'}>
             <Button>Go to Dashboard</Button>
           </Link>
