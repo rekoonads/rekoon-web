@@ -15,15 +15,15 @@ import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
+import SettingLayout from './layout/SettingLayout'; // Ensure you have this layout
 import Home from './pages/Home';
 import { useUser } from '@clerk/clerk-react';
 import Campaigns from './pages/Campaign';
 import Summary from './pages/Summary';
 import Strategy from './pages/Strategy';
 import LoginWays from './pages/LoginWays';
-
 import AdvertiseManagement from './pages/AdvertiseManagement';
-import ReportPage from './pages/ReportPage';
+import General from './pages/Settings/General';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -56,111 +56,125 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/login-options" element={<LoginWays />} />
       <Route path="/manage-advertise" element={<AdvertiseManagement />} />
-      <Route path="/report" element={<ReportPage />} />
       <Route path="/auth/sign-in" element={<SignInPage />} />
       <Route path="/auth/sign-up" element={<SignUpPage />} />
+
       {isSignedIn ? (
-        <Route path="/" element={<DefaultLayout />}>
-          <Route
-            path="dashboard"
-            element={
-              <>
-                <PageTitle title="Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <ECommerce />
-              </>
-            }
-          />
-          <Route
-            path="campaign"
-            element={
-              <>
-                <PageTitle title="Campaign | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <Campaigns />
-              </>
-            }
-          />
-          <Route
-            path="strategy"
-            element={
-              <>
-                <PageTitle title="Strategy | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <Strategy />
-              </>
-            }
-          />
-          <Route
-            path="summary"
-            element={
-              <>
-                <PageTitle title="Summary | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <Summary />
-              </>
-            }
-          />
-          <Route
-            path="forms/form-elements"
-            element={
-              <>
-                <PageTitle title="Form Elements | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <FormElements />
-              </>
-            }
-          />
-          <Route
-            path="forms/form-layout"
-            element={
-              <>
-                <PageTitle title="Form Layout | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <FormLayout />
-              </>
-            }
-          />
-          <Route
-            path="tables"
-            element={
-              <>
-                <PageTitle title="Tables | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <Tables />
-              </>
-            }
-          />
-          <Route
-            path="settings"
-            element={
-              <>
-                <PageTitle title="Settings | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <Settings />
-              </>
-            }
-          />
-          <Route
-            path="chart"
-            element={
-              <>
-                <PageTitle title="Basic Chart | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <Chart />
-              </>
-            }
-          />
-          <Route
-            path="ui/alerts"
-            element={
-              <>
-                <PageTitle title="Alerts | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <Alerts />
-              </>
-            }
-          />
-          <Route
-            path="ui/buttons"
-            element={
-              <>
-                <PageTitle title="Buttons | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                <Buttons />
-              </>
-            }
-          />
-        </Route>
+        <>
+          <Route path="/" element={<DefaultLayout />}>
+            <Route
+              path="dashboard"
+              element={
+                <>
+                  <PageTitle title="Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <ECommerce />
+                </>
+              }
+            />
+            <Route
+              path="campaign"
+              element={
+                <>
+                  <PageTitle title="Campaign | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <Campaigns />
+                </>
+              }
+            />
+            <Route
+              path="strategy"
+              element={
+                <>
+                  <PageTitle title="Strategy | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <Strategy />
+                </>
+              }
+            />
+            <Route
+              path="summary"
+              element={
+                <>
+                  <PageTitle title="Summary | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <Summary />
+                </>
+              }
+            />
+            <Route
+              path="forms/form-elements"
+              element={
+                <>
+                  <PageTitle title="Form Elements | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <FormElements />
+                </>
+              }
+            />
+            <Route
+              path="forms/form-layout"
+              element={
+                <>
+                  <PageTitle title="Form Layout | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <FormLayout />
+                </>
+              }
+            />
+            <Route
+              path="tables"
+              element={
+                <>
+                  <PageTitle title="Tables | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <Tables />
+                </>
+              }
+            />
+            <Route
+              path="chart"
+              element={
+                <>
+                  <PageTitle title="Basic Chart | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <Chart />
+                </>
+              }
+            />
+            <Route
+              path="ui/alerts"
+              element={
+                <>
+                  <PageTitle title="Alerts | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <Alerts />
+                </>
+              }
+            />
+            <Route
+              path="ui/buttons"
+              element={
+                <>
+                  <PageTitle title="Buttons | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <Buttons />
+                </>
+              }
+            />
+          </Route>
+          <Route path="/settings/*" element={<SettingLayout />}>
+            <Route
+              path="general"
+              element={
+                <>
+                  <PageTitle title="Dashboard | Settings Layout" />
+                  <General />
+                </>
+              }
+            />
+            <Route
+              path="campaign"
+              element={
+                <>
+                  <PageTitle title="Campaign | Settings Layout" />
+                  <Campaigns />
+                </>
+              }
+            />
+            {/* Add other routes as necessary */}
+          </Route>
+        </>
       ) : (
         <>
           <Route path="/auth/sign-in" element={<SignInPage />} />
