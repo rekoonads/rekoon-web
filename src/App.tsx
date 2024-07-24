@@ -24,6 +24,9 @@ import Strategy from './pages/Strategy';
 import LoginWays from './pages/LoginWays';
 import AdvertiseManagement from './pages/AdvertiseManagement';
 import General from './pages/Settings/General';
+import ReportPage from './pages/ReportPage';
+import Members from './pages/Settings/Members';
+import Advertisers from './pages/Settings/Advertisers';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -56,6 +59,7 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/login-options" element={<LoginWays />} />
       <Route path="/manage-advertise" element={<AdvertiseManagement />} />
+      <Route path="/report" element={<ReportPage />} />
       <Route path="/auth/sign-in" element={<SignInPage />} />
       <Route path="/auth/sign-up" element={<SignUpPage />} />
 
@@ -164,11 +168,20 @@ function App() {
               }
             />
             <Route
-              path="campaign"
+              path="members"
               element={
                 <>
                   <PageTitle title="Campaign | Settings Layout" />
-                  <Campaigns />
+                  <Members />
+                </>
+              }
+            />
+            <Route
+              path="advertisers"
+              element={
+                <>
+                  <PageTitle title="Campaign | Settings Layout" />
+                  <Advertisers />
                 </>
               }
             />
