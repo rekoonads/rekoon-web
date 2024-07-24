@@ -6,6 +6,21 @@ import { MdCampaign, MdDashboard } from 'react-icons/md';
 import { SiMicrostrategy } from 'react-icons/si';
 import { MdOutlinePriceChange } from 'react-icons/md';
 import SidebarLinkGroup from '../Sidebar/SidebarLinkGroup';
+import { MdManageAccounts } from "react-icons/md";
+import { IoPeopleSharp } from "react-icons/io5";
+import { LiaAdversal } from "react-icons/lia";
+import { GoGear } from "react-icons/go";
+import { IoCodeSlashSharp } from "react-icons/io5";
+import { CiMobile1 } from "react-icons/ci";
+import { FaRuler } from "react-icons/fa";
+import { FaPencilRuler } from "react-icons/fa";
+import { FaDollarSign } from "react-icons/fa6";
+import { GrTransaction } from "react-icons/gr";
+import { MdPayment } from "react-icons/md";
+import { FaFileInvoiceDollar } from "react-icons/fa6";
+import { FaReceipt } from "react-icons/fa";
+import { RiCoupon3Fill } from "react-icons/ri";
+import { AiOutlineTransaction } from "react-icons/ai";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -102,7 +117,7 @@ const SettingSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           {/* <!-- Menu Group --> */}
           <div>
             <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
-              MENU
+              Menu
             </h3>
 
             <ul className="mb-6 flex flex-col gap-1.5">
@@ -116,82 +131,169 @@ const SettingSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 {(handleClick, open) => {
                   return (
                     <React.Fragment>
+                      <div className="flex flex-col">
+                          <div className='mb-5'>
+                        <div className=" cursor-pointer mb-2 group relative flex items-center gap-2.5 rounded-sm py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out  dark:hover:bg-meta-4 ${
+                          pathname.includes('/settings/general') &&
+                          'bg-graydark dark:bg-meta-4'
+                          }">
+                         <MdManageAccounts className='text-[22px] '/>
+                           Accounts
+                         </div>
+      
+                          <ul className='ml-4 text-sm font-[200]'>
                       <NavLink
                         to="/settings/general"
-                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                        className={` group relative flex items-center gap-2.5 rounded-sm py-3 px-4  text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                          pathname.includes('/settings/general') &&
+                          'bg-graydark dark:bg-meta-4'
+                        }`}
+                      >
+                        <GoGear className='text-[15px]' />
+                        <span className='font-[500]'>General</span>
+                      </NavLink>
+                      <NavLink
+                        to="/settings/members"
+                        className={` group relative flex items-center gap-2.5 rounded-sm py-3 px-4  text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                          pathname.includes('/settings/general') &&
+                          'bg-graydark dark:bg-meta-4'
+                        }`}
+                      >
+                        <IoPeopleSharp className='text-[15px]'/>
+                        <span className='font-[500]'>Members</span>
+                      </NavLink>
+                      <NavLink
+                        to="/settings/advertisers"
+                        className={`group relative flex items-center gap-2.5 rounded-sm py-3 px-4  text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                          pathname.includes('/settings/general') &&
+                          'bg-graydark dark:bg-meta-4'
+                        }`}
+                      >
+                        <LiaAdversal className='text-[15px]' />
+                        <span className='font-[500]'>Advertisers</span>
+                      </NavLink>
+                      
+                          </ul>
+                          </div>
+                          <div className='mb-5'>
+                              <div className="cursor-pointer mb-2 group relative flex items-center gap-2.5 rounded-sm py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                                 pathname.includes('/settings/general') &&
+                              'bg-graydark dark:bg-meta-4'
+                                  }">
+                             <FaPencilRuler className='text-[18px]'/>
+                               Measurement
+                              </div>
+      
+                              <ul className='ml-4 text-sm font-[200]'>
+                      <NavLink
+                        to="/settings/web-tracking"
+                        className={` group relative flex items-center gap-2.5 rounded-sm py-3 px-4  text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                          pathname.includes('/settings/general') &&
+                          'bg-graydark dark:bg-meta-4'
+                        }`}
+                      >
+                        <IoCodeSlashSharp className='text-[15px]' />
+                        <span className='font-[500]'>Web tracking</span>
+                      </NavLink>
+                      <NavLink
+                        to="/settings/app-tracking"
+                        className={` group relative flex items-center gap-2.5 rounded-sm py-3 px-4  text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                          pathname.includes('/settings/general') &&
+                          'bg-graydark dark:bg-meta-4'
+                        }`}
+                      >
+                          <CiMobile1 className='text-[15px]'/>
+                          <span className='font-[500]'>App tracking</span>
+                           </NavLink>
+    
+                           </ul>
+                          </div>
+                          <div className='mb-5'>
+                        <div className="cursor-pointer mb-2 group relative flex items-center gap-2.5 rounded-sm py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                          pathname.includes('/settings/general') &&
+                          'bg-graydark dark:bg-meta-4'
+                          }">
+                         <FaDollarSign className='text-[22px] '/>
+                           Billing
+                         </div>
+      
+                          <ul className='ml-4 text-sm font-[200]'>
+                      <NavLink
+                        to="/settings/balance-transaction"
+                        className={` group relative flex items-center gap-2.5 rounded-sm py-3 px-4  text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                          pathname.includes('/settings/general') &&
+                          'bg-graydark dark:bg-meta-4'
+                        }`}
+                      >
+                        <AiOutlineTransaction className='text-[15px] ' />
+                        <span className='font-[500]'>Balance & Transaction</span>
+                      </NavLink>
+                      <NavLink
+                        to="/settings/payment-methods"
+                        className={` group relative flex items-center gap-2.5 rounded-sm py-3 px-4  text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                          pathname.includes('/settings/general') &&
+                          'bg-graydark dark:bg-meta-4'
+                        }`}
+                      >
+                        <MdPayment className='text-[15px]'/>
+                        <span className='font-[500]'>Payment methods</span>
+                      </NavLink>
+                      <NavLink
+                        to="/settings/invoices"
+                        className={`group relative flex items-center gap-2.5 rounded-sm py-3 px-4  text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                          pathname.includes('/settings/general') &&
+                          'bg-graydark dark:bg-meta-4'
+                        }`}
+                      >
+                        <FaFileInvoiceDollar className='text-[15px]' />
+                        <span className='font-[500]'>Invoices</span>
+                      </NavLink>
+                      <NavLink
+                        to="/settings/receipts"
+                        className={`group relative flex items-center gap-2.5 rounded-sm py-3 px-4  text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                          pathname.includes('/settings/general') &&
+                          'bg-graydark dark:bg-meta-4'
+                        }`}
+                      >
+                        <FaReceipt className='text-[15px]' />
+                        <span className='font-[500]'>Receipts</span>
+                      </NavLink>
+                      <NavLink
+                        to="/settings/coupons"
+                        className={`group relative flex items-center gap-2.5 rounded-sm py-3 px-4  text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                          pathname.includes('/settings/coupons') &&
+                          'bg-graydark dark:bg-meta-4'
+                        }`}
+                      >
+                        <RiCoupon3Fill className='text-[15px]' />
+                        <span className='font-[500]'>Coupons</span>
+                      </NavLink>
+                      
+                          </ul>
+                          </div>
+                      </div>
+                     
+                     
+                      {/* <NavLink
+                        to="/settings/general"
+                        className={`group relative flex items-center gap-2.5 rounded-sm py-3 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                           pathname.includes('/settings/general') &&
                           'bg-graydark dark:bg-meta-4'
                         }`}
                       >
                         <MdDashboard />
                         General
-                      </NavLink>
-                      <NavLink
-                        to="/settings/general"
-                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                          pathname.includes('/settings/general') &&
-                          'bg-graydark dark:bg-meta-4'
-                        }`}
-                      >
-                        <MdDashboard />
-                        General
-                      </NavLink>
-                      <NavLink
-                        to="/settings/general"
-                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                          pathname.includes('/settings/general') &&
-                          'bg-graydark dark:bg-meta-4'
-                        }`}
-                      >
-                        <MdDashboard />
-                        General
-                      </NavLink>
+                      </NavLink> */}
                     </React.Fragment>
                   );
                 }}
               </SidebarLinkGroup>
 
               {/* <!-- Menu Item Campaign --> */}
-              <li>
-                <NavLink
-                  to="/campaign"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                    pathname.includes('/campaign') &&
-                    'bg-graydark dark:bg-meta-4'
-                  }`}
-                >
-                  <MdCampaign className="w-[18px] h-[18px]" />
-                  Campaign
-                </NavLink>
-              </li>
+          
 
               {/* <!-- Menu Item Strategy --> */}
-              <li>
-                <NavLink
-                  to="/strategy"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                    pathname.includes('/strategy') &&
-                    'bg-graydark dark:bg-meta-4'
-                  }`}
-                >
-                  <SiMicrostrategy />
-                  Strategy
-                </NavLink>
-              </li>
-
-              {/* <!-- Menu Item Summary --> */}
-              <li>
-                <NavLink
-                  to="/summary"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                    pathname.includes('/summary') &&
-                    'bg-graydark dark:bg-meta-4'
-                  }`}
-                >
-                  <MdOutlinePriceChange />
-                  Summary
-                </NavLink>
-              </li>
+            
             </ul>
           </div>
 
