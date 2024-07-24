@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { Button } from '../components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '../components/ui/avatar';
-import { SearchIcon } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { UserButton } from '@clerk/clerk-react';
+import SelectGroupOne from './Forms/SelectGroup/SelectGroupOne';
 
 export default function ManageAdvertise() {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectInput, setSelectInput] = useState<string>('');
+  const navigate = useNavigate();
 
   const openDrawer = () => {
     setIsDrawerVisible(true);
@@ -23,16 +25,22 @@ export default function ManageAdvertise() {
     }, 500); // Duration should match the transition duration
   };
 
+  const handleManageReportsClick = () => {
+    navigate('/report'); // Replace with your actual route to ReportPage
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
-      <header className="flex items-center justify-between p-4 bg-[#1c1e21] text-white">
+      <header className="flex items-center justify-between p-4 bg-white text-white">
         <div className="flex items-center gap-4">
           <div className="flex items-center bg-gray-800 p-2 rounded">
-            <SearchIcon className="w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="lemonade digital"
-              className="bg-transparent text-white ml-2 outline-none"
+            <SelectGroupOne
+              options={[
+                { value: 'rekoon', label: 'Rekoon' },
+                { value: 'lemonade', label: 'Lemonade Digital Media' },
+                { value: 'binged', label: 'Binged' },
+              ]}
+              onSelect={(selected) => setSelectInput(selected)}
             />
           </div>
         </div>
@@ -72,7 +80,10 @@ export default function ManageAdvertise() {
                 Create or view reports of campaigns run on Disney+ Hotstar
               </p>
               <div className="flex gap-4">
-                <Button className="bg-blue-600 text-white">
+                <Button
+                  className="bg-blue-600 text-white"
+                  onClick={handleManageReportsClick}
+                >
                   Manage Reports
                 </Button>
                 <Button variant="outline">Create Report</Button>
@@ -171,7 +182,7 @@ export default function ManageAdvertise() {
             </div>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Advertiser Name
                 </label>
                 <input
@@ -189,7 +200,7 @@ export default function ManageAdvertise() {
                   />
                 </div>
               </div>
-              <div>
+              <div className="space-y-4">
                 <label className="block text-sm font-medium text-gray-700">
                   GST Number
                 </label>
@@ -199,7 +210,7 @@ export default function ManageAdvertise() {
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
                 />
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Legal Name
                   </label>
                   <input
@@ -209,7 +220,7 @@ export default function ManageAdvertise() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Address
                   </label>
                   <input
@@ -227,6 +238,16 @@ export default function ManageAdvertise() {
                     className="w-full rounded-md border border-stroke p-3 outline-none transition file:mr-4 file:rounded file:border-[0.5px] file:border-stroke file:bg-[#EEEEEE] file:py-1 file:px-2.5 file:text-sm focus:border-primary file:focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-strokedark dark:file:bg-white/30 dark:file:text-white"
                   />
                 </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  CIN Number
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter CIN Number"
+                  className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                />
               </div>
 
               <div className="flex justify-end">

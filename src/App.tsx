@@ -23,6 +23,7 @@ import Strategy from './pages/Strategy';
 import LoginWays from './pages/LoginWays';
 
 import AdvertiseManagement from './pages/AdvertiseManagement';
+import ReportPage from './pages/ReportPage';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -55,6 +56,7 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/login-options" element={<LoginWays />} />
       <Route path="/manage-advertise" element={<AdvertiseManagement />} />
+      <Route path="/report" element={<ReportPage />} />
       <Route path="/auth/sign-in" element={<SignInPage />} />
       <Route path="/auth/sign-up" element={<SignUpPage />} />
       {isSignedIn ? (
