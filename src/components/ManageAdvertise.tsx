@@ -4,6 +4,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '../components/ui/avatar';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserButton } from '@clerk/clerk-react';
 import SelectGroupOne from './Forms/SelectGroup/SelectGroupOne';
+import { DropdownMenuDemo } from './SettingsMenu';
 
 export default function ManageAdvertise() {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
@@ -45,6 +46,7 @@ export default function ManageAdvertise() {
           </div>
         </div>
         <div className="flex items-center gap-4">
+          <DropdownMenuDemo />
           <Link to={'/dashboard'}>
             <Button>Go to Dashboard</Button>
           </Link>
