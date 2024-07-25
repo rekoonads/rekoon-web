@@ -5,9 +5,9 @@ import DropdownUser from './DropdownUser';
 import LogoIcon from '../../images/logo/logo-icon.svg';
 import DarkModeSwitcher from './DarkModeSwitcher';
 import { UserButton } from '@clerk/clerk-react';
-import { DropdownMenuDemo } from '../SettingsMenu';
+import { Button } from '../ui/button';
 
-const Header = (props: {
+const SettingHeader = (props: {
   sidebarOpen: string | boolean | undefined;
   setSidebarOpen: (arg0: boolean) => void;
 }) => {
@@ -67,8 +67,10 @@ const Header = (props: {
 
         <div className="flex items-center gap-3 2xsm:gap-7">
           <ul className="flex items-center gap-2 2xsm:gap-4">
+            <Link to={'/manage-advertise'}>
+              <Button className="text-white">Go to Management</Button>
+            </Link>
             {/* <!-- Dark Mode Toggler --> */}
-            <DropdownMenuDemo name="Kunal" email="mkkm@gmail.com" />
             <DarkModeSwitcher />
             {/* <!-- Dark Mode Toggler --> */}
 
@@ -90,4 +92,4 @@ const Header = (props: {
   );
 };
 
-export default Header;
+export default SettingHeader;
