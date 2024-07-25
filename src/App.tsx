@@ -215,7 +215,7 @@ function App() {
               element={
                 <>
                   <PageTitle title="Campaign | Settings Layout" />
-                  <Balance />
+                  <Balance spentThisMonth={0.00} accountBalance={0.00} />
                 </>
               }
             />
