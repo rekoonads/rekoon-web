@@ -8,10 +8,10 @@ import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
 import RightSideCard from '../../components/RightSideCard';
 import { Button } from '../../components/ui/button';
 import { Link } from 'react-router-dom';
-import { MdCampaign } from "react-icons/md";
-import { FaAdversal } from "react-icons/fa";
-import { FaUserClock } from "react-icons/fa";
-import { FaFileUpload } from "react-icons/fa";
+import { MdCampaign } from 'react-icons/md';
+import { FaAdversal } from 'react-icons/fa';
+import { FaUserClock } from 'react-icons/fa';
+import { FaFileUpload } from 'react-icons/fa';
 
 const Campaigns = () => {
   const [campaignName, setCampaignName] = useState('');
@@ -42,7 +42,6 @@ const Campaigns = () => {
 
   return (
     <>
-      
       <Breadcrumb pageName="Campaigns" />
 
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
@@ -50,9 +49,9 @@ const Campaigns = () => {
           {/* <!-- Campaign Name --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="flex items-center gap-2 border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-            <MdCampaign className='text-[20px]'/>
+              <MdCampaign className="text-[20px]" />
               <h3 className="font-medium text-black dark:text-white">
-              Campaign Name
+                Campaign Name
               </h3>
             </div>
             <div className="flex flex-col gap-5.5 p-6.5">
@@ -88,9 +87,8 @@ const Campaigns = () => {
           {/* <!-- Advertiser --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className=" flex items-center gap-2 border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-            <FaAdversal className='text-[20px]' />
+              <FaAdversal className="text-[20px]" />
               <h3 className="font-medium text-black dark:text-white">
-              
                 Advertiser
               </h3>
             </div>
@@ -102,41 +100,15 @@ const Campaigns = () => {
           {/* <!-- Date Picker --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className=" flex items-center gap-2 border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-            <FaUserClock className='text-[20px]' />
+              <FaUserClock className="text-[20px]" />
               <h3 className="font-medium text-black dark:text-white">
-             
                 Time and date
               </h3>
             </div>
             <div className="flex text-center gap-7 p-6.5">
               <div></div>
-              <DatePickerOne onDateSelect={setDate} text='Start Date'/>
-              <DatePickerOne onDateSelect={setDate} text='End Date'/>
-            </div>
-          </div>
-
-          {/* <!-- File Upload --> */}
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="flex items-center gap-2 border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-            <FaFileUpload className='text-[20px]'/>
-              <h3 className="font-medium text-black dark:text-white">
-              
-               File upload
-              </h3>
-            </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Attach file
-                </label>
-                <input
-                  type="file"
-                  className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
-                  onChange={(e) =>
-                    setFile(e.target.files ? e.target.files[0] : null)
-                  }
-                />
-              </div>
+              <DatePickerOne onDateSelect={setDate} text="Start Date" />
+              <DatePickerOne onDateSelect={setDate} text="End Date" />
             </div>
           </div>
         </div>

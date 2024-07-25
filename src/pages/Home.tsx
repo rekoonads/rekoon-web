@@ -1,24 +1,27 @@
-import { GlobeDemo } from '../components/Globe';
-import { HeroHighlightDemo } from '../components/Hero';
-import { HeroParallaxDemo } from '../components/HeroParallax';
-import { InfiniteMovingCardsDemo } from '../components/MovingCard';
-import { NavbarDemo } from '../components/Navbar';
-import { BackgroundBeamsDemo } from '../components/Waitlist';
-import { WobbleCardDemo } from '../components/WobbleCard';
+import Banner from '../components/Banner';
+import Community from '../components/Community';
+import Footer from '../components/Footer';
 
-const Home = () => {
+import Introduction from '../components/Introduction';
+import Hero from '../components/NewHero';
+import NavbarNew from '../components/NewNavbar';
+
+import Tools from '../components/Tools';
+import Workflow from '../components/Workflow';
+
+const App = () => {
   return (
-    <div className="bg-dark">
-      <NavbarDemo />
-      <HeroHighlightDemo />
-      {/* <LampDemo /> */}
-      <HeroParallaxDemo />
-      <WobbleCardDemo />
-      <GlobeDemo />
-      <InfiniteMovingCardsDemo />
-      <BackgroundBeamsDemo />
-    </div>
+    <>
+      <NavbarNew />
+      <Hero />
+      <Introduction />
+      <Tools />
+      <Banner />
+      <Workflow />
+      <Community />
+      <Footer />
+    </>
   );
 };
 
-export default Home;
+export default App;
