@@ -32,6 +32,8 @@ import PaymentMethods from './pages/Settings/PaymentMethods';
 import Invoices from './pages/Settings/Invoices';
 import Receipts from './pages/Settings/Receipts';
 import Coupons from './pages/Settings/Coupons';
+import WebTracking from './pages/Settings/WebTracking';
+import AppTracking from './pages/Settings/AppTracking';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -187,6 +189,24 @@ function App() {
                 <>
                   <PageTitle title="Campaign | Settings Layout" />
                   <Advertisers />
+                </>
+              }
+            />
+            <Route
+              path="web-tracking"
+              element={
+                <>
+                  <PageTitle title="Campaign | Settings Layout" />
+                  <WebTracking />
+                </>
+              }
+            />
+            <Route
+              path="app-tracking"
+              element={
+                <>
+                  <PageTitle title="Campaign | Settings Layout" />
+                  <AppTracking />
                 </>
               }
             />
