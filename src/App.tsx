@@ -27,6 +27,11 @@ import General from './pages/Settings/General';
 import ReportPage from './pages/ReportPage';
 import Members from './pages/Settings/Members';
 import Advertisers from './pages/Settings/Advertisers';
+import Balance from './pages/Settings/Balance';
+import PaymentMethods from './pages/Settings/PaymentMethods';
+import Invoices from './pages/Settings/Invoices';
+import Receipts from './pages/Settings/Receipts';
+import Coupons from './pages/Settings/Coupons';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -182,6 +187,51 @@ function App() {
                 <>
                   <PageTitle title="Campaign | Settings Layout" />
                   <Advertisers />
+                </>
+              }
+            />
+            <Route
+              path="balance-transaction"
+              element={
+                <>
+                  <PageTitle title="Campaign | Settings Layout" />
+                  <Balance />
+                </>
+              }
+            />
+            <Route
+              path="payment-methods"
+              element={
+                <>
+                  <PageTitle title="Campaign | Settings Layout" />
+                  <PaymentMethods />
+                </>
+              }
+            />
+            <Route
+              path="invoices"
+              element={
+                <>
+                  <PageTitle title="Campaign | Settings Layout" />
+                  <Invoices />
+                </>
+              }
+            />
+            <Route
+              path="receipts"
+              element={
+                <>
+                  <PageTitle title="Campaign | Settings Layout" />
+                  <Receipts />
+                </>
+              }
+            />
+            <Route
+              path="coupons"
+              element={
+                <>
+                  <PageTitle title="Campaign | Settings Layout" />
+                  <Coupons />
                 </>
               }
             />
