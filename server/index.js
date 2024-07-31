@@ -1,22 +1,15 @@
-<<<<<<< HEAD
 import express from 'express';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import 'dotenv/config';
 import pkg from 'body-parser';
-
+import {Advertisermodel} from './models/Advertiser.js';
 
 const { urlencoded, json } = pkg;
 const PORT = process.env.PORT || 8080;
-=======
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
->>>>>>> a3ef4bb28b2ea5853005021621402e636d71f946
 const app = express();
-const Advertisermodel = require('./models/Advertiser')
+
 app.use(urlencoded({ extended: false }));
 app.use(json());
 app.use(cookieParser());

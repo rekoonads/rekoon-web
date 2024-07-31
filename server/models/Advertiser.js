@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const advertiser = new mongoose.Schema(
+import {model, Schema} from "mongoose"
+const advertiser = new Schema(
   {
     advertiserName: String,
     advertiserLogo: String,
@@ -13,6 +13,6 @@ const advertiser = new mongoose.Schema(
     timestamps: true,
   },
 );
-const Advertisermodel = mongoose.model('Advertiser', advertiser);
+export const Advertisermodel = model('Advertiser', advertiser);
 
-module.exports = Advertisermodel;
+
