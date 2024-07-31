@@ -1,9 +1,12 @@
 const mongoose = require('mongoose');
 const campaign = new mongoose.Schema(
   {
+    campaignId: String,
     campaignName: String,
     campaignGoal: String,
-    budget: String,
+    campaignAdvertiserBudget: String,
+    campaignWeeklyBudget: String,
+    campaignDailyBudget: String,
     campaignBudget: String,
     startDate: Date,
     endDate: Date,
