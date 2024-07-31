@@ -1,6 +1,9 @@
 import {
+  ArrowLeftRight,
   Atom,
+  Binary,
   Cloud,
+  Code,
   CreditCard,
   Github,
   Keyboard,
@@ -8,8 +11,10 @@ import {
   LogOut,
   Mail,
   MessageSquare,
+  NotepadText,
   Plus,
   PlusCircle,
+  ScrollText,
   Settings,
   User,
   UserPlus,
@@ -68,82 +73,62 @@ export function DropdownMenuDemo({name, email}:DropdownMenuDemoProps) {
       <DropdownMenuGroup>
         <DropdownMenuItem>
         {/* <User /> */}
-        <Atom className="mr-2 h-4 w-4 transition duration-600" />
+        <Atom className="mr-2 h-5 w-5 transition duration-600 text-blue-950" />
           <Link to={'/settings/general'}>
-          <span className='text-sm font-medium'>General</span>
+          <span className='text-md font-semibold text-blue-950'>General</span>
           </Link>
           {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <CreditCard className="mr-2 h-4 w-4 transition duration-600" />
-          <Link to={'/settings/members'}><span>Members</span></Link>
+          <Users className="mr-2 h-4 w-4 transition duration-600 text-blue-950" />
+          <Link to={'/settings/members'}><span className='text-md font-semibold text-blue-950'>Members</span></Link>
           {/* <DropdownMenuShortcut>⌘B</DropdownMenuShortcut> */}
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Settings className="mr-2 h-4 w-4" />
-          <Link to={'/settings/advertisers'}><span>Advertisers</span></Link>
+        <Keyboard className="mr-2 h-5 w-5 transition duration-600 text-blue-950"/>
+          {/* <Settings className="mr-2 h-4 w-4" /> */}
+          <Link to={'/settings/advertisers'}><span className='text-md font-semibold text-blue-950' >Advertisers</span></Link>
           {/* <DropdownMenuShortcut>⌘S</DropdownMenuShortcut> */}
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Keyboard className="mr-2 h-4 w-4" />
-          <Link to={'/settings/web-tracking'}><span>Web tracking</span></Link>
+          <Code  className="mr-2 h-5 w-5 transition duration-600 text-blue-950" />
+          <Link to={'/settings/web-tracking'}><span className='text-md font-semibold text-blue-950'>Web tracking</span></Link>
           {/* <DropdownMenuShortcut>⌘K</DropdownMenuShortcut> */}
         </DropdownMenuItem>
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
         <DropdownMenuItem>
-          <Users className="mr-2 h-4 w-4" />
-          <Link to={'/settings/app-tracking'}><span>App tracking</span></Link>
+          <Binary  className="mr-2 h-5 w-5 transition duration-600 text-blue-950" />
+          <Link to={'/settings/app-tracking'}><span className='text-md font-semibold text-blue-950'>App tracking</span></Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-            <UserPlus className="mr-2 h-4 w-4" />
-            <Link to={'/settings/balance-transaction'}> <span>Balance & Transactions</span></Link>
+            <ArrowLeftRight  className="mr-2 h-5 w-5 transition duration-600 text-blue-950" />
+            <Link to={'/settings/balance-transaction'}> <span className='text-md font-semibold text-blue-950'>Balance & Transactions</span></Link>
         </DropdownMenuItem>
-         {/* <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
-            
-          </DropdownMenuSubTrigger>
-           <DropdownMenuPortal>
-            <DropdownMenuSubContent>
-              <DropdownMenuItem>
-                <Mail className="mr-2 h-4 w-4" />
-                <span></span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <MessageSquare className="mr-2 h-4 w-4" />
-                <span></span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                <span>More...</span>
-              </DropdownMenuItem>
-            </DropdownMenuSubContent>
-          </DropdownMenuPortal> 
-        </DropdownMenuSub>  */}
         <DropdownMenuItem>
-          <Plus className="mr-2 h-4 w-4" />
-          <Link to={'/settings/payment-method'}><span>Payment Methods</span></Link>
+          <Plus className="mr-2 h-5 w-5 transition duration-600 text-blue-950" />
+          <Link to={'/settings/payment-method'}><span className='text-md font-semibold text-blue-950'>Payment Methods</span></Link>
           {/* <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut> */}
         </DropdownMenuItem>
       </DropdownMenuGroup>
+      {/* <DropdownMenuSeparator /> */}
+      <DropdownMenuItem>
+        <NotepadText className="mr-2 h-5 w-5 transition duration-600 text-blue-950" />
+        <Link to={'/settings/invoices'}><span className='text-md font-semibold text-blue-950'>Invoices</span></Link>
+      </DropdownMenuItem>
+      <DropdownMenuItem>
+        <ScrollText  className="mr-2 h-5 w-5 transition duration-600 text-blue-950" />
+        <Link to={'/settings/recipes'}><span className='text-md font-semibold text-blue-950'>Receipts</span></Link>
+      </DropdownMenuItem>
+      <DropdownMenuItem>
+        <LifeBuoy className="mr-2 h-5 w-5 transition duration-600 text-blue-950" />
+       <Link to={'/settings/coupons'}> <span className='text-md font-semibold text-blue-950'>Coupons</span></Link>
+      </DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem>
-        <Link to={'/settings/invoices'}><span>Invoices</span></Link>
-      </DropdownMenuItem>
-      <DropdownMenuItem>
-        <LifeBuoy className="mr-2 h-4 w-4" />
-        <Link to={'/settings/recipes'}><span>Recipes</span></Link>
-      </DropdownMenuItem>
-      <DropdownMenuItem>
-        <LifeBuoy className="mr-2 h-4 w-4" />
-       <Link to={'/settings/coupons'}> <span>Coupons</span></Link>
-      </DropdownMenuItem>
-      <DropdownMenuSeparator />
-      <DropdownMenuItem>
-        <LogOut className="mr-2 h-4 w-4 text-red-500" />
-       <Link to={'/logout'}><span className='text-red-500'>Logout</span></Link>
+        <LogOut className="mr-2 h-5 w-5 transition duration-600 text-red-800" />
+       <Link to={'/logout'}><span className='text-red-800 text-md font-semibold'>Logout</span></Link>
         {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
       </DropdownMenuItem>
     </DropdownMenuContent>
