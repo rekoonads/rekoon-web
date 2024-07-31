@@ -1,6 +1,7 @@
-import {model, Schema} from "mongoose"
+import { model, Schema } from 'mongoose';
 const advertiser = new Schema(
   {
+    advertiserId: { type: String },
     advertiserName: { type: String },
     advertiserLogo: { type: String },
     gstNumber: { type: String },
@@ -14,5 +15,3 @@ const advertiser = new Schema(
   },
 );
 export const Advertisermodel = model('Advertisers', advertiser);
-
-
