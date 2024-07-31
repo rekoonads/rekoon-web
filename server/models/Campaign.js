@@ -1,20 +1,20 @@
-const mongoose = require('mongoose');
-const campaign = new mongoose.Schema(
+import { model, Schema } from 'mongoose';
+const campaignSchema = new Schema(
   {
-    campaignId: String,
-    campaignName: String,
-    campaignGoal: String,
-    campaignAdvertiserBudget: String,
-    campaignWeeklyBudget: String,
-    campaignDailyBudget: String,
-    campaignBudget: String,
-    startDate: Date,
-    endDate: Date,
+    campaignId: { type: String, required: true, unique: true },
+    campaignName: { type: String, required: true },
+    campaignGoal: { type: String, required: true },
+    campaignAdvertiserBudget: { type: Number, required: true },
+    campaignWeeklyBudget: { type: String },
+    campaignDailyBudget: { type: String },
+    campaignBudget: { type: String, required: true },
+    startDate: { type: Date },
+    endDate: { type: Date },
   },
   {
     timestamps: true,
   },
 );
-const Campaignmodel = mongoose.model('Campaigns', campaign);
+const Campaignmodel = model('Campaigns', campaignSchema);
 
 module.exports = Campaignmodel;

@@ -2,16 +2,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const Advertisermodel = require('./models/Advertiser')
 const app = express();
-const cors = require('cors');
-require('dotenv/config');
 
-app.use(express.json());
+app.use(urlencoded({ extended: false }));
+app.use(json());
 app.use(cookieParser());
 
-const db =
-  'mongodb+srv://kartik:rekoonweb471@cluster0.f23xyop.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const db = process.env.MONGO_DB;
 
 mongoose
   .connect(db)
@@ -57,6 +54,6 @@ app.use(
   }),
 );
 
-app.listen(3001, () => {
+app.listen(PORT, () => {
   console.log('running');
 });
