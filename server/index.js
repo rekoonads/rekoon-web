@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const app = express();
-
+const Advertisermodel = require('./models/Advertiser')
 app.use(urlencoded({ extended: false }));
 app.use(json());
 app.use(cookieParser());
