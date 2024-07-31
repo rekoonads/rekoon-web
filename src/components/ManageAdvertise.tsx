@@ -46,7 +46,7 @@ export default function ManageAdvertise() {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <DropdownMenuDemo name='Kunal' email='mkkm@gmail.com'/>
+          <DropdownMenuDemo name="Kunal" email="mkkm@gmail.com" />
           <Link to={'/dashboard'}>
             <Button>Go to Dashboard</Button>
           </Link>
@@ -70,7 +70,9 @@ export default function ManageAdvertise() {
                 <Button className="bg-blue-600 text-white">
                   Manage Campaigns
                 </Button>
-                <Button variant="outline">Create Campaign</Button>
+                <Link to={'/campaign'}>
+                  <Button variant="outline">Create Campaign</Button>
+                </Link>
                 <Button variant="outline">Plan Campaign</Button>
               </div>
             </div>
