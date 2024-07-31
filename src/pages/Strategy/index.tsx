@@ -260,7 +260,7 @@ const Strategy = () => {
                 Audiences
               </h3>
             </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
+            <div className="flex flex-col gap-5.5 p-6.5 ">
               <div>
                 <label className="mb-3 block text-black dark:text-white">
                   <h1 className="font-semibold">Predefined audiences</h1>
@@ -272,6 +272,7 @@ const Strategy = () => {
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
+              <div className="flex flex-col gap-5.5 p-6.5 overflow-y-scroll h-[50vh] pb-2 cursor-all-scroll">
               <CheckboxOne
                 text="Arts & Entertainment"
                 className="font-bold"
@@ -280,7 +281,7 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Arts & Entertainment' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Books & Literature" />
                   <CheckboxOne text="Celebrity Fan/Gossip" />
                   <CheckboxOne text="Fine Art" />
@@ -288,8 +289,10 @@ const Strategy = () => {
                   <CheckboxOne text="Movies" />
                   <CheckboxOne text="Music" />
                   <CheckboxOne text="Television" />
-                </>
+                </div>
               )}
+            
+             
               <CheckboxOne
                 text="Automotive"
                 className="font-bold"
@@ -298,7 +301,7 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Automotive' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Auto Parts" />
                   <CheckboxOne text="Auto Repair" />
                   <CheckboxOne text="Buying/Selling Cars" />
@@ -322,7 +325,7 @@ const Strategy = () => {
                   <CheckboxOne text="Trucks & Accessories" />
                   <CheckboxOne text="Vintage Cars" />
                   <CheckboxOne text="Wagon" />
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="Business"
@@ -332,7 +335,7 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Business' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Advertising" />
                   <CheckboxOne text="Agriculture" />
                   <CheckboxOne text="Biotech/Biomedical" />
@@ -345,7 +348,7 @@ const Strategy = () => {
                   <CheckboxOne text="Logistics" />
                   <CheckboxOne text="Marketing" />
                   <CheckboxOne text="Metals" />
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="Careers"
@@ -355,7 +358,7 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Careers' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Career Planning" />
                   <CheckboxOne text="College" />
                   <CheckboxOne text="Financial Aid" />
@@ -366,7 +369,7 @@ const Strategy = () => {
                   <CheckboxOne text="Scholarships" />
                   <CheckboxOne text="Telecommuting" />
                   <CheckboxOne text="Career Advice" />
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="Education"
@@ -376,7 +379,7 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Education' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="7-12 Education" />
                   <CheckboxOne text="Adult Education" />
                   <CheckboxOne text="Art History" />
@@ -392,7 +395,7 @@ const Strategy = () => {
                   <CheckboxOne text="Private School" />
                   <CheckboxOne text="Special Education" />
                   <CheckboxOne text="Studying Business" />
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="Family & Parenting"
@@ -402,7 +405,7 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Family & Parenting' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Adoption" />
                   <CheckboxOne text="Babies & Toddlers" />
                   <CheckboxOne text="Daycare/Pre School" />
@@ -412,7 +415,7 @@ const Strategy = () => {
                   <CheckboxOne text="Pregnancy" />
                   <CheckboxOne text="Special Needs Kids" />
                   <CheckboxOne text="Eldcare" />
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="Health & Fitness"
@@ -422,7 +425,7 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Health & Fitness' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Exercise" />
                   <CheckboxOne text="ADD" />
                   <CheckboxOne text="AIDS/HIV" />
@@ -467,7 +470,7 @@ const Strategy = () => {
                   <CheckboxOne text="Thyroid Disease" />
                   <CheckboxOne text="Weight Loss" />
                   <CheckboxOne text="Women's Health" />
-                </>
+                </div>
               )}
 
               <CheckboxOne
@@ -478,7 +481,7 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Hobbies & Interests' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Art/Technology" />
                   <CheckboxOne text="Arts & Crafts" />
                   <CheckboxOne text="Beadwork" />
@@ -511,7 +514,7 @@ const Strategy = () => {
                   <CheckboxOne text="Stamps & Coins" />
                   <CheckboxOne text="Video & Computer Games" />
                   <CheckboxOne text="Woodworking" />
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="Home & Garden"
@@ -521,7 +524,7 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Home & Garden' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Appliances" />
                   <CheckboxOne text="Entertaining" />
                   <CheckboxOne text="Environmental Safety" />
@@ -531,7 +534,7 @@ const Strategy = () => {
                   <CheckboxOne text="Interior Decorating" />
                   <CheckboxOne text="Landscaping" />
                   <CheckboxOne text="Remodeling & Construction" />
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="Law, Government, & Politics"
@@ -541,13 +544,13 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Law, Government, & Politics' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Immigration" />
                   <CheckboxOne text="Legal Issues" />
                   <CheckboxOne text="U.S. Government Resources" />
                   <CheckboxOne text="Politics" />
                   <CheckboxOne text="Commentary" />
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="News"
@@ -557,11 +560,11 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'News' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="International News" />
                   <CheckboxOne text="National News" />
                   <CheckboxOne text="Local News" />=
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="Personal Finance"
@@ -571,7 +574,7 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Personal Finance' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Beginning Investing" />
                   <CheckboxOne text="Credit/Debt & Loans" />
                   <CheckboxOne text="Financial News" />
@@ -584,7 +587,7 @@ const Strategy = () => {
                   <CheckboxOne text="Retirement Planning" />
                   <CheckboxOne text="Stocks" />
                   <CheckboxOne text="Tax Planning" />
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="Society"
@@ -594,7 +597,7 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Society' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Dating" />
                   <CheckboxOne text="Divorce Support" />
                   <CheckboxOne text="Gay Life" />
@@ -603,7 +606,7 @@ const Strategy = () => {
                   <CheckboxOne text="Teens" />
                   <CheckboxOne text="Weddings" />
                   <CheckboxOne text="Ethnic Specific" />
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="Science"
@@ -613,7 +616,7 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Science' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Astrology" />
                   <CheckboxOne text="Biology" />
                   <CheckboxOne text="Chemistry" />
@@ -624,7 +627,7 @@ const Strategy = () => {
                   <CheckboxOne text="Geography" />
                   <CheckboxOne text="Botany" />
                   <CheckboxOne text="Weather" />
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="Pets"
@@ -634,7 +637,7 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Pets' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Aquariums" />
                   <CheckboxOne text="Birds" />
                   <CheckboxOne text="Cats" />
@@ -642,7 +645,7 @@ const Strategy = () => {
                   <CheckboxOne text="Large Animals" />
                   <CheckboxOne text="Reptiles" />
                   <CheckboxOne text="Veterinary Medicine" />
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="Sports"
@@ -652,7 +655,7 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Sports' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Auto Racing" />
                   <CheckboxOne text="Baseball" />
                   <CheckboxOne text="Bicycling" />
@@ -696,7 +699,7 @@ const Strategy = () => {
                   <CheckboxOne text="Walking" />
                   <CheckboxOne text="Waterski/Wakeboard" />
                   <CheckboxOne text="World Soccer" />
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="Style & Fashion"
@@ -706,14 +709,14 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Style & Fashion' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Beauty" />
                   <CheckboxOne text="Body Art" />
                   <CheckboxOne text="Fashion" />
                   <CheckboxOne text="Jewelry" />
                   <CheckboxOne text="Clothing" />
                   <CheckboxOne text="Accessories" />
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="Technology & Computing"
@@ -723,7 +726,7 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Technology & Computing' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="3-D Graphics" />
                   <CheckboxOne text="Animation" />
                   <CheckboxOne text="Antivirus Software" />
@@ -759,7 +762,7 @@ const Strategy = () => {
                   <CheckboxOne text="Web Clip Art" />
                   <CheckboxOne text="Web Search" />
                   <CheckboxOne text="Windows" />
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="Travel"
@@ -769,7 +772,7 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Travel' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Adventure Trave" />
                   <CheckboxOne text="Africa" />
                   <CheckboxOne text="Air Travel" />
@@ -797,7 +800,7 @@ const Strategy = () => {
                   <CheckboxOne text="Theme Parks" />
                   <CheckboxOne text="Traveling with Kids" />
                   <CheckboxOne text="United Kingdom" />
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="Real Estate"
@@ -807,11 +810,11 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Real Estate' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Apartments" />
                   <CheckboxOne text="Architects" />
                   <CheckboxOne text="Buying/Selling Homes" />
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="Shopping"
@@ -821,12 +824,12 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Shopping' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Contests & Freebies" />
                   <CheckboxOne text="Couponing" />
                   <CheckboxOne text="Comparison" />
                   <CheckboxOne text="Engines" />
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="Religion & Spirituality"
@@ -836,7 +839,7 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Religion & Spirituality' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Alternative Religions" />
                   <CheckboxOne text="Atheism/Agnosticism" />
                   <CheckboxOne text="Buddhism" />
@@ -847,7 +850,7 @@ const Strategy = () => {
                   <CheckboxOne text="Judaism" />
                   <CheckboxOne text="Latter-Day Saints" />
                   <CheckboxOne text="Pagan/Wiccan" />
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="Uncategorized"
@@ -864,7 +867,7 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Non-Standard Content' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Unmoderated UGC" />
                   <CheckboxOne text="Extreme Graphic/Explicit Violence" />
                   <CheckboxOne text="Pornography" />
@@ -872,7 +875,7 @@ const Strategy = () => {
                   <CheckboxOne text="Hate Content" />
                   <CheckboxOne text="Under Construction" />
                   <CheckboxOne text="Incentivized" />
-                </>
+                </div>
               )}
               <CheckboxOne
                 text="Illegal Content"
@@ -882,13 +885,14 @@ const Strategy = () => {
                 }
               />
               {selectedCheckbox === 'Illegal Content' && (
-                <>
+                <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Illegal Content" />
                   <CheckboxOne text="Warez" />
                   <CheckboxOne text="Spyware/Malware" />
                   <CheckboxOne text="Copyright Infringemen" />
-                </>
+                </div>
               )}
+              </div>
               <div className="border-t border-stroke py-4 px-6.5 dark:border-strokedark">
                 <div className="flex items-center gap-2 justify-between font-medium text-black dark:text-white">
                   <h2>Audience located in</h2>
