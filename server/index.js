@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const Advertisermodel = require('./models/Advertiser')
 const app = express();
 const cors = require('cors');
 require('dotenv/config');
@@ -19,6 +20,33 @@ mongoose
   })
   .catch((err) => {
     console.log(err);
+  });
+
+  app.post("/addAdvertiser", async (req, res) => {
+    const {
+      advertiserName,
+      advertiserLogo,
+      gstNumber,
+      legalName,
+      address,
+      gstCertificate,
+      cinNumber
+    } = req.body;
+  
+    const new_advertiser = await new Advertisermodel({
+      advertiserName,
+      advertiserLogo,
+      gstNumber,
+      legalName,
+      address,
+      gstCertificate,
+      cinNumber
+    });
+    let response_data =[];
+    Advertisermodel.create(new_advertiser).then((advertiser) => {
+       response_data.push({advertiser_data: advertiser});
+    });
+    return res.json(response_data);
   });
 
 app.use(
