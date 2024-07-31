@@ -8,7 +8,7 @@ const agencies = new Schema(
     address: { type: String, required: true },
     gstCertificate: { type: String, required: true },
     cinNumber: { type: String, required: true },
-    createdAt: { type: Date },
+    advertisers: [{ type: Schema.Types.ObjectId, ref: 'Advertisers' }]
   },
   {
     timestamps: true,

@@ -8,7 +8,7 @@ const Coupons = () => {
       <div id="balance-header-container" className="flex justify-between w-full h-fit  leading-snug p-2 relative bottom-6">
         <div id="header-left-container" className="flex w-[100%] flex-col items-start h-full mr-3">
           <div id="header-text" className="w-fit "><h2 className="text-[20px] font-[800] text-black dark:text-whiten">Coupons</h2></div>
-          <div id="header-bottom-statement" className="w-full mt-1"><p className="text-sm font-[400] text-slate-600 dark:text-white">Find all available, pending, past and/or active <span className=' dark:text-blue-200 text-blue-900'>Vibe.co</span> coupons here</p></div>
+          <div id="header-bottom-statement" className="w-full mt-1"><p className="text-sm font-[400] text-slate-600 dark:text-white">Find all available, pending, past and/or active coupons here</p></div>
         </div>
       </div>
       <div className="w-full h-[0.1px] bg-slate-200 relative bottom-6"/>
