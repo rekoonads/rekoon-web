@@ -13,6 +13,6 @@ const advertiser = new Schema(
     timestamps: true,
   },
 );
-export const Advertisermodel = model('Advertiser', advertiser);
+export const Advertisermodel = model('Advertisers', advertiser);
 
 

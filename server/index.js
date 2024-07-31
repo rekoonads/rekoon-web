@@ -1,56 +1,29 @@
 import express from 'express';
-import mongoose from 'mongoose';
+import {mongo} from "./db/mongoConnection.js"
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import 'dotenv/config';
 import pkg from 'body-parser';
-import {Advertisermodel} from './models/Advertiser.js';
+import apiRouter from "./route/api.js"
+
+
 
 const { urlencoded, json } = pkg;
 const PORT = process.env.PORT || 8080;
+
+
 const app = express();
+
+
 
 app.use(urlencoded({ extended: false }));
 app.use(json());
 app.use(cookieParser());
 
-const db = process.env.MONGO_DB;
 
-mongoose
-  .connect(db)
-  .then(() => {
-    console.log('Mongo db connected');
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+//Routing 
+app.use('/', apiRouter);
 
-  app.post("/addAdvertiser", async (req, res) => {
-    const {
-      advertiserName,
-      advertiserLogo,
-      gstNumber,
-      legalName,
-      address,
-      gstCertificate,
-      cinNumber
-    } = req.body;
-  
-    const new_advertiser = await new Advertisermodel({
-      advertiserName,
-      advertiserLogo,
-      gstNumber,
-      legalName,
-      address,
-      gstCertificate,
-      cinNumber
-    });
-    let response_data =[];
-    Advertisermodel.create(new_advertiser).then((advertiser) => {
-       response_data.push({advertiser_data: advertiser});
-    });
-    return res.json(response_data);
-  });
 
 app.use(
   cors({
@@ -60,6 +33,21 @@ app.use(
   }),
 );
 
-app.listen(PORT, () => {
-  console.log('running');
-});
+let server;
+Promise.all([mongo()])
+  .then(() => {
+    server = app.listen(PORT, () => {
+      console.log(`The Server is running on ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error(error);
+    if (server) {
+      server.close();
+    }
+    
+    console.log('Restarting the server...');
+    server = app.listen(PORT, () => {
+      console.log(`The Server has been restarted on ${PORT}`);
+    });
+  });
