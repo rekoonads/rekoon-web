@@ -1,4 +1,5 @@
 import {
+  Atom,
   Cloud,
   CreditCard,
   Github,
@@ -66,26 +67,27 @@ export function DropdownMenuDemo({name, email}:DropdownMenuDemoProps) {
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
         <DropdownMenuItem>
-        <User className="mr-2 h-4 w-4 transition duration-600" />
+        {/* <User /> */}
+        <Atom className="mr-2 h-4 w-4 transition duration-600" />
           <Link to={'/settings/general'}>
-          <span>General</span>
+          <span className='text-sm font-medium'>General</span>
           </Link>
-          <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+          {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
         </DropdownMenuItem>
         <DropdownMenuItem>
           <CreditCard className="mr-2 h-4 w-4 transition duration-600" />
           <Link to={'/settings/members'}><span>Members</span></Link>
-          <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+          {/* <DropdownMenuShortcut>⌘B</DropdownMenuShortcut> */}
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Settings className="mr-2 h-4 w-4" />
           <Link to={'/settings/advertisers'}><span>Advertisers</span></Link>
-          <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+          {/* <DropdownMenuShortcut>⌘S</DropdownMenuShortcut> */}
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Keyboard className="mr-2 h-4 w-4" />
           <Link to={'/settings/web-tracking'}><span>Web tracking</span></Link>
-          <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
+          {/* <DropdownMenuShortcut>⌘K</DropdownMenuShortcut> */}
         </DropdownMenuItem>
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
@@ -123,7 +125,7 @@ export function DropdownMenuDemo({name, email}:DropdownMenuDemoProps) {
         <DropdownMenuItem>
           <Plus className="mr-2 h-4 w-4" />
           <Link to={'/settings/payment-method'}><span>Payment Methods</span></Link>
-          <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
+          {/* <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut> */}
         </DropdownMenuItem>
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
@@ -142,7 +144,7 @@ export function DropdownMenuDemo({name, email}:DropdownMenuDemoProps) {
       <DropdownMenuItem>
         <LogOut className="mr-2 h-4 w-4 text-red-500" />
        <Link to={'/logout'}><span className='text-red-500'>Logout</span></Link>
-        <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+        {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu></div>
