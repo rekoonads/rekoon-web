@@ -5,6 +5,8 @@ import cors from 'cors';
 import 'dotenv/config';
 import pkg from 'body-parser';
 import apiRouter from './routes/api.js';
+import helment from "helmet";
+import compression from 'compression';
 
 const { urlencoded, json } = pkg;
 const PORT = process.env.PORT || 8080;
@@ -14,6 +16,8 @@ const app = express();
 app.use(urlencoded({ extended: false }));
 app.use(json());
 app.use(cookieParser());
+app.use(helment());
+app.use(compression())
 
 //Routing
 app.use('/', apiRouter);
