@@ -1075,8 +1075,9 @@ const Strategy = () => {
             <div className="flex flex-col gap-5.5 p-6.5">
               <RightSideCard />
             </div>
+            <Button className="w-30 text-white ml-5 mb-2">Go to Summary</Button>
           </div>
-          <Button className="w-30 text-white">Go to Summary</Button>
+          
         </div>
       </div>
     </>

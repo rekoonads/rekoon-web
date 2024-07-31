@@ -42,7 +42,7 @@ const Campaigns = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Campaigns"  />
+      <Breadcrumb pageName="Campaigns" />
 
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
         <div className="flex flex-col gap-9">
@@ -113,12 +113,14 @@ const Campaigns = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-9 fixed right-5 overflow-auto h-[70vh] scroll-m-3 md:fixed">
-          {/* <!-- Right Side Card --> */}
+        <div className="flex flex-col gap-9 md:fixed right-5 overflow-auto h-[70vh] scroll-m-3 ">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="flex flex-col gap-5.5 p-6.5">
               <RightSideCard />
             </div>
+            <Button className="w-30 text-white ml-5 mb-2" disabled={!isFormValid()}>
+              <Link to={'/strategy'}>Go to Starategy</Link>
+            </Button>
           </div>
 
           {/* <!-- Select Input --> */}
@@ -142,9 +144,6 @@ const Campaigns = () => {
           </div> */}
 
           {/* <!-- Go to Strategy Button --> */}
-          <Button className="w-30 text-white" disabled={!isFormValid()}>
-            <Link to={'/strategy'}>Go to Starategy</Link>
-          </Button>
         </div>
       </div>
     </>
