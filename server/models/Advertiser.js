@@ -1,13 +1,13 @@
 import {model, Schema} from "mongoose"
 const advertiser = new Schema(
   {
-    advertiserName: String,
-    advertiserLogo: String,
-    gstNumber: String,
-    legalName: String,
-    address: String,
-    gstCertificate: String,
-    cinNumber: String
+    advertiserName: { type: String },
+    advertiserLogo: { type: String },
+    gstNumber: { type: String },
+    legalName: { type: String },
+    address: { type: String },
+    gstCertificate: { type: String },
+    cinNumber: { type: String },
   },
   {
     timestamps: true,
