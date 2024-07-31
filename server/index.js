@@ -1,16 +1,20 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const app = express();
-const cors = require('cors');
-require('dotenv/config');
+import express from 'express';
+import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import 'dotenv/config';
+import { urlencoded, json } from 'body-parser';
 
-app.use(express.json());
+const PORT = process.env.PORT || 8080
+const app = express();
+
+app.use(urlencoded({extended: false}))
+app.use(json());
 app.use(cookieParser());
 
-const db =
-  'mongodb+srv://kartik:rekoonweb471@cluster0.f23xyop.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const db = process.env.MONGO_DB 
+  
 
 mongoose
   .connect(db)
@@ -29,6 +33,6 @@ app.use(
   }),
 );
 
-app.listen(3001, () => {
+app.listen(PORT, () => {
   console.log('running');
 });
