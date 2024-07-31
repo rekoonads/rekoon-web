@@ -1070,7 +1070,7 @@ const Strategy = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-9">
+        <div className="flex flex-col gap-9 fixed right-5">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="flex flex-col gap-5.5 p-6.5">
               <RightSideCard />

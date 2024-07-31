@@ -113,7 +113,7 @@ const Campaigns = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-9">
+        <div className="flex flex-col gap-9 fixed right-5 overflow-auto h-[70vh] scroll-m-3">
           {/* <!-- Right Side Card --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="flex flex-col gap-5.5 p-6.5">
@@ -122,7 +122,7 @@ const Campaigns = () => {
           </div>
 
           {/* <!-- Select Input --> */}
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+          {/* <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <h3 className="font-medium text-black dark:text-white">
                 Select Country
@@ -139,7 +139,7 @@ const Campaigns = () => {
                 onSelect={(selected) => setSelectInput(selected)}
               />
             </div>
-          </div>
+          </div> */}
 
           {/* <!-- Go to Strategy Button --> */}
           <Button className="w-30 text-white" disabled={!isFormValid()}>
