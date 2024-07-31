@@ -1,11 +1,12 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import pkg from 'body-parser';
-const { urlencoded, json } = pkg;
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import 'dotenv/config';
+import pkg from 'body-parser';
 
+
+const { urlencoded, json } = pkg;
 const PORT = process.env.PORT || 8080;
 const app = express();
 

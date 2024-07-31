@@ -9,7 +9,7 @@ const Breadcrumb = ({ pageName }: BreadcrumbProps) => {
         {pageName}
       </h2>
 
-      <nav className='fixed right-7'>
+      <nav className='md:fixed right-7 '>
         <ol className="flex items-center gap-2">
           <li>
             <Link className="font-medium" to="/">
