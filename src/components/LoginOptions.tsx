@@ -3,19 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { Building } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { MdCampaign } from 'react-icons/md';
-
+import { useUser } from '@clerk/clerk-react';
 export default function LoginOptions() {
   const [selectedBusinessType, setSelectedBusinessType] = useState('Agency');
   const [businessName, setBusinessName] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
+  const {user} = useUser()
 
   const handleCreateAccount = () => {
     if (!businessName) {
       setErrorMessage(`Please enter the ${selectedBusinessType} name`);
       return;
     }
-    // Add your account creation logic here
     // After successfully creating the account, redirect to /manage-advertise
     navigate('/manage-advertise');
   };
@@ -35,6 +35,7 @@ export default function LoginOptions() {
               className="mr-2"
               checked={selectedBusinessType === 'Agency'}
               onChange={() => setSelectedBusinessType('Agency')}
+              value={selectedBusinessType}
             />
             <label htmlFor="agency" className="flex items-center space-x-2">
               <Building className="w-6 h-6" />
