@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Building } from 'lucide-react';
+import { ArrowLeft, Building } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { MdCampaign } from 'react-icons/md';
 import { CreateOrganization } from '@clerk/clerk-react';
@@ -11,10 +11,11 @@ export default function LoginOptions() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const [isCreated, setIsCreated] = useState(false);
 
   const handleCreateAccount = () => {
     if (selectedBusinessType === 'Agency') {
-      setModalIsOpen(true);
+      return setModalIsOpen(true);
     } else if (selectedBusinessType === 'Advertiser') {
       if (businessName.trim() === '') {
         setError('Please enter an advertiser name.');
@@ -23,11 +24,16 @@ export default function LoginOptions() {
       // Add your advertiser creation logic here
       // After successfully creating the advertiser, redirect to /manage-advertise
       navigate('/manage-advertise');
+      
     }
   };
+  // useEffect(() => {
+  //   isCreated === true ? navigate('/auth/sign-up') : navigate('/login-options');
+  // }, [isCreated]);
 
   const closeModal = () => {
     setModalIsOpen(false);
+    navigate('/')
   };
 
   return (
@@ -36,6 +42,14 @@ export default function LoginOptions() {
         <h2 className="text-center text-xl font-semibold mb-6">
           Which best describes your business?
         </h2>
+        <button
+          onClick={closeModal}
+          className="absolute top-5 left-10 p-2  text-blue-900 font-semibold rounded-lg hover:bg-slate-50 transition hover:text-purple-500 flex items-center gap-2"
+        >
+          {' '}
+          <ArrowLeft />
+          Go back...
+        </button>
         <div className="flex justify-center space-x-4 mb-6">
           <div className="flex items-center p-4 border rounded-lg w-1/2">
             <input

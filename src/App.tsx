@@ -8,7 +8,6 @@ import Chart from './pages/Chart';
 import ECommerce from './pages/Dashboard/ECommerce';
 import FormElements from './pages/Form/FormElements';
 import FormLayout from './pages/Form/FormLayout';
-
 import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
@@ -38,7 +37,7 @@ function App() {
   const { pathname } = useLocation();
   const { user, isLoaded, isSignedIn } = useUser();
   const navigate = useNavigate();
-  console.log(user?.id)
+  console.log(user)
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -52,7 +51,7 @@ function App() {
     if (isLoaded && isSignedIn) {
       const hasAgency = user.publicMetadata?.hasAgency;
       if (pathname === '/') {
-        navigate(hasAgency ? '/manage-advertise' : '/login-options');
+        navigate(!hasAgency ? '/manage-advertise' : '/login-options');
       }
     }
   }, [isLoaded, isSignedIn, pathname, navigate, user]);
