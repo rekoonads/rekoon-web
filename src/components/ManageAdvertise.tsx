@@ -3,7 +3,6 @@ import { Button } from '../components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '../components/ui/avatar';
 import { Link, useNavigate } from 'react-router-dom';
 import { OrganizationSwitcher, useAuth, UserButton } from '@clerk/clerk-react';
-
 import { DropdownMenuDemo } from './SettingsMenu';
 
 export default function ManageAdvertise() {
@@ -11,8 +10,12 @@ export default function ManageAdvertise() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const navigate = useNavigate();
-  const { orgId } = useAuth();
-  console.log(orgId);
+  const { orgId, userId } = useAuth();
+
+  // Check if orgId and userId are available
+  if (!orgId || !userId) {
+    return <p>Loading...</p>; // Or some other loading state or error handling
+  }
 
   const openDrawer = () => {
     setIsDrawerVisible(true);
@@ -37,7 +40,7 @@ export default function ManageAdvertise() {
       <header className="flex items-center justify-between p-4 bg-white text-white">
         <div className="flex items-center gap-4">
           <div className="flex items-center bg-gray-800 p-2 rounded">
-            <OrganizationSwitcher />
+            {orgId && userId && <OrganizationSwitcher />}
           </div>
         </div>
         <div className="flex items-center gap-4">

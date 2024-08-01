@@ -9,12 +9,17 @@ export default function LoginOptions() {
   const [selectedBusinessType, setSelectedBusinessType] = useState('Agency');
   const [businessName, setBusinessName] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleCreateAccount = () => {
     if (selectedBusinessType === 'Agency') {
       setModalIsOpen(true);
-    } else {
+    } else if (selectedBusinessType === 'Advertiser') {
+      if (businessName.trim() === '') {
+        setError('Please enter an advertiser name.');
+        return;
+      }
       // Add your advertiser creation logic here
       // After successfully creating the advertiser, redirect to /manage-advertise
       navigate('/manage-advertise');
@@ -93,6 +98,7 @@ export default function LoginOptions() {
             <span className="text-gray-400 ml-2">0/50</span>
           </div>
         )}
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <div className="flex justify-center">
           <Button
             className="bg-blue-600 text-white px-6 py-2 rounded-lg"
