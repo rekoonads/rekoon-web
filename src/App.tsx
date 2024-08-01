@@ -1,21 +1,19 @@
 import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import SignInPage from './auth/sign-in';
 import SignUpPage from './auth/sign-up';
-
 import Chart from './pages/Chart';
 import ECommerce from './pages/Dashboard/ECommerce';
 import FormElements from './pages/Form/FormElements';
 import FormLayout from './pages/Form/FormLayout';
-import Settings from './pages/Settings';
+
 import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
-import SettingLayout from './layout/SettingLayout'; // Ensure you have this layout
+import SettingLayout from './layout/SettingLayout';
 import Home from './pages/Home';
 import { useUser } from '@clerk/clerk-react';
 import Campaigns from './pages/Campaign';
@@ -51,11 +49,12 @@ function App() {
 
   useEffect(() => {
     if (isLoaded && isSignedIn) {
+      const hasAgency = user.publicMetadata?.hasAgency;
       if (pathname === '/') {
-        navigate('/login-options');
+        navigate(hasAgency ? '/manage-advertise' : '/login-options');
       }
     }
-  }, [isLoaded, isSignedIn, pathname, navigate]);
+  }, [isLoaded, isSignedIn, pathname, navigate, user]);
 
   if (loading) {
     return <Loader />;
@@ -215,7 +214,7 @@ function App() {
               element={
                 <>
                   <PageTitle title="Campaign | Settings Layout" />
-                  <Balance spentThisMonth={0.00} accountBalance={0.00} />
+                  <Balance spentThisMonth={0.0} accountBalance={0.0} />
                 </>
               }
             />

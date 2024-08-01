@@ -3,21 +3,26 @@ import { useNavigate } from 'react-router-dom';
 import { Building } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { MdCampaign } from 'react-icons/md';
+import { CreateOrganization } from '@clerk/clerk-react';
 
 export default function LoginOptions() {
   const [selectedBusinessType, setSelectedBusinessType] = useState('Agency');
   const [businessName, setBusinessName] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleCreateAccount = () => {
-    if (!businessName) {
-      setErrorMessage(`Please enter the ${selectedBusinessType} name`);
-      return;
+    if (selectedBusinessType === 'Agency') {
+      setModalIsOpen(true);
+    } else {
+      // Add your advertiser creation logic here
+      // After successfully creating the advertiser, redirect to /manage-advertise
+      navigate('/manage-advertise');
     }
-    // Add your account creation logic here
-    // After successfully creating the account, redirect to /manage-advertise
-    navigate('/manage-advertise');
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
   };
 
   return (
@@ -70,22 +75,22 @@ export default function LoginOptions() {
           A vital partner that oversees and executes advertising campaigns for
           clients and brands.
         </p>
-        <div className="flex justify-between items-center mb-6">
-          <label htmlFor="agencyName" className="font-semibold">
-            {selectedBusinessType} Name: <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            id="agencyName"
-            placeholder={`Enter ${selectedBusinessType} Name`}
-            className="border-b-2 border-gray-300 outline-none flex-1 ml-2"
-            value={businessName}
-            onChange={(e) => setBusinessName(e.target.value)}
-          />
-          <span className="text-gray-400 ml-2">{businessName.length}/50</span>
-        </div>
-        {errorMessage && (
-          <p className="text-red-500 text-center mb-4">{errorMessage}</p>
+        {selectedBusinessType === 'Advertiser' && (
+          <div className="flex justify-between items-center mb-6">
+            <label htmlFor="businessName" className="font-semibold">
+              {selectedBusinessType} Name:{' '}
+              <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="businessName"
+              placeholder={`Enter ${selectedBusinessType} Name`}
+              className="border-b-2 border-gray-300 outline-none flex-1 ml-2"
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+            />
+            <span className="text-gray-400 ml-2">0/50</span>
+          </div>
         )}
         <div className="flex justify-center">
           <Button
@@ -96,6 +101,12 @@ export default function LoginOptions() {
           </Button>
         </div>
       </div>
+
+      {modalIsOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <CreateOrganization afterCreateOrganizationUrl="/manage-advertise" />
+        </div>
+      )}
     </div>
   );
 }
