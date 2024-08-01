@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '../components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '../components/ui/avatar';
 import { Link, useNavigate } from 'react-router-dom';
-import { UserButton } from '@clerk/clerk-react';
+import { OrganizationSwitcher, UserButton } from '@clerk/clerk-react';
 import SelectGroupOne from './Forms/SelectGroup/SelectGroupOne';
 import { DropdownMenuDemo } from './SettingsMenu';
 
@@ -35,14 +35,7 @@ export default function ManageAdvertise() {
       <header className="flex items-center justify-between p-4 bg-white text-white">
         <div className="flex items-center gap-4">
           <div className="flex items-center bg-gray-800 p-2 rounded">
-            <SelectGroupOne
-              options={[
-                { value: 'rekoon', label: 'Rekoon' },
-                { value: 'lemonade', label: 'Lemonade Digital Media' },
-                { value: 'binged', label: 'Binged' },
-              ]}
-              onSelect={(selected) => setSelectInput(selected)}
-            />
+            <OrganizationSwitcher />
           </div>
         </div>
         <div className="flex items-center gap-4">
