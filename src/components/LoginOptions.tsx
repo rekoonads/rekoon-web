@@ -6,9 +6,17 @@ import { MdCampaign } from 'react-icons/md';
 
 export default function LoginOptions() {
   const [selectedBusinessType, setSelectedBusinessType] = useState('Agency');
+  const [businessName, setBusinessName] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   const handleCreateAccount = () => {
+    if (!businessName) {
+      setErrorMessage(`Please enter the ${selectedBusinessType} name`);
+      return;
+    }
+    // Add your account creation logic here
+    // After successfully creating the account, redirect to /manage-advertise
     navigate('/manage-advertise');
   };
 
@@ -71,9 +79,14 @@ export default function LoginOptions() {
             id="agencyName"
             placeholder={`Enter ${selectedBusinessType} Name`}
             className="border-b-2 border-gray-300 outline-none flex-1 ml-2"
+            value={businessName}
+            onChange={(e) => setBusinessName(e.target.value)}
           />
-          <span className="text-gray-400 ml-2">0/50</span>
+          <span className="text-gray-400 ml-2">{businessName.length}/50</span>
         </div>
+        {errorMessage && (
+          <p className="text-red-500 text-center mb-4">{errorMessage}</p>
+        )}
         <div className="flex justify-center">
           <Button
             className="bg-blue-600 text-white px-6 py-2 rounded-lg"
