@@ -10,7 +10,6 @@ export default function LoginOptions() {
   const [businessName, setBusinessName] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const navigate = useNavigate();
-  const { user } = useUser();
 
   const handleCreateAccount = () => {
     if (selectedBusinessType === 'Agency') {
