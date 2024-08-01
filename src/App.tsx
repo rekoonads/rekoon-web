@@ -38,6 +38,7 @@ function App() {
   const { pathname } = useLocation();
   const { user, isLoaded, isSignedIn } = useUser();
   const navigate = useNavigate();
+  console.log(user?.id)
 
   useEffect(() => {
     window.scrollTo(0, 0);

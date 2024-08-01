@@ -10,6 +10,7 @@ export default function LoginOptions() {
   const [businessName, setBusinessName] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const navigate = useNavigate();
+  const { user } = useUser();
 
   const handleCreateAccount = () => {
     if (selectedBusinessType === 'Agency') {
@@ -40,6 +41,7 @@ export default function LoginOptions() {
               className="mr-2"
               checked={selectedBusinessType === 'Agency'}
               onChange={() => setSelectedBusinessType('Agency')}
+              value={selectedBusinessType}
             />
             <label htmlFor="agency" className="flex items-center space-x-2">
               <Building className="w-6 h-6" />
