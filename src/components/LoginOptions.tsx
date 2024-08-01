@@ -9,8 +9,6 @@ export default function LoginOptions() {
   const navigate = useNavigate();
 
   const handleCreateAccount = () => {
-    // Add your account creation logic here
-    // After successfully creating the account, redirect to /manage-advertise
     navigate('/manage-advertise');
   };
 
