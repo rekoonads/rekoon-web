@@ -2,15 +2,17 @@ import { useState } from 'react';
 import { Button } from '../components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '../components/ui/avatar';
 import { Link, useNavigate } from 'react-router-dom';
-import { OrganizationSwitcher, UserButton } from '@clerk/clerk-react';
-import SelectGroupOne from './Forms/SelectGroup/SelectGroupOne';
+import { OrganizationSwitcher, useAuth, UserButton } from '@clerk/clerk-react';
+
 import { DropdownMenuDemo } from './SettingsMenu';
 
 export default function ManageAdvertise() {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [selectInput, setSelectInput] = useState<string>('');
+
   const navigate = useNavigate();
+  const { orgId } = useAuth();
+  console.log(orgId);
 
   const openDrawer = () => {
     setIsDrawerVisible(true);
