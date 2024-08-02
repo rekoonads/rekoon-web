@@ -13,16 +13,7 @@ import { DropdownMenuDemo } from './SettingsMenu';
 export default function ManageAdvertise() {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isAdd, setIsAdd] = useState<UserData | undefined>(undefinednull); // Initialize state with null
-  const [advertiserName, setAdvertiserName] = useState('');
-  const [gstNumber, setGstNumber] = useState('');
-  const [legalName, setLegalName] = useState('');
-  const [address, setAddress] = useState('');
-  const [cinNumber, setCinNumber] = useState('');
-  const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [gstCertificateFile, setGstCertificateFile] = useState<File | null>(
-    null,
-  );
+  const [isAdd, setIsAdd] = useState<UserData | undefined>(undefined);
   const [agencyId, setAgencyId] = useState<UserField | undefined>(undefined)
   const navigate = useNavigate();
   const { orgId, userId } = useAuth();
@@ -73,12 +64,12 @@ export default function ManageAdvertise() {
         setIsAdd(data);
         console.log(data);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.log(error);
       }
     };
 
     if (user?.id) {
-      fetchData(user.id); // No optional chaining required here
+      fetchData(user.id);
     }
   }, [user?.id]);
 
@@ -100,44 +91,9 @@ export default function ManageAdvertise() {
     navigate('/report');
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, files } = e.target;
-    if (files) {
-      if (name === 'logoFile') {
-        setLogoFile(files[0] ?? null);
-      } else if (name === 'gstCertificateFile') {
-        setGstCertificateFile(files[0] ?? null);
-      }
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append('advertiserName', advertiserName);
-    formData.append('gstNumber', gstNumber);
-    formData.append('legalName', legalName);
-    formData.append('address', address);
-    formData.append('cinNumber', cinNumber);
-    if (logoFile) formData.append('logoFile', logoFile);
-    if (gstCertificateFile)
-      formData.append('gstCertificateFile', gstCertificateFile);
-
-    try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-      if (!response.ok) {
-        throw new Error('Failed to upload');
-      }
-      const result = await response.json();
-      console.log(result);
-    } catch (error) {
-      console.error('Error uploading files:', error);
-    }
-  };
-
+  console.log(user?.fullName);
+  const userType = isAdd?.type_of_user ?? 'Unknown'; // Default value if undefined
+  console.log(userType);
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="flex items-center justify-between p-4 bg-white text-white">
@@ -300,98 +256,80 @@ export default function ManageAdvertise() {
                 Close
               </Button>
             </div>
-            <form onSubmit={handleSubmit}>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Advertiser Name
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Advertiser Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter Advertiser Name"
+                  className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                />
+                <div className="mt-2">
+                  <label className="mb-3 block text-black dark:text-white">
+                    Advertiser Logo
                   </label>
                   <input
-                    type="text"
-                    placeholder="Enter Advertiser Name"
-                    value={advertiserName}
-                    onChange={(e) => setAdvertiserName(e.target.value)}
-                    className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                    type="file"
+                    className="w-full rounded-md border border-stroke p-3 outline-none transition file:mr-4 file:rounded file:border-[0.5px] file:border-stroke file:bg-[#EEEEEE] file:py-1 file:px-2.5 file:text-sm focus:border-primary file:focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-strokedark dark:file:bg-white/30 dark:file:text-white"
                   />
-                  <div className="mt-2">
-                    <label className="mb-3 block text-black dark:text-white">
-                      Advertiser Logo
-                    </label>
-                    <input
-                      type="file"
-                      name="logoFile"
-                      onChange={handleFileChange}
-                      className="w-full rounded-md border border-stroke p-3 outline-none transition file:mr-4 file:rounded file:border-[0.5px] file:border-stroke file:bg-[#EEEEEE] file:py-1 file:px-2.5 file:text-sm focus:border-primary file:focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-strokedark dark:file:bg-white/30 dark:file:text-white"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <label className="block text-sm font-medium text-gray-700">
-                    GST Number
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter GST Number"
-                    value={gstNumber}
-                    onChange={(e) => setGstNumber(e.target.value)}
-                    className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-                  />
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Legal Name
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Enter Legal Name"
-                      value={legalName}
-                      onChange={(e) => setLegalName(e.target.value)}
-                      className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Address
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Enter Address"
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                      className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-                    />
-                  </div>
-                  <div className="mt-2">
-                    <label className="mb-3 block text-black dark:text-white">
-                      GST Certificate
-                    </label>
-                    <input
-                      type="file"
-                      name="gstCertificateFile"
-                      onChange={handleFileChange}
-                      className="w-full rounded-md border border-stroke p-3 outline-none transition file:mr-4 file:rounded file:border-[0.5px] file:border-stroke file:bg-[#EEEEEE] file:py-1 file:px-2.5 file:text-sm focus:border-primary file:focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-strokedark dark:file:bg-white/30 dark:file:text-white"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    CIN Number
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter CIN Number"
-                    value={cinNumber}
-                    onChange={(e) => setCinNumber(e.target.value)}
-                    className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-                  />
-                </div>
-
-                <div className="flex justify-end">
-                  <Button className="bg-blue-600 text-white" type="submit">
-                    Save
-                  </Button>
                 </div>
               </div>
-            </form>
+              <div className="space-y-4">
+                <label className="block text-sm font-medium text-gray-700">
+                  GST Number
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter GST Number"
+                  className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Legal Name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter Legal Name"
+                    className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Address
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter Address"
+                    className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div className="mt-2">
+                  <label className="mb-3 block text-black dark:text-white">
+                    GST Certificate
+                  </label>
+                  <input
+                    type="file"
+                    className="w-full rounded-md border border-stroke p-3 outline-none transition file:mr-4 file:rounded file:border-[0.5px] file:border-stroke file:bg-[#EEEEEE] file:py-1 file:px-2.5 file:text-sm focus:border-primary file:focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-strokedark dark:file:bg-white/30 dark:file:text-white"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  CIN Number
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter CIN Number"
+                  className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                />
+              </div>
+
+              <div className="flex justify-end">
+                <Button className="bg-blue-600 text-white">Save</Button>
+              </div>
+            </div>
           </div>
         </div>
       )}
