@@ -5,7 +5,7 @@ import Advertiser from '../../components/Advertiser';
 import DatePickerOne from '../../components/Forms/DatePicker/DatePickerOne';
 import RightSideCard from '../../components/RightSideCard';
 import { Button } from '../../components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MdCampaign } from 'react-icons/md';
 import { FaAdversal } from 'react-icons/fa';
 import { FaUserClock } from 'react-icons/fa';
@@ -21,69 +21,90 @@ const Campaigns = () => {
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [selectInput, setSelectInput] = useState<string>('');
   const [campaignBudget, setCampaignBudget] = useState('')
-  const { user} = useUser();
-  const isFormValid = () => {
-    return (
-      campaignName.length > 0 &&
-      campaignGoal !== null &&
-      advertiser !== null &&
-      startDate !== null &&
-      endDate !== null &&
-      selectInput.length > 0
-    );
-  };
+  const { user } = useUser();
+  const [received, setReceived] = useState(false)
+  const navigate = useNavigate()
+  
+  // const isFormValid = () => {
+  //   return (
+  //     campaignName.length > 0 &&
+  //     campaignGoal !== null &&
+  //     advertiser !== null &&
+  //     startDate !== null &&
+  //     endDate !== null &&
+  //     selectInput.length > 0
+  //   );
+  // };
 
   // Handle Submit
-  const handleSubmit = async () => {
-    const campaignData = {
-      userId: user?.id, // Replace with actual userId if needed
-      campaignId: `CAM`+ user?.id, // Replace with actual campaignId if needed
-      campaignName,
-      campaignGoal,
-      campaignAdvertiserBudget: 1000, // Replace with actual value if needed
-      campaignWeeklyBudget: 200, // Replace with actual value if needed
-      campaignDailyBudget: 50, // Replace with actual value if needed
-      campaignBudget: 5000, // Replace with actual value if needed
-      startDate: startDate ? startDate.toISOString() : null,
-      endDate: endDate ? endDate.toISOString() : null,
-    };
+const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault(); 
 
-    try {
-      const response = await fetch('/api/campaigns', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(campaignData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        console.log('Campaign created successfully:', data);
-        // Handle success (e.g., show a success message, redirect, etc.)
-      } else {
-        console.error('Failed to create campaign:', data);
-        // Handle failure (e.g., show an error message)
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      // Handle error (e.g., show an error message)
-    }
+  const campaignData = {
+    userId: user?.id,
+    campaignId: `CAM_${user?.id}`,
+    campaignName,
+    campaignGoal,
+    campaignAdvertiserBudget: advertiser,
+    campaignBudget,
+    campaignType,
+    startDate: startDate?.toDateString(),
+    endDate: endDate?.toDateString(),
   };
-console.log({
-  userId: user?.id, 
-  campaignId: `CAM_` + user?.id, 
-  campaignName,
-  campaignGoal,
-  campaignAdvertiserBudget: advertiser, 
-  campaignBudget: campaignBudget, 
-  campaingType: campaignType,
-  startDate: startDate?.toDateString(),
-  endDate: endDate?.toDateString()
-});
+
+  try {
+    const response = await fetch('/api/campaigns', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(campaignData),
+    });
+
+    const data = await response.json();
+    console.log(data);
+    if (response.ok) {
+      console.log('Campaign created successfully:', data);
+      setReceived(true)
+      navigate('/strategy');
+    } else {
+      console.error('Failed to create campaign:', data);
+      
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    
+  }
+};
+
+
+// console.log({
+//   userId: user?.id, 
+//   campaignId: `CAM_` + user?.id, 
+//   campaignName,
+//   campaignGoal,
+//   campaignAdvertiserBudget: advertiser, 
+//   campaignBudget: campaignBudget, 
+//   campaingType: campaignType,
+//   startDate: startDate?.toDateString(),
+//   endDate: endDate?.toDateString()
+// });
+  
+  
+   const handleStartDate = (event: React.ChangeEvent<HTMLInputElement>) => {
+     const dateValue = event.target.value ? new Date(event.target.value) : null;
+     setStartDate(dateValue);
+   };
+  
+  const handleEndDate = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const dateValue = event.target.value ? new Date(event.target.value) : null;
+    setEndDate(dateValue);
+  };
+  
+  
   return (
     <>
+      
       <Breadcrumb pageName="Campaigns" />
 
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
@@ -136,7 +157,11 @@ console.log({
               </h3>
             </div>
             <div className="flex flex-col gap-5.5 p-6.5">
-              <Advertiser onSelect={(adv) => setCampaignType(adv)} adBud={setAdvertiser} campBud={setCampaignBudget}/>
+              <Advertiser
+                onSelect={(adv) => setCampaignType(adv)}
+                adBud={setAdvertiser}
+                campBud={setCampaignBudget}
+              />
             </div>
           </div>
 
@@ -155,6 +180,7 @@ console.log({
                   type="date"
                   name="start-date"
                   className="dark:bg-slate-800 mt-2 rounded-md pl-2"
+                  onChange={handleStartDate}
                 />
               </div>
               <div className="p-2  border rounded-2xl">
@@ -165,6 +191,7 @@ console.log({
                   type="date"
                   name="end-date"
                   className="dark:bg-slate-800 mt-2 rounded-md pl-2"
+                  onChange={handleEndDate}
                 />
               </div>
 
@@ -172,13 +199,17 @@ console.log({
               <DatePickerOne key='end-date' onDateSelect={setEndDate} text="End Date" /> */}
             </div>
           </div>
-          <button
-            onClick={handleSubmit}
-            className="cursor-pointer p-2 rounded-lg text-white bg-slate-400 w-[10rem] hover:bg-slate-600 transition relative left-[50%] translate-x-[-50%] translate-y-[50%] mb-4"
-            disabled={!isFormValid()}
-          >
-            Submit Campaign
-          </button>
+          <form onSubmit={handleSubmit}>
+            {/* Your form fields here */}
+
+            <button
+              type="submit" 
+              className="cursor-pointer p-2 rounded-lg text-white bg-slate-400 w-[10rem] hover:bg-slate-600 transition relative left-[50%] translate-x-[-50%] translate-y-[50%] mb-4"
+              
+            >
+              Submit Campaign
+            </button>
+          </form>
         </div>
 
         <div className="flex flex-col gap-9 md:fixed right-5 overflow-auto h-[70vh] scroll-m-3 ">
@@ -188,7 +219,7 @@ console.log({
             </div>
             <Button
               className="w-30 text-white ml-5 mb-2"
-              disabled={!isFormValid()}
+              // disabled={!isFormValid()}
             >
               <Link to={'/strategy'}>Go to Strategy</Link>
             </Button>

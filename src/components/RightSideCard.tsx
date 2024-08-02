@@ -25,8 +25,8 @@ export default function RightSideCard() {
         <div className="flex items-center justify-between">
           <CardTitle>Campaign Estimate</CardTitle>
           <div className="flex items-center gap-2">
-            <BsCalendar className="h-5 w-5 text-muted-foreground" />
-            <LuSettings className="h-5 w-5 text-muted-foreground" />
+            {/* <BsCalendar className="h-5 w-5 text-muted-foreground" />
+            <LuSettings className="h-5 w-5 text-muted-foreground" /> */}
           </div>
         </div>
       </CardHeader>
