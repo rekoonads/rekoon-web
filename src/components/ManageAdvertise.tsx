@@ -12,11 +12,6 @@ export default function ManageAdvertise() {
   const navigate = useNavigate();
   const { orgId, userId } = useAuth();
 
-  // Check if orgId and userId are available
-  if (!orgId || !userId) {
-    return <p>Loading...</p>; // Or some other loading state or error handling
-  }
-
   const openDrawer = () => {
     setIsDrawerVisible(true);
     setTimeout(() => {
