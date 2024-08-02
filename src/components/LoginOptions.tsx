@@ -13,25 +13,23 @@ export default function LoginOptions() {
   const navigate = useNavigate();
   const { user } = useUser();
 
-
-  const handleCreateAccount = async() => {
-
+  const handleCreateAccount = async () => {
     try {
       const response = await fetch('http://localhost:3001/api/add-advertiser', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json', 
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          advertiserName: user?.fullName, 
+          advertiserName: user?.fullName,
           createdBy: user?.id,
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-  
+
       const data = await response.json();
       console.log(data);
     } catch (error) {
@@ -48,7 +46,6 @@ export default function LoginOptions() {
       // Add your advertiser creation logic here
       // After successfully creating the advertiser, redirect to /manage-advertise
       navigate('/manage-advertise');
-      
     }
   };
   // useEffect(() => {
@@ -57,7 +54,7 @@ export default function LoginOptions() {
 
   const closeModal = () => {
     setModalIsOpen(false);
-    navigate('/')
+    navigate('/');
   };
 
   return (
