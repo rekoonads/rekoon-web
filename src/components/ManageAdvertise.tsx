@@ -1,16 +1,42 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '../components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '../components/ui/avatar';
 import { Link, useNavigate } from 'react-router-dom';
-import { OrganizationSwitcher, useAuth, UserButton } from '@clerk/clerk-react';
+import { OrganizationSwitcher, useAuth, UserButton, useUser } from '@clerk/clerk-react';
 import { DropdownMenuDemo } from './SettingsMenu';
 
 export default function ManageAdvertise() {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
+  const [isAdd, setIsAdd] = useState(); 
   const navigate = useNavigate();
   const { orgId, userId } = useAuth();
+  const { user } = useUser();
+
+  useEffect(() => {
+    const fetchData = async (id:String) => {
+      try {
+        const response = await fetch(`/api/search-user/${id}`,{
+          method: 'GET',
+          headers: {
+            'Content-type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setIsAdd(data); 
+      } catch (error) {
+        console.log(error)
+      } 
+    };
+
+    if (user?.id) {
+      fetchData(user?.id);
+    }
+  }, [user?.id]);
 
   const openDrawer = () => {
     setIsDrawerVisible(true);

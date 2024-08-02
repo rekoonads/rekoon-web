@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Building } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { MdCampaign } from 'react-icons/md';
-import { CreateOrganization } from '@clerk/clerk-react';
+import { CreateOrganization, useUser } from '@clerk/clerk-react';
 
 export default function LoginOptions() {
   const [selectedBusinessType, setSelectedBusinessType] = useState('Agency');
@@ -11,9 +11,33 @@ export default function LoginOptions() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const [isCreated, setIsCreated] = useState(false);
+  const { user } = useUser();
 
-  const handleCreateAccount = () => {
+
+  const handleCreateAccount = async() => {
+
+    try {
+      const response = await fetch('http://localhost:3001/api/add-advertiser', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', 
+        },
+        body: JSON.stringify({
+          advertiserName: user?.fullName, 
+          createdBy: user?.id,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+    }
+
     if (selectedBusinessType === 'Agency') {
       return setModalIsOpen(true);
     } else if (selectedBusinessType === 'Advertiser') {
