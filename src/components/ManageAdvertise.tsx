@@ -13,13 +13,42 @@ import { DropdownMenuDemo } from './SettingsMenu';
 export default function ManageAdvertise() {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isAdd, setIsAdd] = useState();
+  const [isAdd, setIsAdd] = useState<UserData | undefined>(undefined);
+  const [agencyId, setAgencyId] = useState<UserField | undefined>(undefined)
   const navigate = useNavigate();
   const { orgId, userId } = useAuth();
   const { user } = useUser();
 
+  useEffect(()=>{
+    const fetchData = async (id: string) => {
+      try {
+        const response = await fetch(`/api/search-agency/${id}`, {
+          method: 'GET',
+          headers: {
+            'Content-type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data: UserField = await response.json();
+        setAgencyId(data);
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (orgId) {
+      fetchData(orgId);
+    }
+  },[orgId])
+
+  console.log(agencyId)
+
   useEffect(() => {
-    const fetchData = async (id: String) => {
+    const fetchData = async (id: string) => {
       try {
         const response = await fetch(`/api/search-user/${id}`, {
           method: 'GET',
@@ -31,7 +60,7 @@ export default function ManageAdvertise() {
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-        const data = await response.json();
+        const data: UserData = await response.json();
         setIsAdd(data);
         console.log(data);
       } catch (error) {
@@ -40,7 +69,7 @@ export default function ManageAdvertise() {
     };
 
     if (user?.id) {
-      fetchData(user?.id);
+      fetchData(user.id);
     }
   }, [user?.id]);
 
@@ -55,21 +84,32 @@ export default function ManageAdvertise() {
     setIsDrawerOpen(false);
     setTimeout(() => {
       setIsDrawerVisible(false);
-    }, 500); // Duration should match the transition duration
+    }, 500);
   };
 
   const handleManageReportsClick = () => {
-    navigate('/report'); // Replace with your actual route to ReportPage
+    navigate('/report');
   };
 
+  console.log(user?.fullName);
+  const userType = isAdd?.type_of_user ?? 'Unknown'; // Default value if undefined
+  console.log(userType);
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="flex items-center justify-between p-4 bg-white text-white">
+        {userType === 'Advertiser' ? (
+          <div className="flex items-start ">
+            <h1 className="font-semibold text-black p-2 bg-slate-200 rounded-lg">
+              Advertiser
+            </h1>
+          </div>
+        ) : null}
         <div className="flex items-center gap-4">
           <div className="flex items-center bg-gray-800 p-2 rounded">
-            {orgId && userId && <OrganizationSwitcher />}
+            {userType === 'Agency' ? <OrganizationSwitcher /> : null}
           </div>
         </div>
+
         <div className="flex items-center gap-4">
           <DropdownMenuDemo name="Kunal" email="mkkm@gmail.com" />
           <Link to={'/dashboard'}>
@@ -146,8 +186,15 @@ export default function ManageAdvertise() {
             </div>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span>Advertiser Name:</span>
-                <span>lemonade digital</span>
+                {userType === 'Advertiser' ? (
+                  <>
+                    <span>Advertiser Name:</span>
+                    <span>{user?.fullName}</span>
+                  </>
+                ) : userType === 'Agency' ? (<>
+                  <span>Agency Name:</span>
+                  <span>{agencyId.agencyName}</span>
+                </>) : null}
               </div>
               <div className="flex justify-between">
                 <span>GST Number:</span>
