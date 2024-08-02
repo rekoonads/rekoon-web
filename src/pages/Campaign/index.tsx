@@ -3,43 +3,85 @@ import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import CampaignGoalSelector from '../../components/CampaignGoalSelector';
 import Advertiser from '../../components/Advertiser';
 import DatePickerOne from '../../components/Forms/DatePicker/DatePickerOne';
-import MultiSelect from '../../components/Forms/MultiSelect';
-import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
 import RightSideCard from '../../components/RightSideCard';
 import { Button } from '../../components/ui/button';
 import { Link } from 'react-router-dom';
 import { MdCampaign } from 'react-icons/md';
 import { FaAdversal } from 'react-icons/fa';
 import { FaUserClock } from 'react-icons/fa';
-import { FaFileUpload } from 'react-icons/fa';
+import { useUser } from '@clerk/clerk-react';
+import { Apple } from 'lucide-react';
 
 const Campaigns = () => {
   const [campaignName, setCampaignName] = useState('');
   const [campaignGoal, setCampaignGoal] = useState<string | null>(null);
+  const [campaignType, setCampaignType] = useState('');
   const [advertiser, setAdvertiser] = useState<string | null>(null);
-  const [date, setDate] = useState<Date | null>(null);
-  const [file, setFile] = useState<File | null>(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const [selectInput, setSelectInput] = useState<string>('');
-
+  const [campaignBudget, setCampaignBudget] = useState('')
+  const { user} = useUser();
   const isFormValid = () => {
-    console.log({
-      campaignName,
-      campaignGoal,
-      advertiser,
-      date,
-      file,
-      selectInput,
-    });
     return (
       campaignName.length > 0 &&
       campaignGoal !== null &&
       advertiser !== null &&
-      date !== null &&
-      file !== null &&
+      startDate !== null &&
+      endDate !== null &&
       selectInput.length > 0
     );
   };
 
+  // Handle Submit
+  const handleSubmit = async () => {
+    const campaignData = {
+      userId: user?.id, // Replace with actual userId if needed
+      campaignId: `CAM`+ user?.id, // Replace with actual campaignId if needed
+      campaignName,
+      campaignGoal,
+      campaignAdvertiserBudget: 1000, // Replace with actual value if needed
+      campaignWeeklyBudget: 200, // Replace with actual value if needed
+      campaignDailyBudget: 50, // Replace with actual value if needed
+      campaignBudget: 5000, // Replace with actual value if needed
+      startDate: startDate ? startDate.toISOString() : null,
+      endDate: endDate ? endDate.toISOString() : null,
+    };
+
+    try {
+      const response = await fetch('/api/campaigns', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(campaignData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('Campaign created successfully:', data);
+        // Handle success (e.g., show a success message, redirect, etc.)
+      } else {
+        console.error('Failed to create campaign:', data);
+        // Handle failure (e.g., show an error message)
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle error (e.g., show an error message)
+    }
+  };
+console.log({
+  userId: user?.id, 
+  campaignId: `CAM_` + user?.id, 
+  campaignName,
+  campaignGoal,
+  campaignAdvertiserBudget: advertiser, 
+  campaignBudget: campaignBudget, 
+  campaingType: campaignType,
+  startDate: startDate?.toDateString(),
+  endDate: endDate?.toDateString()
+});
   return (
     <>
       <Breadcrumb pageName="Campaigns" />
@@ -73,11 +115,12 @@ const Campaigns = () => {
           {/* <!-- Campaign Goal --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
+              <h3 className="font-medium text-black dark:text-white flex items-center gap-2">
+                <Apple className="text-[.5rem]" />
                 Select your campaign goal
               </h3>
             </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
+            <div className="flex flex-col gap-5.5 p-6.5 ">
               <CampaignGoalSelector
                 onSelect={(goal) => setCampaignGoal(goal)}
               />
@@ -93,7 +136,7 @@ const Campaigns = () => {
               </h3>
             </div>
             <div className="flex flex-col gap-5.5 p-6.5">
-              <Advertiser onSelect={(adv) => setAdvertiser(adv)} />
+              <Advertiser onSelect={(adv) => setCampaignType(adv)} adBud={setAdvertiser} campBud={setCampaignBudget}/>
             </div>
           </div>
 
@@ -105,12 +148,37 @@ const Campaigns = () => {
                 Time and date
               </h3>
             </div>
-            <div className="flex text-center gap-7 p-6.5">
-              <div></div>
-              <DatePickerOne onDateSelect={setDate} text="Start Date" />
-              <DatePickerOne onDateSelect={setDate} text="End Date" />
+            <div className="flex gap-7 p-6.5 text-left">
+              <div className="p-2 border rounded-2xl">
+                <span className="font-semibold mb-1 pl-2">Start Date</span>
+                <input
+                  type="date"
+                  name="start-date"
+                  className="dark:bg-slate-800 mt-2 rounded-md pl-2"
+                />
+              </div>
+              <div className="p-2  border rounded-2xl">
+                <span className="font-semibold mb-1 text-left pl-2">
+                  End Date
+                </span>
+                <input
+                  type="date"
+                  name="end-date"
+                  className="dark:bg-slate-800 mt-2 rounded-md pl-2"
+                />
+              </div>
+
+              {/* <DatePickerOne key='Start-date' onDateSelect={setStartDate} text="Start Date" />
+              <DatePickerOne key='end-date' onDateSelect={setEndDate} text="End Date" /> */}
             </div>
           </div>
+          <button
+            onClick={handleSubmit}
+            className="cursor-pointer p-2 rounded-lg text-white bg-slate-400 w-[10rem] hover:bg-slate-600 transition relative left-[50%] translate-x-[-50%] translate-y-[50%] mb-4"
+            disabled={!isFormValid()}
+          >
+            Submit Campaign
+          </button>
         </div>
 
         <div className="flex flex-col gap-9 md:fixed right-5 overflow-auto h-[70vh] scroll-m-3 ">
@@ -118,32 +186,13 @@ const Campaigns = () => {
             <div className="flex flex-col gap-5.5 p-6.5">
               <RightSideCard />
             </div>
-            <Button className="w-30 text-white ml-5 mb-2" disabled={!isFormValid()}>
-              <Link to={'/strategy'}>Go to Starategy</Link>
+            <Button
+              className="w-30 text-white ml-5 mb-2"
+              disabled={!isFormValid()}
+            >
+              <Link to={'/strategy'}>Go to Strategy</Link>
             </Button>
           </div>
-
-          {/* <!-- Select Input --> */}
-          {/* <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                Select Country
-              </h3>
-            </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
-              <SelectGroupOne
-                label="Select the specific country"
-                options={[
-                  { value: 'india', label: 'India' },
-                  { value: 'usa', label: 'USA' },
-                  { value: 'uk', label: 'UK' },
-                ]}
-                onSelect={(selected) => setSelectInput(selected)}
-              />
-            </div>
-          </div> */}
-
-          {/* <!-- Go to Strategy Button --> */}
         </div>
       </div>
     </>
