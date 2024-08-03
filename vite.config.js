@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'https://backend-ndv7.onrender.com',
+      '/api': 'http://localhost:3001',
     },
   },
   mimeTypes: {

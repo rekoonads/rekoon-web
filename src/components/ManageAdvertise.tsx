@@ -51,9 +51,9 @@ export default function ManageAdvertise() {
         headers: {
           accept: 'application/json',
           'content-type': 'application/json',
-          'x-client-id': 'CF567621CQM8L4MGPP5C73DT8AOG',
+          'x-client-id': 'CF567621CQN034ABG73C739TF7A0',
           'x-client-secret':
-            'cfsk_ma_prod_66fb939c04d53091fe91e52983144927_790d9815',
+            'cfsk_ma_prod_69c81d0d1b98a8c177c1b242cd942640_6e949e28',
           'X-CF-Signature': encryptedData,
         },
         body: JSON.stringify({ GSTIN: gstNumber, businessName: 'Cashfree' }),
