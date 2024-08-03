@@ -12,7 +12,7 @@ import { CalendarIcon, ClipboardPenIcon, PresentationIcon } from 'lucide-react';
 
 export default function SummaryComponent() {
   return (
-    <Card className="w-full max-w-lg p-4">
+    <Card className="w-full max-w-lg p-4 rounded-lg border border-stroke bg-white shadow-2xl dark:border-strokedark dark:bg-boxdark">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg font-semibold text-blue-700">
           <PresentationIcon className="inline-block w-5 h-5 mr-2" />
