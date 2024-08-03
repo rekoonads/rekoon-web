@@ -18,6 +18,52 @@ export default function ManageAdvertise() {
   const navigate = useNavigate();
   const { orgId, userId } = useAuth();
   const { user } = useUser();
+  // gst validation
+
+  const clientId = 'CF567621CQMSJBMGPP5C73DT8AR0';
+  const publicKey = `-----BEGIN PUBLIC KEY-----
+ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAozn9fqJ002LOHM1xRMGz
+ fMzEOpquWXZ4wJWSaxmHlcMbUi/N+bHTbd49jFJSMO+tKMEfRyXtZ9MRD0/UVM7y
+ l0bzWkntAhkXBkHjo69KSmDypg+47ypqQ58dztcGQz++4E5ow+I1jy0YyHJhZMWK
+ TxaeSogL5g+IRZSYbSJufsvgpmUesYd5ejVeBlOqdenqfN3chWVA+rsXDfJQZZqj
+ OsllU0XG6zr8RCdtNMC3zdIfjLKkwWGb/V4vL1xXfaP/OW8DhCq6adVh1LYCUAaO
+ dcRusWIQArAwt2CgajW8JrAnqhmCSRi6YWhe/iTqyppJusLBpA1qrZ5NJrU+lUcO
+ WQIDAQAB
+ -----END PUBLIC KEY-----`;
+
+  const [gstNumber, setGstNumber] = useState('');
+  const handlegstChange = (event) => {
+    const { value } = event.target;
+    setGstNumber(value);
+
+    if (value.length === 15) {
+      const timestamp = Math.floor(Date.now() / 1000);
+      const dataToEncrypt = `${clientId}.${timestamp}`;
+
+      const key = new NodeRSA(publicKey);
+      const encryptedData = key.encrypt(dataToEncrypt, 'base64');
+
+      const url = 'https://api.cashfree.com/verification/gstin';
+      const options = {
+        method: 'POST',
+        headers: {
+          accept: 'application/json',
+          'content-type': 'application/json',
+          'x-client-id': 'CF567621CQM8L4MGPP5C73DT8AOG',
+          'x-client-secret': 'client secret',
+          'X-CF-Signature': encryptedData,
+        },
+        data: { GSTIN: gstNumber, businessName: 'Cashfree' },
+      };
+
+      fetch(url, options)
+        .then((res) => res.json())
+        .then((json) => console.log(json))
+        .catch((err) => console.error('error:' + err));
+    }
+  };
+
+  //end
 
   useEffect(() => {
     const fetchData = async (id: string) => {
