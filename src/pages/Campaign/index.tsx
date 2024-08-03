@@ -65,7 +65,8 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     console.log(data);
     if (response.ok) {
       console.log('Campaign created successfully:', data);
-      setReceived(true)
+      setReceived(true);
+      alert(`Campaign form has been submited and You cannot change this details for now`)
       navigate('/strategy');
     } else {
       console.error('Failed to create campaign:', data);

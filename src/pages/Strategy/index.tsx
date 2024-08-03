@@ -51,6 +51,12 @@ const Strategy = () => {
   const [selectedCheckbox, setSelectedCheckbox] = useState<string | null>(null);
   const [isScrollingDown, setIsScrollingDown] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
+  const [audienceArr, setAudienceArr] = useState([])
+
+//for Debugging 
+
+
+
 
   const handleReset = () => {
     setSelectedTab('18-20');
@@ -58,14 +64,28 @@ const Strategy = () => {
     setSelectedDevice('TV');
   };
 
+  function arrEntry(text:String){
+    let arr = [];
+    arr.push(text);
+    return arr
+  }
+  
   const handleCheckboxChange = (text: string, isChecked: boolean) => {
     if (isChecked) {
       setSelectedCheckbox(text);
+      arrEntry(text)
     } else {
       setSelectedCheckbox(null);
     }
   };
-
+  
+  console.log({
+    selectedTab,
+    selectedGender,
+    selectedDevice,
+    selectedCheckbox,
+    audienceArr
+   })
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollTop =
@@ -282,7 +302,8 @@ const Strategy = () => {
               />
               {selectedCheckbox === 'Arts & Entertainment' && (
                 <div className='ml-2 flex flex-col gap-2'>
-                  <CheckboxOne text="Books & Literature" />
+                  <CheckboxOne text="Books & Literature" onChange={(text, isChecked) =>
+                  handleCheckboxChange(text, isChecked)} />
                   <CheckboxOne text="Celebrity Fan/Gossip" />
                   <CheckboxOne text="Fine Art" />
                   <CheckboxOne text="Humor" />
