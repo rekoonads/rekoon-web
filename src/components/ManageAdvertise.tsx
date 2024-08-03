@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import NodeRSA from 'node-rsa';
 import { Button } from '../components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '../components/ui/avatar';
 import { Link, useNavigate } from 'react-router-dom';
@@ -18,6 +19,7 @@ export default function ManageAdvertise() {
   const navigate = useNavigate();
   const { orgId, userId } = useAuth();
   const { user } = useUser();
+
 
   useEffect(() => {
     const fetchData = async (id: string) => {
@@ -284,7 +286,7 @@ export default function ManageAdvertise() {
                 </label>
                 <input
                   type="text"
-                  placeholder="Enter GST Number"
+                  placeholder="Enter GST Number"  onChange={handlegstChange}
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
                 />
                 <div>
