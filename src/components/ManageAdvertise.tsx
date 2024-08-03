@@ -9,6 +9,7 @@ import {
   useUser,
 } from '@clerk/clerk-react';
 import { DropdownMenuDemo } from './SettingsMenu';
+import JSEncrypt from 'jsencrypt';
 
 export default function ManageAdvertise() {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
@@ -18,18 +19,18 @@ export default function ManageAdvertise() {
   const navigate = useNavigate();
   const { orgId, userId } = useAuth();
   const { user } = useUser();
-  // gst validation
 
+  // gst validation
   const clientId = 'CF567621CQMSJBMGPP5C73DT8AR0';
   const publicKey = `-----BEGIN PUBLIC KEY-----
- MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAozn9fqJ002LOHM1xRMGz
- fMzEOpquWXZ4wJWSaxmHlcMbUi/N+bHTbd49jFJSMO+tKMEfRyXtZ9MRD0/UVM7y
- l0bzWkntAhkXBkHjo69KSmDypg+47ypqQ58dztcGQz++4E5ow+I1jy0YyHJhZMWK
- TxaeSogL5g+IRZSYbSJufsvgpmUesYd5ejVeBlOqdenqfN3chWVA+rsXDfJQZZqj
- OsllU0XG6zr8RCdtNMC3zdIfjLKkwWGb/V4vL1xXfaP/OW8DhCq6adVh1LYCUAaO
- dcRusWIQArAwt2CgajW8JrAnqhmCSRi6YWhe/iTqyppJusLBpA1qrZ5NJrU+lUcO
- WQIDAQAB
- -----END PUBLIC KEY-----`;
+  MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAozn9fqJ002LOHM1xRMGz
+  fMzEOpquWXZ4wJWSaxmHlcMbUi/N+bHTbd49jFJSMO+tKMEfRyXtZ9MRD0/UVM7y
+  l0bzWkntAhkXBkHjo69KSmDypg+47ypqQ58dztcGQz++4E5ow+I1jy0YyHJhZMWK
+  TxaeSogL5g+IRZSYbSJufsvgpmUesYd5ejVeBlOqdenqfN3chWVA+rsXDfJQZZqj
+  OsllU0XG6zr8RCdtNMC3zdIfjLKkwWGb/V4vL1xXfaP/OW8DhCq6adVh1LYCUAaO
+  dcRusWIQArAwt2CgajW8JrAnqhmCSRi6YWhe/iTqyppJusLBpA1qrZ5NJrU+lUcO
+  WQIDAQAB
+  -----END PUBLIC KEY-----`;
 
   const [gstNumber, setGstNumber] = useState('');
   const handlegstChange = (event) => {
@@ -40,8 +41,9 @@ export default function ManageAdvertise() {
       const timestamp = Math.floor(Date.now() / 1000);
       const dataToEncrypt = `${clientId}.${timestamp}`;
 
-      const key = new NodeRSA(publicKey);
-      const encryptedData = key.encrypt(dataToEncrypt, 'base64');
+      const encrypt = new JSEncrypt();
+      encrypt.setPublicKey(publicKey);
+      const encryptedData = encrypt.encrypt(dataToEncrypt);
 
       const url = 'https://api.cashfree.com/verification/gstin';
       const options = {
@@ -50,10 +52,11 @@ export default function ManageAdvertise() {
           accept: 'application/json',
           'content-type': 'application/json',
           'x-client-id': 'CF567621CQM8L4MGPP5C73DT8AOG',
-          'x-client-secret': 'client secret',
+          'x-client-secret':
+            'cfsk_ma_prod_66fb939c04d53091fe91e52983144927_790d9815',
           'X-CF-Signature': encryptedData,
         },
-        data: { GSTIN: gstNumber, businessName: 'Cashfree' },
+        body: JSON.stringify({ GSTIN: gstNumber, businessName: 'Cashfree' }),
       };
 
       fetch(url, options)
@@ -332,6 +335,7 @@ export default function ManageAdvertise() {
                   type="text"
                   placeholder="Enter GST Number"
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                  onChange={handlegstChange}
                 />
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
