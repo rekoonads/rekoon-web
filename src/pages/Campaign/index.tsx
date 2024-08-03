@@ -1,4 +1,7 @@
+import React from 'react';
 import { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import CampaignGoalSelector from '../../components/CampaignGoalSelector';
 import Advertiser from '../../components/Advertiser';
@@ -20,94 +23,65 @@ const Campaigns = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [selectInput, setSelectInput] = useState<string>('');
-  const [campaignBudget, setCampaignBudget] = useState('')
+  const [campaignBudget, setCampaignBudget] = useState('');
   const { user } = useUser();
-  const [received, setReceived] = useState(false)
-  const navigate = useNavigate()
-  
-  // const isFormValid = () => {
-  //   return (
-  //     campaignName.length > 0 &&
-  //     campaignGoal !== null &&
-  //     advertiser !== null &&
-  //     startDate !== null &&
-  //     endDate !== null &&
-  //     selectInput.length > 0
-  //   );
-  // };
+  const [received, setReceived] = useState(false);
+  const navigate = useNavigate();
 
-  // Handle Submit
-const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-  event.preventDefault(); 
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-  const campaignData = {
-    userId: user?.id,
-    campaignId: `CAM_${user?.id}`,
-    campaignName,
-    campaignGoal,
-    campaignAdvertiserBudget: advertiser,
-    campaignBudget,
-    campaignType,
-    startDate: startDate?.toDateString(),
-    endDate: endDate?.toDateString(),
+    const campaignData = {
+      userId: user?.id,
+      campaignId: `CAM_${user?.id}`,
+      campaignName,
+      campaignGoal,
+      campaignAdvertiserBudget: advertiser,
+      campaignBudget,
+      campaignType,
+      startDate: startDate?.toDateString(),
+      endDate: endDate?.toDateString(),
+    };
+
+    try {
+      const response = await fetch('/api/campaigns', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(campaignData),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log('Campaign created successfully:', data);
+        setReceived(true);
+        toast.success('Campaign submitted successfully!');
+        navigate('/strategy');
+      } else {
+        console.error('Failed to create campaign:', data);
+        toast.error('Failed to submit campaign.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('An error occurred while submitting the campaign.');
+    }
   };
 
-  try {
-    const response = await fetch('/api/campaigns', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(campaignData),
-    });
+  const handleStartDate = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const dateValue = event.target.value ? new Date(event.target.value) : null;
+    setStartDate(dateValue);
+  };
 
-    const data = await response.json();
-    console.log(data);
-    if (response.ok) {
-      console.log('Campaign created successfully:', data);
-      setReceived(true);
-      alert(`Campaign form has been submited and You cannot change this details for now`)
-      navigate('/strategy');
-    } else {
-      console.error('Failed to create campaign:', data);
-      
-    }
-  } catch (error) {
-    console.error('Error:', error);
-    
-  }
-};
-
-
-// console.log({
-//   userId: user?.id, 
-//   campaignId: `CAM_` + user?.id, 
-//   campaignName,
-//   campaignGoal,
-//   campaignAdvertiserBudget: advertiser, 
-//   campaignBudget: campaignBudget, 
-//   campaingType: campaignType,
-//   startDate: startDate?.toDateString(),
-//   endDate: endDate?.toDateString()
-// });
-  
-  
-   const handleStartDate = (event: React.ChangeEvent<HTMLInputElement>) => {
-     const dateValue = event.target.value ? new Date(event.target.value) : null;
-     setStartDate(dateValue);
-   };
-  
   const handleEndDate = (event: React.ChangeEvent<HTMLInputElement>) => {
     const dateValue = event.target.value ? new Date(event.target.value) : null;
     setEndDate(dateValue);
   };
-  
-  
+
   return (
     <>
-      
+      <ToastContainer />
       <Breadcrumb pageName="Campaigns" />
-
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
         <div className="flex flex-col gap-9">
           {/* <!-- Campaign Name --> */}
@@ -195,18 +169,12 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                   onChange={handleEndDate}
                 />
               </div>
-
-              {/* <DatePickerOne key='Start-date' onDateSelect={setStartDate} text="Start Date" />
-              <DatePickerOne key='end-date' onDateSelect={setEndDate} text="End Date" /> */}
             </div>
           </div>
           <form onSubmit={handleSubmit}>
-            {/* Your form fields here */}
-
             <button
-              type="submit" 
+              type="submit"
               className="cursor-pointer p-2 rounded-lg text-white bg-slate-400 w-[10rem] hover:bg-slate-600 transition relative left-[50%] translate-x-[-50%] translate-y-[50%] mb-4"
-              
             >
               Submit Campaign
             </button>
@@ -218,12 +186,6 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
             <div className="flex flex-col gap-5.5 p-6.5">
               <RightSideCard />
             </div>
-            <Button
-              className="w-30 text-white ml-5 mb-2"
-              // disabled={!isFormValid()}
-            >
-              <Link to={'/strategy'}>Go to Strategy</Link>
-            </Button>
           </div>
         </div>
       </div>

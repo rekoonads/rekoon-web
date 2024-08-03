@@ -20,7 +20,7 @@ import { LuSettings } from 'react-icons/lu';
 
 export default function RightSideCard() {
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md ">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>Campaign Estimate</CardTitle>
