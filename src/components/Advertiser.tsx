@@ -17,27 +17,30 @@ interface AdvertiserProps {
   campBud: (advertiser: string) => void;
 }
 
-export default function Advertiser({ onSelect,adBud, campBud }: AdvertiserProps) {
+export default function Advertiser({
+  onSelect,
+  adBud,
+  campBud,
+}: AdvertiserProps) {
   const handleSelect = (value: string) => {
     onSelect(value);
-
   };
   const [selectedOption, setSelectedOption] = useState<string>('');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedOption(event.target.value);
-    onSelect(event.target.value)
-  }; 
+    onSelect(event.target.value);
+  };
   const advertiserBudget = (event: React.ChangeEvent<HTMLInputElement>) => {
-    adBud(event.target.value)
+    adBud(event.target.value);
   };
   const campaignBudget = (event: React.ChangeEvent<HTMLInputElement>) => {
-    campBud(event.target.value)
-  }
+    campBud(event.target.value);
+  };
 
   return (
     <div className="space-y-6 p-4">
-      <Card className="border border-gray-200 rounded-lg w-full">
+      <Card className="border-2 border-gray-300 rounded-lg w-full">
         <CardHeader className="flex items-center justify-between p-4">
           <div className="flex items-center space-x-2">
             <RiAdvertisementFill className="w-5 h-5 text-primary" />
@@ -70,7 +73,7 @@ export default function Advertiser({ onSelect,adBud, campBud }: AdvertiserProps)
         </CardContent>
       </Card>
 
-      <Card className="border border-gray-200 rounded-lg">
+      <Card className="border-2 border-gray-300 rounded-lg">
         <CardHeader className="flex items-center justify-between p-4">
           <div className="flex items-center space-x-2">
             <CurrencyIcon className="w-5 h-5 text-primary" />
@@ -113,7 +116,7 @@ export default function Advertiser({ onSelect,adBud, campBud }: AdvertiserProps)
           <div className="flex flex-col gap-5.5">
             <div>
               <label className="mb-3 block text-black dark:text-white font-semibold">
-                 Campaign Budget
+                Campaign Budget
               </label>
               <input
                 onChange={campaignBudget}
