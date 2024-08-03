@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronUpIcon, FolderIcon, Search } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import SelectGroupOne from './Forms/SelectGroup/SelectGroupOne';
+import { useUser } from '@clerk/clerk-react';
 
 // Define the channel type
 interface Channel {
@@ -58,18 +58,26 @@ const channelsData: Channel[] = [
   },
 ];
 
-export default function Channels() {
+interface ChannelsProps {
+  onSelectedChannelsChange: (channels: string[]) => void; 
+}
+
+const Channels: React.FC<ChannelsProps> = ({ onSelectedChannelsChange }) => {
   const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
   const [selectAll, setSelectAll] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const { user } = useUser();
+
+  useEffect(() => {
+    onSelectedChannelsChange(selectedChannels);
+  }, [selectedChannels, onSelectedChannelsChange]);
 
   const handleCheckboxChange = (name: string) => {
     setSelectedChannels((prevSelectedChannels) => {
-      if (prevSelectedChannels.includes(name)) {
-        return prevSelectedChannels.filter((channelname) => channelname !== name);
-      } else {
-        return [...prevSelectedChannels, name];
-      }
+      const updated = prevSelectedChannels.includes(name)
+        ? prevSelectedChannels.filter((channelName) => channelName !== name)
+        : [...prevSelectedChannels, name];
+      return updated;
     });
   };
 
@@ -82,19 +90,16 @@ export default function Channels() {
     setSelectAll(!selectAll);
   };
 
-  const filteredChannels = channelsData.filter(channel =>
-    channel.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredChannels = channelsData.filter((channel) =>
+    channel.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const sortedChannels = [...filteredChannels, ...channelsData.filter(channel => !filteredChannels.includes(channel))];
+  const sortedChannels = [
+    ...filteredChannels,
+    ...channelsData.filter((channel) => !filteredChannels.includes(channel)),
+  ];
 
-  // Debugging logs
-  console.log('Selected Channels:', selectedChannels);
-  console.log('Select All:', selectAll);
-  console.log('Search Term:', searchTerm);
-  console.log('Filtered Channels:', filteredChannels);
-  console.log('Sorted Channels:', sortedChannels);
-
+  
   return (
     <div className="p-4">
       <div className="flex items-center justify-between pb-4 border-b">
@@ -116,7 +121,7 @@ export default function Channels() {
           />
         </div>
       </div>
-      <SelectGroupOne />
+
       <div className="flex items-center justify-between py-4">
         <div className="text-sm text-muted-foreground">
           Available ({channelsData.length})
@@ -168,4 +173,6 @@ export default function Channels() {
       </div>
     </div>
   );
-}
+};
+
+export default Channels;

@@ -15,8 +15,15 @@ interface SelectGroupOneProps {
 
 const SelectGroupOne: React.FC<SelectGroupOneProps> = ({
   label,
-  options = [], // Provide a default empty array for options
-  selected, // Add selected to props
+  options = [
+    { value: '', label: 'Select Options' },
+    { value: 'One time per day', label: 'One time per day' },
+    { value: 'Maximum Three times per day', label: 'Maximum Three times per day' },
+    { value: 'Maximum Five times per day', label: 'Maximum Five times per day' },
+    { value: 'Maximum Seven times per day', label: 'Maximum Seven times per day' },
+    { value: 'Maximum Ten times per day', label: 'Maximum Ten times per day' },
+  ],
+  selected,
   onSelect,
   className = '',
 }) => {
@@ -28,8 +35,8 @@ const SelectGroupOne: React.FC<SelectGroupOneProps> = ({
         </label>
       )}
       <select
-        value={selected} // Use selected as the value
-        onChange={(e) => onSelect && onSelect(e.target.value)} // Safely call onSelect if it is provided
+        value={selected}
+        onChange={(e) => onSelect && onSelect(e.target.value)}
         className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
       >
         {options.map((option) => (
@@ -43,3 +50,4 @@ const SelectGroupOne: React.FC<SelectGroupOneProps> = ({
 };
 
 export default SelectGroupOne;
+

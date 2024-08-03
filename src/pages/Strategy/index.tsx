@@ -21,6 +21,7 @@ import { LuHeartHandshake } from 'react-icons/lu';
 import { FaGenderless } from 'react-icons/fa';
 import { FaPeopleArrows } from 'react-icons/fa';
 import { MdOutlineScreenshotMonitor } from 'react-icons/md';
+import { useUser } from '@clerk/clerk-react';
 
 interface Goal {
   id: string;
@@ -63,10 +64,6 @@ const Strategy = () => {
     setSelectedDevice('TV');
   };
 
-  // const arrEntry = (text) => {
-  //   return text.split(' ');
-  // };
-  // const audienceArr: string[] = [];
   const handleCheckboxChange = (text: string, isChecked: boolean) => {
     if (isChecked) {
       setSelectedCheckbox(text);
@@ -77,15 +74,7 @@ const Strategy = () => {
     }
   };
 
-  console.log({
-    selectedTab,
-    selectedGender,
-    selectedDevice,
-    selectedCheckbox,
-    audienceArr,
-    strategyName,
-    strategyDailyBudget,
-  });
+  
 
   useEffect(() => {
     const handleScroll = () => {
@@ -112,6 +101,65 @@ const Strategy = () => {
     setSelectedGoal(goalId);
   };
 
+  const [selectedOption, setSelectedOption] = useState('');
+
+  const handleSelectChange = (value: string) => {
+    setSelectedOption(value);
+  };
+  console.log(selectedOption);
+  const [fileName, setFileName] = useState<string | null>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fileInput = event.target;
+    if (fileInput.files && fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+      setFileName(file.name);
+    } else {
+      setFileName(null);
+    }
+  };
+  const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
+
+  const handleSelectedChannelsChange = (channels: string[]) => {
+    setSelectedChannels(channels);
+    console.log('Selected channels in parent:', channels);
+  };
+  console.log({
+    ageRange: selectedTab,
+    gender: selectedGender,
+    screens:selectedDevice,
+    selectedCheckbox,
+    audienceArr,
+    strategyName,
+    strategyDailyBudget,
+    selectedGoal,
+    selectedOption,
+    selectedChannels
+  });
+  const { user } = useUser();
+  //Handling Submission of data dont taper with this
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch(`/api/strategy/${user?.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      } else {
+        alert(`Channels Created`);
+      }
+      const updatedCampaign = await response.json();
+      console.log('Campaign updated successfully:', updatedCampaign);
+      return updatedCampaign;
+    } catch (error) {
+      console.error('Error updating campaign:', error);
+    }
+  };
   return (
     <>
       <Breadcrumb pageName="Strategy" />
@@ -988,11 +1036,12 @@ const Strategy = () => {
             </div>
           </div>
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <Channels />
+            {/* <Channels /> */}
+            <Channels onSelectedChannelsChange={handleSelectedChannelsChange} />
           </div>
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <DateSection />
-          </div>
+          {/* <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+            {/* <DateSection /> 
+          </div> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="p-4 space-y-4">
               <div className="flex items-center space-x-2">
@@ -1040,7 +1089,12 @@ const Strategy = () => {
                   <h2 className="text-lg font-semibold">Advance Options</h2>
                   <FaInfoCircle className="h-4 w-4 text-muted-foreground" />
                 </div>
-                <SelectGroupOne label="Choose maximum ad frequency per household" />
+                {/* <SelectGroupOne /> */}
+                <SelectGroupOne
+                  label="Choose maximum ad frequency per household"
+                  selected={selectedOption}
+                  onSelect={handleSelectChange}
+                />
               </div>
             </div>
           </div>
@@ -1084,10 +1138,24 @@ const Strategy = () => {
                 <input
                   type="file"
                   className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
+                  onChange={handleFileChange}
                 />
+                {fileName && (
+                  <p className="mt-2 text-black dark:text-white">
+                    File selected: {fileName}
+                  </p>
+                )}
               </div>
             </div>
           </div>
+          <form onSubmit={handleSubmit}>
+            <button
+              type="submit"
+              className="cursor-pointer p-2 rounded-lg text-white bg-slate-400 w-[10rem] hover:bg-slate-600 transition relative left-[50%] translate-x-[-50%]  mb-8"
+            >
+              Completed Strategy
+            </button>
+          </form>
         </div>
 
         <div className="flex flex-col gap-9 md:fixed right-5 mb-4">
