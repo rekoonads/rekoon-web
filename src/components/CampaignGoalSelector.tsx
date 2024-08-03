@@ -61,7 +61,7 @@ export default function CampaignGoalSelector({
         <h2 className="text-lg font-semibold">Campaign Goal</h2>
         <FaInfoCircle className="h-4 w-4 text-muted-foreground" />
       </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 cursor-pointer">
         {goals.map((goal) => (
           <Card
             key={goal.id}

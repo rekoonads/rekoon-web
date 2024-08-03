@@ -14,12 +14,12 @@ export default function ManageAdvertise() {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isAdd, setIsAdd] = useState<UserData | undefined>(undefined);
-  const [agencyId, setAgencyId] = useState<UserField | undefined>(undefined)
+  const [agencyId, setAgencyId] = useState<UserField | undefined>(undefined);
   const navigate = useNavigate();
   const { orgId, userId } = useAuth();
   const { user } = useUser();
 
-  useEffect(()=>{
+  useEffect(() => {
     const fetchData = async (id: string) => {
       try {
         const response = await fetch(`/api/search-agency/${id}`, {
@@ -43,9 +43,9 @@ export default function ManageAdvertise() {
     if (orgId) {
       fetchData(orgId);
     }
-  },[orgId])
+  }, [orgId]);
 
-  console.log(agencyId)
+  console.log(agencyId);
 
   useEffect(() => {
     const fetchData = async (id: string) => {
@@ -191,10 +191,12 @@ export default function ManageAdvertise() {
                     <span>Advertiser Name:</span>
                     <span>{user?.fullName}</span>
                   </>
-                ) : userType === 'Agency' ? (<>
-                  <span>Agency Name:</span>
-                  <span>{agencyId.agencyName}</span>
-                </>) : null}
+                ) : userType === 'Agency' ? (
+                  <>
+                    <span>Agency Name:</span>
+                    <span>{agencyId.agencyName}</span>
+                  </>
+                ) : null}
               </div>
               <div className="flex justify-between">
                 <span>GST Number:</span>
