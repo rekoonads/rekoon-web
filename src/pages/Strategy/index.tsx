@@ -15,12 +15,12 @@ import { RiCheckFill } from 'react-icons/ri';
 import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
 import RightSideCard from '../../components/RightSideCard';
 import { Card, CardContent } from '../../components/ui/card';
-import { GiBrain } from "react-icons/gi";
-import { FaSearchDollar } from "react-icons/fa";
-import { LuHeartHandshake } from "react-icons/lu";
-import { FaGenderless } from "react-icons/fa";
-import { FaPeopleArrows } from "react-icons/fa";
-import { MdOutlineScreenshotMonitor } from "react-icons/md";
+import { GiBrain } from 'react-icons/gi';
+import { FaSearchDollar } from 'react-icons/fa';
+import { LuHeartHandshake } from 'react-icons/lu';
+import { FaGenderless } from 'react-icons/fa';
+import { FaPeopleArrows } from 'react-icons/fa';
+import { MdOutlineScreenshotMonitor } from 'react-icons/md';
 
 interface Goal {
   id: string;
@@ -51,12 +51,11 @@ const Strategy = () => {
   const [selectedCheckbox, setSelectedCheckbox] = useState<string | null>(null);
   const [isScrollingDown, setIsScrollingDown] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
-  const [audienceArr, setAudienceArr] = useState([])
+  const [audienceArr, setAudienceArr] = useState<string[]>([]);
+  const [strategyName, setStrategyName] = useState<string>('');
+  const [strategyDailyBudget, setStrategyDailyBudget] = useState<string>('');
 
-//for Debugging 
-
-
-
+  //for Debugging
 
   const handleReset = () => {
     setSelectedTab('18-20');
@@ -64,28 +63,30 @@ const Strategy = () => {
     setSelectedDevice('TV');
   };
 
-  function arrEntry(text:String){
-    let arr = [];
-    arr.push(text);
-    return arr
-  }
-  
+  // const arrEntry = (text) => {
+  //   return text.split(' ');
+  // };
+  // const audienceArr: string[] = [];
   const handleCheckboxChange = (text: string, isChecked: boolean) => {
     if (isChecked) {
       setSelectedCheckbox(text);
-      arrEntry(text)
+      setAudienceArr((prevState) => [...prevState, text]);
     } else {
       setSelectedCheckbox(null);
+      setAudienceArr((prevState) => prevState.filter((item) => item !== text));
     }
   };
-  
+
   console.log({
     selectedTab,
     selectedGender,
     selectedDevice,
     selectedCheckbox,
-    audienceArr
-   })
+    audienceArr,
+    strategyName,
+    strategyDailyBudget,
+  });
+
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollTop =
@@ -120,15 +121,15 @@ const Strategy = () => {
           {/* <!-- Input Fields --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="flex gap-2 items-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-            <GiBrain className='text-[20px]' />
+              <GiBrain className="text-[20px]" />
               <h3 className="font-medium text-black dark:text-white">
-                
                 Strategy Name
               </h3>
             </div>
             <div className="flex flex-col gap-5.5 p-6.5">
               <div>
                 <input
+                  onChange={(e) => setStrategyName(e.target.value)}
                   type="text"
                   placeholder="Default Input"
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -140,13 +141,14 @@ const Strategy = () => {
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <h3 className="flex gap-2 item-center font-medium text-black dark:text-white">
-                <FaSearchDollar className='text-[20px]' />
+                <FaSearchDollar className="text-[20px]" />
                 Strategy Daily Budget
               </h3>
             </div>
             <div className="flex flex-col gap-5.5 p-6.5">
               <div>
                 <input
+                  onChange={(e) => setStrategyDailyBudget(e.target.value)}
                   type="text"
                   placeholder="$100"
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -158,7 +160,7 @@ const Strategy = () => {
           {/* <!-- File upload --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className=" flex gap-2 item-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <LuHeartHandshake className='text-[20px]'/>
+              <LuHeartHandshake className="text-[20px]" />
               <h3 className="font-medium text-black dark:text-white">Ages</h3>
             </div>
             <div className="flex flex-col gap-5.5 p-6.5">
@@ -235,9 +237,8 @@ const Strategy = () => {
           )}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="flex gap-1 item-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-            <FaGenderless className='text-[22px]' />
+              <FaGenderless className="text-[22px]" />
               <h3 className="font-medium text-black dark:text-white">
-                
                 Genders
               </h3>
             </div>
@@ -275,7 +276,7 @@ const Strategy = () => {
           </div>
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className=" flex gap-2 item-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-            <FaPeopleArrows className='text-[20px]' />
+              <FaPeopleArrows className="text-[20px]" />
               <h3 className="font-medium text-black dark:text-white">
                 Audiences
               </h3>
@@ -293,17 +294,16 @@ const Strategy = () => {
                 />
               </div>
               <div className="flex flex-col gap-5.5 p-6.5 overflow-y-scroll h-[50vh] pb-2">
-              <CheckboxOne
-                text="Arts & Entertainment"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Arts & Entertainment' && (
+                <CheckboxOne
+                  text="Arts & Entertainment"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Arts & Entertainment' && (
                 <div className='ml-2 flex flex-col gap-2'>
-                  <CheckboxOne text="Books & Literature" onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)} />
+                  <CheckboxOne text="Books & Literature" />
                   <CheckboxOne text="Celebrity Fan/Gossip" />
                   <CheckboxOne text="Fine Art" />
                   <CheckboxOne text="Humor" />
@@ -311,17 +311,16 @@ const Strategy = () => {
                   <CheckboxOne text="Music" />
                   <CheckboxOne text="Television" />
                 </div>
-              )}
-            
-             
-              <CheckboxOne
-                text="Automotive"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Automotive' && (
+              )} */}
+
+                <CheckboxOne
+                  text="Automotive"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Automotive' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Auto Parts" />
                   <CheckboxOne text="Auto Repair" />
@@ -347,15 +346,15 @@ const Strategy = () => {
                   <CheckboxOne text="Vintage Cars" />
                   <CheckboxOne text="Wagon" />
                 </div>
-              )}
-              <CheckboxOne
-                text="Business"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Business' && (
+              )} */}
+                <CheckboxOne
+                  text="Business"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Business' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Advertising" />
                   <CheckboxOne text="Agriculture" />
@@ -370,15 +369,15 @@ const Strategy = () => {
                   <CheckboxOne text="Marketing" />
                   <CheckboxOne text="Metals" />
                 </div>
-              )}
-              <CheckboxOne
-                text="Careers"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Careers' && (
+              )} */}
+                <CheckboxOne
+                  text="Careers"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Careers' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Career Planning" />
                   <CheckboxOne text="College" />
@@ -391,15 +390,15 @@ const Strategy = () => {
                   <CheckboxOne text="Telecommuting" />
                   <CheckboxOne text="Career Advice" />
                 </div>
-              )}
-              <CheckboxOne
-                text="Education"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Education' && (
+              )} */}
+                <CheckboxOne
+                  text="Education"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Education' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="7-12 Education" />
                   <CheckboxOne text="Adult Education" />
@@ -417,15 +416,15 @@ const Strategy = () => {
                   <CheckboxOne text="Special Education" />
                   <CheckboxOne text="Studying Business" />
                 </div>
-              )}
-              <CheckboxOne
-                text="Family & Parenting"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Family & Parenting' && (
+              )} */}
+                <CheckboxOne
+                  text="Family & Parenting"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Family & Parenting' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Adoption" />
                   <CheckboxOne text="Babies & Toddlers" />
@@ -437,15 +436,15 @@ const Strategy = () => {
                   <CheckboxOne text="Special Needs Kids" />
                   <CheckboxOne text="Eldcare" />
                 </div>
-              )}
-              <CheckboxOne
-                text="Health & Fitness"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Health & Fitness' && (
+              )} */}
+                <CheckboxOne
+                  text="Health & Fitness"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Health & Fitness' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Exercise" />
                   <CheckboxOne text="ADD" />
@@ -492,16 +491,16 @@ const Strategy = () => {
                   <CheckboxOne text="Weight Loss" />
                   <CheckboxOne text="Women's Health" />
                 </div>
-              )}
+              )} */}
 
-              <CheckboxOne
-                text="Hobbies & Interests"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Hobbies & Interests' && (
+                <CheckboxOne
+                  text="Hobbies & Interests"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Hobbies & Interests' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Art/Technology" />
                   <CheckboxOne text="Arts & Crafts" />
@@ -536,15 +535,15 @@ const Strategy = () => {
                   <CheckboxOne text="Video & Computer Games" />
                   <CheckboxOne text="Woodworking" />
                 </div>
-              )}
-              <CheckboxOne
-                text="Home & Garden"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Home & Garden' && (
+              )} */}
+                <CheckboxOne
+                  text="Home & Garden"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Home & Garden' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Appliances" />
                   <CheckboxOne text="Entertaining" />
@@ -556,15 +555,15 @@ const Strategy = () => {
                   <CheckboxOne text="Landscaping" />
                   <CheckboxOne text="Remodeling & Construction" />
                 </div>
-              )}
-              <CheckboxOne
-                text="Law, Government, & Politics"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Law, Government, & Politics' && (
+              )} */}
+                <CheckboxOne
+                  text="Law, Government, & Politics"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Law, Government, & Politics' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Immigration" />
                   <CheckboxOne text="Legal Issues" />
@@ -572,29 +571,29 @@ const Strategy = () => {
                   <CheckboxOne text="Politics" />
                   <CheckboxOne text="Commentary" />
                 </div>
-              )}
-              <CheckboxOne
-                text="News"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'News' && (
+              )} */}
+                <CheckboxOne
+                  text="News"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'News' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="International News" />
                   <CheckboxOne text="National News" />
                   <CheckboxOne text="Local News" />=
                 </div>
-              )}
-              <CheckboxOne
-                text="Personal Finance"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Personal Finance' && (
+              )} */}
+                <CheckboxOne
+                  text="Personal Finance"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Personal Finance' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Beginning Investing" />
                   <CheckboxOne text="Credit/Debt & Loans" />
@@ -609,15 +608,15 @@ const Strategy = () => {
                   <CheckboxOne text="Stocks" />
                   <CheckboxOne text="Tax Planning" />
                 </div>
-              )}
-              <CheckboxOne
-                text="Society"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Society' && (
+              )} */}
+                <CheckboxOne
+                  text="Society"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Society' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Dating" />
                   <CheckboxOne text="Divorce Support" />
@@ -628,15 +627,15 @@ const Strategy = () => {
                   <CheckboxOne text="Weddings" />
                   <CheckboxOne text="Ethnic Specific" />
                 </div>
-              )}
-              <CheckboxOne
-                text="Science"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Science' && (
+              )} */}
+                <CheckboxOne
+                  text="Science"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Science' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Astrology" />
                   <CheckboxOne text="Biology" />
@@ -649,15 +648,15 @@ const Strategy = () => {
                   <CheckboxOne text="Botany" />
                   <CheckboxOne text="Weather" />
                 </div>
-              )}
-              <CheckboxOne
-                text="Pets"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Pets' && (
+              )} */}
+                <CheckboxOne
+                  text="Pets"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Pets' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Aquariums" />
                   <CheckboxOne text="Birds" />
@@ -667,15 +666,15 @@ const Strategy = () => {
                   <CheckboxOne text="Reptiles" />
                   <CheckboxOne text="Veterinary Medicine" />
                 </div>
-              )}
-              <CheckboxOne
-                text="Sports"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Sports' && (
+              )} */}
+                <CheckboxOne
+                  text="Sports"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Sports' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Auto Racing" />
                   <CheckboxOne text="Baseball" />
@@ -721,15 +720,15 @@ const Strategy = () => {
                   <CheckboxOne text="Waterski/Wakeboard" />
                   <CheckboxOne text="World Soccer" />
                 </div>
-              )}
-              <CheckboxOne
-                text="Style & Fashion"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Style & Fashion' && (
+              )} */}
+                <CheckboxOne
+                  text="Style & Fashion"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Style & Fashion' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Beauty" />
                   <CheckboxOne text="Body Art" />
@@ -738,15 +737,15 @@ const Strategy = () => {
                   <CheckboxOne text="Clothing" />
                   <CheckboxOne text="Accessories" />
                 </div>
-              )}
-              <CheckboxOne
-                text="Technology & Computing"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Technology & Computing' && (
+              )} */}
+                <CheckboxOne
+                  text="Technology & Computing"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Technology & Computing' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="3-D Graphics" />
                   <CheckboxOne text="Animation" />
@@ -784,15 +783,15 @@ const Strategy = () => {
                   <CheckboxOne text="Web Search" />
                   <CheckboxOne text="Windows" />
                 </div>
-              )}
-              <CheckboxOne
-                text="Travel"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Travel' && (
+              )} */}
+                <CheckboxOne
+                  text="Travel"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Travel' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Adventure Trave" />
                   <CheckboxOne text="Africa" />
@@ -822,44 +821,44 @@ const Strategy = () => {
                   <CheckboxOne text="Traveling with Kids" />
                   <CheckboxOne text="United Kingdom" />
                 </div>
-              )}
-              <CheckboxOne
-                text="Real Estate"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Real Estate' && (
+              )} */}
+                <CheckboxOne
+                  text="Real Estate"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Real Estate' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Apartments" />
                   <CheckboxOne text="Architects" />
                   <CheckboxOne text="Buying/Selling Homes" />
                 </div>
-              )}
-              <CheckboxOne
-                text="Shopping"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Shopping' && (
+              )} */}
+                <CheckboxOne
+                  text="Shopping"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Shopping' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Contests & Freebies" />
                   <CheckboxOne text="Couponing" />
                   <CheckboxOne text="Comparison" />
                   <CheckboxOne text="Engines" />
                 </div>
-              )}
-              <CheckboxOne
-                text="Religion & Spirituality"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Religion & Spirituality' && (
+              )} */}
+                <CheckboxOne
+                  text="Religion & Spirituality"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Religion & Spirituality' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Alternative Religions" />
                   <CheckboxOne text="Atheism/Agnosticism" />
@@ -872,22 +871,22 @@ const Strategy = () => {
                   <CheckboxOne text="Latter-Day Saints" />
                   <CheckboxOne text="Pagan/Wiccan" />
                 </div>
-              )}
-              <CheckboxOne
-                text="Uncategorized"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              <CheckboxOne
-                text="Non-Standard Conten"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Non-Standard Content' && (
+              )} */}
+                <CheckboxOne
+                  text="Uncategorized"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                <CheckboxOne
+                  text="Non-Standard Conten"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Non-Standard Content' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Unmoderated UGC" />
                   <CheckboxOne text="Extreme Graphic/Explicit Violence" />
@@ -897,22 +896,22 @@ const Strategy = () => {
                   <CheckboxOne text="Under Construction" />
                   <CheckboxOne text="Incentivized" />
                 </div>
-              )}
-              <CheckboxOne
-                text="Illegal Content"
-                className="font-bold"
-                onChange={(text, isChecked) =>
-                  handleCheckboxChange(text, isChecked)
-                }
-              />
-              {selectedCheckbox === 'Illegal Content' && (
+              )} */}
+                <CheckboxOne
+                  text="Illegal Content"
+                  className="font-bold"
+                  onChange={(text, isChecked) =>
+                    handleCheckboxChange(text, isChecked)
+                  }
+                />
+                {/* {selectedCheckbox === 'Illegal Content' && (
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="Illegal Content" />
                   <CheckboxOne text="Warez" />
                   <CheckboxOne text="Spyware/Malware" />
                   <CheckboxOne text="Copyright Infringemen" />
                 </div>
-              )}
+              )} */}
               </div>
               <div className="border-t border-stroke py-4 px-6.5 dark:border-strokedark">
                 <div className="flex items-center gap-2 justify-between font-medium text-black dark:text-white">
@@ -945,7 +944,7 @@ const Strategy = () => {
           </div>
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="flex gap-2 item-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <MdOutlineScreenshotMonitor className='text-[20px]' />
+              <MdOutlineScreenshotMonitor className="text-[20px]" />
               <h3 className="font-medium text-black dark:text-white">
                 Screens
               </h3>
@@ -1098,7 +1097,6 @@ const Strategy = () => {
             </div>
             <Button className="w-30 text-white ml-5 mb-2">Go to Summary</Button>
           </div>
-          
         </div>
       </div>
     </>

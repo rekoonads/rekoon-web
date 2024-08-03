@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { ChevronUpIcon, FolderIcon, Search } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -59,30 +59,41 @@ const channelsData: Channel[] = [
 ];
 
 export default function Channels() {
-  // State with type annotation for selectedChannels
-  const [selectedChannels, setSelectedChannels] = useState<number[]>([]);
+  const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
   const [selectAll, setSelectAll] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
-  // Function to handle checkbox changes
-  const handleCheckboxChange = (id: number) => {
+  const handleCheckboxChange = (name: string) => {
     setSelectedChannels((prevSelectedChannels) => {
-      if (prevSelectedChannels.includes(id)) {
-        return prevSelectedChannels.filter((channelId) => channelId !== id);
+      if (prevSelectedChannels.includes(name)) {
+        return prevSelectedChannels.filter((channelname) => channelname !== name);
       } else {
-        return [...prevSelectedChannels, id];
+        return [...prevSelectedChannels, name];
       }
     });
   };
 
-  // Function to handle select/deselect all channels
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedChannels([]);
     } else {
-      setSelectedChannels(channelsData.map((channel) => channel.id));
+      setSelectedChannels(channelsData.map((channel) => channel.name));
     }
     setSelectAll(!selectAll);
   };
+
+  const filteredChannels = channelsData.filter(channel =>
+    channel.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const sortedChannels = [...filteredChannels, ...channelsData.filter(channel => !filteredChannels.includes(channel))];
+
+  // Debugging logs
+  console.log('Selected Channels:', selectedChannels);
+  console.log('Select All:', selectAll);
+  console.log('Search Term:', searchTerm);
+  console.log('Filtered Channels:', filteredChannels);
+  console.log('Sorted Channels:', sortedChannels);
 
   return (
     <div className="p-4">
@@ -94,20 +105,14 @@ export default function Channels() {
         </div>
       </div>
       <div className="flex items-center py-4 space-x-4">
-        <Button variant="outline" className="flex-1">
-          Apps & Channels
-        </Button>
-        <Button variant="outline" className="flex-1">
-          Live Sports
-        </Button>
-      </div>
-      <div className="flex items-center py-4 space-x-4">
         <div className="relative flex-1">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             type="search"
             placeholder="Search for channels"
             className="pl-8"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
       </div>
@@ -134,7 +139,7 @@ export default function Channels() {
             </div>
           </div>
           <div className="p-4">
-            {channelsData.map((channel) => (
+            {sortedChannels.map((channel) => (
               <div
                 key={channel.id}
                 className="flex items-center justify-between py-2"
@@ -142,8 +147,8 @@ export default function Channels() {
                 <div className="flex items-center space-x-2">
                   <input
                     type="checkbox"
-                    checked={selectedChannels.includes(channel.id)}
-                    onChange={() => handleCheckboxChange(channel.id)}
+                    checked={selectedChannels.includes(channel.name)}
+                    onChange={() => handleCheckboxChange(channel.name)}
                     className="form-checkbox h-5 w-5 text-blue-600 mr-2"
                   />
                   <img
