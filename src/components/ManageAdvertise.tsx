@@ -52,6 +52,7 @@ export default function ManageAdvertise() {
            accept: 'application/json',
            'content-type': 'application/json',
            'x-client-id': 'CF567621CQM8L4MGPP5C73DT8AOG',
+           'x-client-secret': 'client secret',
            'X-CF-Signature': encryptedData
          },
          data: {GSTIN: gstNumber, businessName: 'Cashfree'}
