@@ -1,3 +1,5 @@
+// DateSection.tsx
+
 import React, { useState } from 'react';
 import {
   ChevronUpIcon,
@@ -7,7 +9,8 @@ import {
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Checkbox } from '../components/ui/checkbox';
-import SelectGroupOne from './Forms/SelectGroup/SelectGroupOne';
+import DateSelectionComp from './DateSelectionComp';
+import DateBox from './DateBox';
 
 const defaultTimes = [
   { value: '12:00pm', label: '12:00pm' },
@@ -157,7 +160,7 @@ export default function DateSection() {
             className="flex items-center justify-between p-2 border rounded-md"
           >
             <div className="flex items-center">
-              <Checkbox
+              <DateBox
                 id={day.toLowerCase()}
                 checked={daySettings[day].selected}
                 onChange={e =>
@@ -172,17 +175,15 @@ export default function DateSection() {
               </label>
             </div>
             <div className="flex items-center gap-2">
-              <SelectGroupOne
+              <DateSelectionComp
                 options={startTimeOptions}
                 value={daySettings[day].startTime}
-                onChange={value =>
-                  handleDayChange(day, { startTime: value })
-                }
+                onChange={(value: string) => handleDayChange(day, { startTime: value })}
               />
-              <SelectGroupOne
+              <DateSelectionComp
                 options={endTimeOptions}
                 value={daySettings[day].endTime}
-                onChange={value => handleDayChange(day, { endTime: value })}
+                onChange={(value: string) => handleDayChange(day, { endTime: value })}
               />
             </div>
           </div>

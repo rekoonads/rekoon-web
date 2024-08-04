@@ -1039,9 +1039,10 @@ const Strategy = () => {
             {/* <Channels /> */}
             <Channels onSelectedChannelsChange={handleSelectedChannelsChange} />
           </div>
-          {/* <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            {/* <DateSection /> 
-          </div> */}
+           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+             <DateSection /> 
+
+          </div> 
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="p-4 space-y-4">
               <div className="flex items-center space-x-2">
