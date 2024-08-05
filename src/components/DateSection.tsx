@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ChevronUpIcon,
   ClockIcon,
@@ -67,82 +67,152 @@ const defaultDaySettings: DaySettings = {
   selected: true,
 };
 
-export default function DateSection() {
-  const [daySettings, setDaySettings] = useState<DaySettingsState>(
-    daysOfWeek.reduce((acc, day) => {
-      acc[day] = { ...defaultDaySettings };
-      return acc;
-    }, {} as DaySettingsState)
-  );
+const resetAllDays = (): DaySettingsState => {
+  return daysOfWeek.reduce((acc, day) => {
+    acc[day] = { startTime: '12:00am', endTime: '12:00am', selected: false };
+    return acc;
+  }, {} as DaySettingsState);
+};
 
-  const resetAllDays = () => {
-    return daysOfWeek.reduce((acc, day) => {
-      acc[day] = { startTime: '12:00am', endTime: '12:00am', selected: false };
-      return acc;
-    }, {} as DaySettingsState);
-  };
+interface DateSectionProps {
+  daySettings: DaySettingsState;
+  onDaySettingsChange: (newDaySettings: DaySettingsState) => void;
+}
+
+export default function DateSection({
+  daySettings: initialDaySettings,
+  onDaySettingsChange,
+}: DateSectionProps) {
+  const [daySettings, setDaySettings] =
+    useState<DaySettingsState>(initialDaySettings);
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+
+  useEffect(() => {
+    setDaySettings(initialDaySettings);
+  }, [initialDaySettings]);
+
+  useEffect(() => {
+    onDaySettingsChange(daySettings);
+  }, [daySettings, onDaySettingsChange]);
 
   const handleReset = () => {
-    setDaySettings(resetAllDays());
+    const resetSettings = resetAllDays();
+    setDaySettings(resetSettings);
+    setSelectedSlot(null);
+    onDaySettingsChange(resetSettings);
   };
 
   const handleSelectAnyTimeAnyDay = () => {
     const newDaySettings = resetAllDays();
-    daysOfWeek.forEach(day => {
-      newDaySettings[day] = { startTime: '12:00am', endTime: '11:59pm', selected: true };
+    daysOfWeek.forEach((day) => {
+      newDaySettings[day] = {
+        startTime: '12:00am',
+        endTime: '11:59pm',
+        selected: true,
+      };
     });
     setDaySettings(newDaySettings);
+    setSelectedSlot('Any time, Any day');
   };
 
   const handleSelectPrimetime = () => {
     const newDaySettings = resetAllDays();
-    daysOfWeek.forEach(day => {
-      newDaySettings[day] = { startTime: '8:00pm', endTime: '11:00pm', selected: true };
+    daysOfWeek.forEach((day) => {
+      newDaySettings[day] = {
+        startTime: '8:00pm',
+        endTime: '11:00pm',
+        selected: true,
+      };
     });
     setDaySettings(newDaySettings);
+    setSelectedSlot('Primetime');
   };
 
   const handleSelectAfterWork = () => {
     const newDaySettings = resetAllDays();
-    ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].forEach(day => {
-      newDaySettings[day] = { startTime: '6:00pm', endTime: '10:00pm', selected: true };
+    (
+      ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as Array<
+        keyof DaySettingsState
+      >
+    ).forEach((day) => {
+      newDaySettings[day] = {
+        startTime: '6:00pm',
+        endTime: '10:00pm',
+        selected: true,
+      };
     });
     setDaySettings(newDaySettings);
+    setSelectedSlot('After work');
   };
 
   const handleSelectWorkHours = () => {
     const newDaySettings = resetAllDays();
-    ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].forEach(day => {
-      newDaySettings[day] = { startTime: '9:00am', endTime: '6:00pm', selected: true };
+    (
+      ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as Array<
+        keyof DaySettingsState
+      >
+    ).forEach((day) => {
+      newDaySettings[day] = {
+        startTime: '9:00am',
+        endTime: '6:00pm',
+        selected: true,
+      };
     });
     setDaySettings(newDaySettings);
+    setSelectedSlot('Work hours');
   };
 
   const handleSelectSleepingTime = () => {
     const newDaySettings = resetAllDays();
-    daysOfWeek.forEach(day => {
-      newDaySettings[day] = { startTime: '10:00pm', endTime: '11:59pm', selected: true };
+    daysOfWeek.forEach((day) => {
+      newDaySettings[day] = {
+        startTime: '10:00pm',
+        endTime: '11:59pm',
+        selected: true,
+      };
     });
     setDaySettings(newDaySettings);
+    setSelectedSlot('Sleeping time');
   };
 
   const handleSelectWeekend = () => {
     const newDaySettings = resetAllDays();
-    newDaySettings['Saturday'] = { startTime: '12:00am', endTime: '11:59pm', selected: true };
-    newDaySettings['Sunday'] = { startTime: '12:00am', endTime: '11:59pm', selected: true };
+    newDaySettings['Saturday'] = {
+      startTime: '12:00am',
+      endTime: '11:59pm',
+      selected: true,
+    };
+    newDaySettings['Sunday'] = {
+      startTime: '12:00am',
+      endTime: '11:59pm',
+      selected: true,
+    };
     setDaySettings(newDaySettings);
+    setSelectedSlot('Weekend');
   };
 
   const handleSelectWorkDays = () => {
     const newDaySettings = resetAllDays();
-    daysOfWeek.forEach(day => {
-      newDaySettings[day] = { startTime: '12:00am', endTime: '11:59pm', selected: true };
+    daysOfWeek.forEach((day) => {
+      newDaySettings[day] = {
+        startTime: '12:00am',
+        endTime: '11:59pm',
+        selected: true,
+      };
     });
     setDaySettings(newDaySettings);
+    setSelectedSlot('Work days');
   };
 
-  const handleDayChange = (day: (typeof daysOfWeek)[number], changes: Partial<DaySettings>) => {
-    setDaySettings(prevState => ({
+  const handleSelectCustomTime = () => {
+    setSelectedSlot('Custom time');
+  };
+
+  const handleDayChange = (
+    day: (typeof daysOfWeek)[number],
+    changes: Partial<DaySettings>,
+  ) => {
+    setDaySettings((prevState) => ({
       ...prevState,
       [day]: {
         ...prevState[day],
@@ -152,116 +222,163 @@ export default function DateSection() {
   };
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-md">
-      <div className="flex items-center justify-between pb-4 border-b">
-        <div className="flex items-center">
-          <ClockIcon className="w-6 h-6 text-primary" />
-          <h2 className="ml-2 text-lg font-semibold text-primary">
-            Delivery Time Slots
-          </h2>
-          <span className="ml-2 text-sm text-muted-foreground">
-            Any Time, Any Day
-          </span>
+    <div className="p-6 bg-white rounded-lg shadow-md">
+      <div className="flex flex-col items-center mb-4 gap-2">
+        <div className="flex items-center relative left-1">
+          {' '}
+          <ClockIcon className="w-8 h-w-8 mr-2 text-blue-700" />
+          <h3 className="text-lg font-medium text-blue-700">Date and Time</h3>
         </div>
-        <ChevronUpIcon className="w-6 h-6 text-muted-foreground" />
-      </div>
-      <div className="p-4 bg-blue-50 rounded-md">
-        <p className="text-sm text-blue-700">
-          <InfoIcon className="inline-block w-4 h-4 mr-2 text-blue-700" />
+         
+
+        <p className="ml-4 text-sm text-blue-700 flex items-center">
+          <InfoIcon className="w-4 h-4 mr-1" />
           Ads will be delivered in the respective timezone of the locations you
           targeted.
         </p>
       </div>
-      <div className="flex flex-wrap gap-2 my-4">
+      <div className="flex flex-wrap gap-2 mb-6">
         <Button
           variant="outline"
-          className="px-4 py-1"
+          className={`px-4 py-2 border rounded-lg ${
+            selectedSlot === 'Any time, Any day'
+              ? 'bg-blue-700 text-white'
+              : 'bg-gray-200 text-gray-700'
+          }`}
           onClick={handleSelectAnyTimeAnyDay}
         >
           Any time, Any day
         </Button>
         <Button
           variant="outline"
-          className="px-4 py-1"
+          className={`px-4 py-2 border rounded-lg ${
+            selectedSlot === 'Primetime'
+              ? 'bg-blue-700 text-white'
+              : 'bg-gray-200 text-gray-700'
+          }`}
           onClick={handleSelectPrimetime}
         >
           Primetime
         </Button>
         <Button
           variant="outline"
-          className="px-4 py-1"
+          className={`px-4 py-2 border rounded-lg ${
+            selectedSlot === 'After work'
+              ? 'bg-blue-700 text-white'
+              : 'bg-gray-200 text-gray-700'
+          }`}
           onClick={handleSelectAfterWork}
         >
           After work
         </Button>
         <Button
           variant="outline"
-          className="px-4 py-1"
+          className={`px-4 py-2 border rounded-lg ${
+            selectedSlot === 'Work hours'
+              ? 'bg-blue-700 text-white'
+              : 'bg-gray-200 text-gray-700'
+          }`}
           onClick={handleSelectWorkHours}
         >
           Work hours
         </Button>
         <Button
           variant="outline"
-          className="px-4 py-1"
+          className={`px-4 py-2 border rounded-lg ${
+            selectedSlot === 'Sleeping time'
+              ? 'bg-blue-700 text-white'
+              : 'bg-gray-200 text-gray-700'
+          }`}
           onClick={handleSelectSleepingTime}
         >
           Sleeping time
         </Button>
         <Button
           variant="outline"
-          className="px-4 py-1"
+          className={`px-4 py-2 border rounded-lg ${
+            selectedSlot === 'Weekend'
+              ? 'bg-blue-700 text-white'
+              : 'bg-gray-200 text-gray-700'
+          }`}
           onClick={handleSelectWeekend}
         >
           Weekend
         </Button>
         <Button
           variant="outline"
-          className="px-4 py-1"
+          className={`px-4 py-2 border rounded-lg ${
+            selectedSlot === 'Work days'
+              ? 'bg-blue-700 text-white'
+              : 'bg-gray-200 text-gray-700'
+          }`}
           onClick={handleSelectWorkDays}
         >
           Work days
         </Button>
+        <Button
+          variant="outline"
+          className={`px-4 py-2 border rounded-lg ${
+            selectedSlot === 'Custom time'
+              ? 'bg-blue-700 text-white'
+              : 'bg-gray-200 text-gray-700'
+          }`}
+          onClick={handleSelectCustomTime}
+        >
+          Custom time
+        </Button>
       </div>
       <div className="space-y-4">
-        {daysOfWeek.map(day => (
+        {daysOfWeek.map((day) => (
           <div
             key={day}
-            className="flex items-center justify-between p-2 border rounded-md"
+            className={`flex items-center justify-between p-3 border rounded-lg ${
+              selectedSlot !== 'Custom time' ? 'bg-gray-100' : 'bg-white'
+            }`}
           >
             <div className="flex items-center">
               <DateBox
                 id={day.toLowerCase()}
-                checked={daySettings[day].selected}
-                onChange={e =>
+                checked={daySettings[day]?.selected}
+                onChange={(e) =>
                   handleDayChange(day, { selected: e.target.checked })
                 }
+                disabled={selectedSlot !== 'Custom time'}
               />
               <label
                 htmlFor={day.toLowerCase()}
-                className="ml-2 text-sm font-medium"
+                className={`ml-2 text-sm font-medium ${
+                  selectedSlot !== 'Custom time'
+                    ? 'text-gray-500'
+                    : 'text-gray-700'
+                }`}
               >
                 {day}
               </label>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4">
               <DateSelectionComp
                 options={startTimeOptions}
-                value={daySettings[day].startTime}
-                onChange={(value: string) => handleDayChange(day, { startTime: value })}
+                value={daySettings[day]?.startTime}
+                onChange={(value: string) =>
+                  handleDayChange(day, { startTime: value })
+                }
+                disabled={selectedSlot !== 'Custom time'}
               />
               <DateSelectionComp
                 options={endTimeOptions}
-                value={daySettings[day].endTime}
-                onChange={(value: string) => handleDayChange(day, { endTime: value })}
+                value={daySettings[day]?.endTime}
+                onChange={(value: string) =>
+                  handleDayChange(day, { endTime: value })
+                }
+                disabled={selectedSlot !== 'Custom time'}
               />
             </div>
           </div>
         ))}
       </div>
       <div className="flex justify-end pt-4">
-        <Button variant="link" className="text-primary" onClick={handleReset}>
-          <RotateCcwIcon className="w-4 h-4 mr-2" />
+        <Button variant="link" className="text-blue-700" onClick={handleReset}>
+          <RotateCcwIcon className="w-5 h-5 mr-2" />
           Reset
         </Button>
       </div>

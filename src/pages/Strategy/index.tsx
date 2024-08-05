@@ -45,6 +45,16 @@ const goals: Goal[] = [
   },
 ];
 
+const defaultDaySettings = {
+  Sunday: { startTime: '12:00am', endTime: '11:59pm', selected: false },
+  Monday: { startTime: '12:00am', endTime: '11:59pm', selected: false },
+  Tuesday: { startTime: '12:00am', endTime: '11:59pm', selected: false },
+  Wednesday: { startTime: '12:00am', endTime: '11:59pm', selected: false },
+  Thursday: { startTime: '12:00am', endTime: '11:59pm', selected: false },
+  Friday: { startTime: '12:00am', endTime: '11:59pm', selected: false },
+  Saturday: { startTime: '12:00am', endTime: '11:59pm', selected: false },
+};
+
 const Strategy = () => {
   const [selectedTab, setSelectedTab] = useState('18-20');
   const [selectedGender, setSelectedGender] = useState('Women');
@@ -124,6 +134,12 @@ const Strategy = () => {
     setSelectedChannels(channels);
     console.log('Selected channels in parent:', channels);
   };
+
+  const [daySettings, setDaySettings] = useState(defaultDaySettings);
+
+  const handleDaySettingsChange = (newDaySettings) => {
+    setDaySettings(newDaySettings);
+  };
   console.log({
     ageRange: selectedTab,
     gender: selectedGender,
@@ -134,7 +150,8 @@ const Strategy = () => {
     strategyDailyBudget,
     selectedGoal,
     selectedOption,
-    selectedChannels
+    selectedChannels,
+    daySettings
   });
   const { user } = useUser();
   //Handling Submission of data dont taper with this
@@ -1040,7 +1057,7 @@ const Strategy = () => {
             <Channels onSelectedChannelsChange={handleSelectedChannelsChange} />
           </div>
            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-             <DateSection /> 
+           <DateSection daySettings={daySettings} onDaySettingsChange={handleDaySettingsChange} />
 
           </div> 
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">

@@ -11,11 +11,12 @@ interface DateSelectionCompProps {
   options: Option[];
   value: string;
   onChange: (value: string) => void;
+  disabled?: boolean;
 }
 
-const DateSelectionComp: React.FC<DateSelectionCompProps> = ({ options, value, onChange }) => {
+const DateSelectionComp: React.FC<DateSelectionCompProps> = ({ options, value, onChange, disabled = false }) => {
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value)}>
+    <select value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled}>
       {options.map(option => (
         <option key={option.value} value={option.value}>
           {option.label}
