@@ -1,5 +1,3 @@
-// DateSection.tsx
-
 import React, { useState } from 'react';
 import {
   ChevronUpIcon,
@@ -8,7 +6,6 @@ import {
   RotateCcwIcon,
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import { Checkbox } from '../components/ui/checkbox';
 import DateSelectionComp from './DateSelectionComp';
 import DateBox from './DateBox';
 
@@ -78,10 +75,68 @@ export default function DateSection() {
     }, {} as DaySettingsState)
   );
 
+  const resetAllDays = () => {
+    return daysOfWeek.reduce((acc, day) => {
+      acc[day] = { startTime: '12:00am', endTime: '12:00am', selected: false };
+      return acc;
+    }, {} as DaySettingsState);
+  };
+
+  const handleReset = () => {
+    setDaySettings(resetAllDays());
+  };
+
   const handleSelectAnyTimeAnyDay = () => {
-    const newDaySettings = { ...daySettings };
+    const newDaySettings = resetAllDays();
     daysOfWeek.forEach(day => {
-      newDaySettings[day] = { ...defaultDaySettings, selected: true };
+      newDaySettings[day] = { startTime: '12:00am', endTime: '11:59pm', selected: true };
+    });
+    setDaySettings(newDaySettings);
+  };
+
+  const handleSelectPrimetime = () => {
+    const newDaySettings = resetAllDays();
+    daysOfWeek.forEach(day => {
+      newDaySettings[day] = { startTime: '8:00pm', endTime: '11:00pm', selected: true };
+    });
+    setDaySettings(newDaySettings);
+  };
+
+  const handleSelectAfterWork = () => {
+    const newDaySettings = resetAllDays();
+    ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].forEach(day => {
+      newDaySettings[day] = { startTime: '6:00pm', endTime: '10:00pm', selected: true };
+    });
+    setDaySettings(newDaySettings);
+  };
+
+  const handleSelectWorkHours = () => {
+    const newDaySettings = resetAllDays();
+    ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].forEach(day => {
+      newDaySettings[day] = { startTime: '9:00am', endTime: '6:00pm', selected: true };
+    });
+    setDaySettings(newDaySettings);
+  };
+
+  const handleSelectSleepingTime = () => {
+    const newDaySettings = resetAllDays();
+    daysOfWeek.forEach(day => {
+      newDaySettings[day] = { startTime: '10:00pm', endTime: '11:59pm', selected: true };
+    });
+    setDaySettings(newDaySettings);
+  };
+
+  const handleSelectWeekend = () => {
+    const newDaySettings = resetAllDays();
+    newDaySettings['Saturday'] = { startTime: '12:00am', endTime: '11:59pm', selected: true };
+    newDaySettings['Sunday'] = { startTime: '12:00am', endTime: '11:59pm', selected: true };
+    setDaySettings(newDaySettings);
+  };
+
+  const handleSelectWorkDays = () => {
+    const newDaySettings = resetAllDays();
+    daysOfWeek.forEach(day => {
+      newDaySettings[day] = { startTime: '12:00am', endTime: '11:59pm', selected: true };
     });
     setDaySettings(newDaySettings);
   };
@@ -94,15 +149,6 @@ export default function DateSection() {
         ...changes,
       },
     }));
-  };
-
-  const handleReset = () => {
-    setDaySettings(
-      daysOfWeek.reduce((acc, day) => {
-        acc[day] = { ...defaultDaySettings };
-        return acc;
-      }, {} as DaySettingsState)
-    );
   };
 
   return (
@@ -134,22 +180,46 @@ export default function DateSection() {
         >
           Any time, Any day
         </Button>
-        <Button variant="outline" className="px-4 py-1">
+        <Button
+          variant="outline"
+          className="px-4 py-1"
+          onClick={handleSelectPrimetime}
+        >
           Primetime
         </Button>
-        <Button variant="outline" className="px-4 py-1">
+        <Button
+          variant="outline"
+          className="px-4 py-1"
+          onClick={handleSelectAfterWork}
+        >
           After work
         </Button>
-        <Button variant="outline" className="px-4 py-1">
+        <Button
+          variant="outline"
+          className="px-4 py-1"
+          onClick={handleSelectWorkHours}
+        >
           Work hours
         </Button>
-        <Button variant="outline" className="px-4 py-1">
+        <Button
+          variant="outline"
+          className="px-4 py-1"
+          onClick={handleSelectSleepingTime}
+        >
           Sleeping time
         </Button>
-        <Button variant="outline" className="px-4 py-1">
+        <Button
+          variant="outline"
+          className="px-4 py-1"
+          onClick={handleSelectWeekend}
+        >
           Weekend
         </Button>
-        <Button variant="outline" className="px-4 py-1">
+        <Button
+          variant="outline"
+          className="px-4 py-1"
+          onClick={handleSelectWorkDays}
+        >
           Work days
         </Button>
       </div>
