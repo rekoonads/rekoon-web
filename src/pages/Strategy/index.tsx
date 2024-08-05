@@ -22,6 +22,7 @@ import { FaGenderless } from 'react-icons/fa';
 import { FaPeopleArrows } from 'react-icons/fa';
 import { MdOutlineScreenshotMonitor } from 'react-icons/md';
 import { useUser } from '@clerk/clerk-react';
+import axios from 'axios';
 
 interface Goal {
   id: string;
@@ -117,11 +118,27 @@ const Strategy = () => {
   console.log(selectedOption);
   const [fileName, setFileName] = useState<string | null>(null);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const fileInput = event.target;
     if (fileInput.files && fileInput.files.length > 0) {
       const file = fileInput.files[0];
+
+      const formData = new FormData();
+      formData.append('video', file);
+      const response = await axios.post(
+        'http://localhost:3001/upload_video',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+
       setFileName(file.name);
+      console.log(response);
     } else {
       setFileName(null);
     }
@@ -154,6 +171,7 @@ const Strategy = () => {
   // });
 
   //Handling Submission of data dont taper with this
+
   const handleSubmit = async () => {
     try {
       const response = await fetch(`/api/strategy`, {
