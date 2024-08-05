@@ -65,7 +65,7 @@ const Strategy = () => {
   const [audienceArr, setAudienceArr] = useState<string[]>([]);
   const [strategyName, setStrategyName] = useState<string>('');
   const [strategyDailyBudget, setStrategyDailyBudget] = useState<string>('');
-
+  const { user } = useUser();
   //for Debugging
 
   const handleReset = () => {
@@ -83,8 +83,6 @@ const Strategy = () => {
       setAudienceArr((prevState) => prevState.filter((item) => item !== text));
     }
   };
-
-  
 
   useEffect(() => {
     const handleScroll = () => {
@@ -140,29 +138,43 @@ const Strategy = () => {
   const handleDaySettingsChange = (newDaySettings) => {
     setDaySettings(newDaySettings);
   };
-  console.log({
-    ageRange: selectedTab,
-    gender: selectedGender,
-    screens:selectedDevice,
-    selectedCheckbox,
-    audienceArr,
-    strategyName,
-    strategyDailyBudget,
-    selectedGoal,
-    selectedOption,
-    selectedChannels,
-    daySettings
-  });
-  const { user } = useUser();
+  // console.log({
+  //   userId: user?.id,
+  //   ageRange: selectedTab,
+  //   gender: selectedGender,
+  //   screens: selectedDevice,
+  //   audiences: audienceArr,
+  //   strategyName: strategyName,
+  //   strategyDailyBudget: strategyDailyBudget,
+  //   selectedGoal: selectedGoal,
+  //   selectedOption: selectedOption,
+  //   selectedChannels: selectedChannels,
+  //   deliveryTimeSlots: daySettings,
+  //   creatives: fileName,
+  // });
+
   //Handling Submission of data dont taper with this
   const handleSubmit = async () => {
     try {
-      const response = await fetch(`/api/strategy/${user?.id}`, {
-        method: 'PATCH',
+      const response = await fetch(`/api/strategy`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({}),
+        body: JSON.stringify({
+          userId: user?.id,
+          ageRange: selectedTab,
+          gender: selectedGender,
+          screens: selectedDevice,
+          audiences: audienceArr,
+          strategyName: strategyName,
+          strategyDailyBudget: strategyDailyBudget,
+          selectedGoal: selectedGoal,
+          selectedOption: selectedOption,
+          selectedChannels: selectedChannels,
+          deliveryTimeSlots: daySettings,
+          creatives: fileName,
+        }),
       });
 
       if (!response.ok) {
@@ -1056,10 +1068,12 @@ const Strategy = () => {
             {/* <Channels /> */}
             <Channels onSelectedChannelsChange={handleSelectedChannelsChange} />
           </div>
-           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-           <DateSection daySettings={daySettings} onDaySettingsChange={handleDaySettingsChange} />
-
-          </div> 
+          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+            <DateSection
+              daySettings={daySettings}
+              onDaySettingsChange={handleDaySettingsChange}
+            />
+          </div>
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="p-4 space-y-4">
               <div className="flex items-center space-x-2">
