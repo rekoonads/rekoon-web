@@ -60,7 +60,7 @@ export default function SummaryComponent() {
   // handlePaymentVerify Function
   const handlePaymentVerify = async (data: PaymentData) => {
     const options = {
-      key: 'rzp_live_Av2lUuqQk77kId',
+      key: 'rzp_test_SZrvteybFNdghB',
       amount: data.amount,
       currency: data.currency,
       name: 'Rekoon Ads',

@@ -21,7 +21,7 @@ import { LuHeartHandshake } from 'react-icons/lu';
 import { FaGenderless } from 'react-icons/fa';
 import { FaPeopleArrows } from 'react-icons/fa';
 import { MdOutlineScreenshotMonitor } from 'react-icons/md';
-import { useAuth, useUser } from '@clerk/clerk-react';
+import { useUser } from '@clerk/clerk-react';
 
 interface Goal {
   id: string;
@@ -117,12 +117,14 @@ const Strategy = () => {
   console.log(selectedOption);
   const [fileName, setFileName] = useState<string | null>(null);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const fileInput = event.target;
     if (fileInput.files && fileInput.files.length > 0) {
       const file = fileInput.files[0];
-      //Cloudinery
       setFileName(file.name);
+      console.log(response);
     } else {
       setFileName(null);
     }
@@ -184,6 +186,7 @@ const Strategy = () => {
   }, [orgId, userId]);
 console.log(`campaign id: ${campaignId}`)
   //Handling Submission of data dont taper with this
+
   const handleSubmit = async () => {
     try {
       const response = await fetch(`/api/strategy`, {
