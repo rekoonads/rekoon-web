@@ -12,7 +12,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { MdCampaign } from 'react-icons/md';
 import { FaAdversal } from 'react-icons/fa';
 import { FaUserClock } from 'react-icons/fa';
-import { useUser } from '@clerk/clerk-react';
+import { useAuth, useUser } from '@clerk/clerk-react';
 import { Apple } from 'lucide-react';
 
 const Campaigns = () => {
@@ -28,11 +28,13 @@ const Campaigns = () => {
   const [received, setReceived] = useState(false);
   const navigate = useNavigate();
 
+  const { orgId, userId } = useAuth();
+  console.log(orgId || user?.id)
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const campaignData = {
-      userId: user?.id,
+      userId: orgId || user?.id,
       campaignId: `CAM_${user?.id}`,
       campaignName,
       campaignGoal,

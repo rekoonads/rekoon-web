@@ -21,7 +21,7 @@ import { LuHeartHandshake } from 'react-icons/lu';
 import { FaGenderless } from 'react-icons/fa';
 import { FaPeopleArrows } from 'react-icons/fa';
 import { MdOutlineScreenshotMonitor } from 'react-icons/md';
-import { useUser } from '@clerk/clerk-react';
+import { useAuth, useUser } from '@clerk/clerk-react';
 
 interface Goal {
   id: string;
@@ -121,6 +121,7 @@ const Strategy = () => {
     const fileInput = event.target;
     if (fileInput.files && fileInput.files.length > 0) {
       const file = fileInput.files[0];
+      //Cloudinery
       setFileName(file.name);
     } else {
       setFileName(null);
@@ -152,7 +153,36 @@ const Strategy = () => {
   //   deliveryTimeSlots: daySettings,
   //   creatives: fileName,
   // });
+  const { orgId, userId } = useAuth();
+  console.log(orgId, userId)
+  //Fetching The Campaign Id
+  const [campaignId, setCampaignId] = useState<string>('') 
+  useEffect(() => {
+    const fetchCampaignId = async (id: String) => {
+      try {
+        let idData = await fetch(`/api/campaigns/${id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw console.error(response);
+            }
+            return response;
+          })
+          .then((data) => {
+            return data.json();
+          }).catch(er => console.log(er))
 
+          setCampaignId(idData._id)
+      } catch (error) {
+        console.log(error)
+      };
+    };
+    fetchCampaignId(orgId || userId)
+  }, [orgId, userId]);
+console.log(`campaign id: ${campaignId}`)
   //Handling Submission of data dont taper with this
   const handleSubmit = async () => {
     try {
@@ -162,7 +192,7 @@ const Strategy = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: user?.id,
+          userId: orgId || userId,
           ageRange: selectedTab,
           gender: selectedGender,
           screens: selectedDevice,
@@ -174,6 +204,7 @@ const Strategy = () => {
           selectedChannels: selectedChannels,
           deliveryTimeSlots: daySettings,
           creatives: fileName,
+          campaignId: campaignId
         }),
       });
 
