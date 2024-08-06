@@ -31,44 +31,97 @@ const Campaigns = () => {
   const { orgId, userId } = useAuth();
   console.log(user?.id)
   
+  const isIdAdvertOrAgent = orgId || userId 
+  console.log(isIdAdvertOrAgent)
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const campaignData = {
-      userId: user?.id, 
-      campaignId: `CAM-${uuidv4()}`,
-      campaignName,
-      campaignGoal,
-      campaignAdvertiserBudget: advertiser,
-      campaignBudget,
-      campaignType,
-      startDate: startDate?.toDateString(),
-      endDate: endDate?.toDateString(),
-    };
+    // const campaignData = {
+    //   userId: user?.id, 
+    //   campaignId: `CAM-${uuidv4()}`,
+    //   campaignName,
+    //   campaignGoal,
+    //   campaignAdvertiserBudget: advertiser,
+    //   campaignBudget,
+    //   campaignType,
+    //   startDate: startDate?.toDateString(),
+    //   endDate: endDate?.toDateString(),
+    // };
 
-    try {
-      const response = await fetch('/api/campaigns', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(campaignData),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        console.log('Campaign created successfully:', data);
-        setReceived(true);
-        toast.success('Campaign submitted successfully!');
-        navigate('/strategy');
-      } else {
-        console.error('Failed to create campaign:', data);
-        toast.error('Failed to submit campaign.');
+    if(orgId){
+      try {
+        const response = await fetch('/api/campaigns', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: user?.id, 
+            campaignId: `CAM-${uuidv4()}`,
+            agencyId: orgId,
+            campaignName,
+            campaignGoal,
+            campaignAdvertiserBudget: advertiser,
+            campaignBudget,
+            campaignType,
+            startDate: startDate?.toDateString(),
+            endDate: endDate?.toDateString(),
+          }),
+        });
+  
+        const data = await response.json();
+        if (response.ok) {
+          console.log('Campaign created successfully:', data);
+          setReceived(true);
+          toast.success('Campaign submitted successfully!');
+          navigate('/strategy');
+        } else {
+          console.error('Failed to create campaign:', data);
+          toast.error('Failed to submit campaign.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        toast.error('An error occurred while submitting the campaign.');
       }
-    } catch (error) {
-      console.error('Error:', error);
-      toast.error('An error occurred while submitting the campaign.');
+    } else {
+      try {
+        const response = await fetch('/api/campaigns', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: user?.id, 
+            campaignId: `CAM-${uuidv4()}`,
+            advertiserId: uuidv4(),
+            campaignName,
+            campaignGoal,
+            campaignAdvertiserBudget: advertiser,
+            campaignBudget,
+            campaignType,
+            startDate: startDate?.toDateString(),
+            endDate: endDate?.toDateString(),
+          }),
+        });
+  
+        const data = await response.json();
+        if (response.ok) {
+          console.log('Campaign created successfully:', data);
+          setReceived(true);
+          toast.success('Campaign submitted successfully!');
+          navigate('/strategy');
+        } else {
+          console.error('Failed to create campaign:', data);
+          toast.error('Failed to submit campaign.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        toast.error('An error occurred while submitting the campaign.');
+      }
     }
+
+    
   };
 
   const handleStartDate = (event: React.ChangeEvent<HTMLInputElement>) => {

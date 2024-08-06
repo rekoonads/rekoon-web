@@ -100,8 +100,9 @@ export default function ManageAdvertise() {
       fetchData(orgId);
     }
   }, [orgId]);
-
-  useEffect(() => {
+console.log(agencyId)
+  
+useEffect(() => {
     const fetchData = async (id: string) => {
       try {
         const response = await fetch(`/api/search-user/${id}`, {
@@ -127,6 +128,11 @@ export default function ManageAdvertise() {
     }
   }, [user?.id]);
 
+
+  //for getting the advertiser 
+  console.log(isAdd?.data[0].advertiserName)
+  
+
   const openDrawer = () => {
     setIsDrawerVisible(true);
     setTimeout(() => {
@@ -146,7 +152,7 @@ export default function ManageAdvertise() {
   };
 
   const userType = isAdd?.type_of_user ?? 'Unknown';
-
+  console.log(userType)
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="flex items-center justify-between p-4 bg-white text-white">
@@ -242,7 +248,7 @@ export default function ManageAdvertise() {
                 {userType === 'Advertiser' ? (
                   <>
                     <span>Advertiser Name:</span>
-                    <span>{user?.fullName}</span>
+                    <span>{isAdd?.data[0].advertiserName}</span>
                   </>
                 ) : userType === 'Agency' ? (
                   <>

@@ -4,6 +4,7 @@ import { ArrowLeft, Building } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { MdCampaign } from 'react-icons/md';
 import { CreateOrganization, useUser } from '@clerk/clerk-react';
+import { v4 as uuidv4 } from 'uuid'
 
 export default function LoginOptions() {
   const [selectedBusinessType, setSelectedBusinessType] = useState('Agency');
@@ -12,17 +13,19 @@ export default function LoginOptions() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { user } = useUser();
-
+ 
+  
   const handleCreateAccount = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/add-advertiser', {
+      const response = await fetch('/api/add-advertiser', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          advertiserName: user?.fullName,
-          createdBy: user?.id,
+          advertiserName: businessName,
+          advertiserId: uuidv4(),
+          createdBy: user?.id
         }),
       });
 
