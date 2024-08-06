@@ -21,7 +21,7 @@ import { LuHeartHandshake } from 'react-icons/lu';
 import { FaGenderless } from 'react-icons/fa';
 import { FaPeopleArrows } from 'react-icons/fa';
 import { MdOutlineScreenshotMonitor } from 'react-icons/md';
-import { useUser } from '@clerk/clerk-react';
+import { useAuth, useUser } from '@clerk/clerk-react';
 
 interface Goal {
   id: string;
@@ -182,8 +182,8 @@ const Strategy = () => {
         console.log(error)
       };
     };
-    fetchCampaignId(orgId || userId)
-  }, [orgId, userId]);
+    fetchCampaignId(user?.id)
+  }, [user?.id]);
 console.log(`campaign id: ${campaignId}`)
   //Handling Submission of data dont taper with this
 
@@ -195,7 +195,7 @@ console.log(`campaign id: ${campaignId}`)
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: orgId || userId,
+          userId: userId,
           ageRange: selectedTab,
           gender: selectedGender,
           screens: selectedDevice,

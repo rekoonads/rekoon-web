@@ -29,12 +29,13 @@ const Campaigns = () => {
   const navigate = useNavigate();
 
   const { orgId, userId } = useAuth();
-  console.log(orgId || user?.id)
+  console.log(user?.id)
+  
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const campaignData = {
-      userId: orgId || user?.id,
+      userId: user?.id, 
       campaignId: `CAM_${user?.id}`,
       campaignName,
       campaignGoal,

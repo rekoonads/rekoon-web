@@ -19,7 +19,7 @@ export default function ManageAdvertise() {
   const navigate = useNavigate();
   const { orgId, userId } = useAuth();
   const { user } = useUser();
-  console.log( orgId || user?.id)
+
   // gst validation
   const clientId = 'CF567621CQMSJBMGPP5C73DT8AR0';
   const publicKey = `-----BEGIN PUBLIC KEY-----
@@ -90,7 +90,7 @@ export default function ManageAdvertise() {
     };
 
     if (orgId) {
-      fetchData(orgId || userId);
+      fetchData(orgId);
     }
   }, [orgId]);
 
@@ -117,10 +117,10 @@ export default function ManageAdvertise() {
       }
     };
 
-    if (orgId || userId) {
-      fetchData(orgId || userId);
+    if (user?.id) {
+      fetchData(user.id);
     }
-  }, [orgId, userId]);
+  }, [user?.id]);
 
   const openDrawer = () => {
     setIsDrawerVisible(true);
