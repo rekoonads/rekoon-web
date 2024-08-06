@@ -46,7 +46,7 @@ export default function SummaryComponent() {
   const [campaigns, setCampaigns] = useState([]);
   const [error, setError] = useState(null);
   const [strategies, setStrategies] = useState([]);
-  
+  const [successPaymentId, setSuccessPaymentId] = useState<string>('')
   
   
   useEffect(() => {
@@ -139,6 +139,7 @@ export default function SummaryComponent() {
 
           if (verifyData.message) {
             toast.success(verifyData.message);
+            setSuccessPaymentId(response.razorpay_payment_id);
             console.log('Payment ID:', response.razorpay_payment_id);
           }
         } catch (error) {
