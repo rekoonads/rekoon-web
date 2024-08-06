@@ -45,18 +45,18 @@ export default function ManageAdvertise() {
       encrypt.setPublicKey(publicKey);
       const encryptedData = encrypt.encrypt(dataToEncrypt);
 
-      const url = 'https://api.cashfree.com/verification/gstin';
+      const url = 'https://ind-lookup.hyperverge.co/api/lookup/searchGSTIN';
       const options = {
         method: 'POST',
         headers: {
-          accept: 'application/json',
-          'content-type': 'application/json',
-          'x-client-id': 'CF567621CQN034ABG73C739TF7A0',
-          'x-client-secret':
-            'cfsk_ma_prod_69c81d0d1b98a8c177c1b242cd942640_6e949e28',
-          'X-CF-Signature': encryptedData,
+          'appId': 'lmpb9r',
+          'appKey': 's8106of4ld6arcneuln3',
+          'transactionId': '05szuy8uajfo-DEMO',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ GSTIN: gstNumber, businessName: 'Cashfree' }),
+        data: {
+          "gstin": gstNumber
+        }
       };
 
       fetch(url, options)
