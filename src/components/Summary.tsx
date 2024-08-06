@@ -41,6 +41,13 @@ export default function SummaryComponent() {
   const [error, setError] = useState(null);
   const [strategies, setStrategies] = useState([]);
   const [successPaymentId, setSuccessPaymentId] = useState<string>('');
+  
+  console.log({
+    campaignId : campaigns?.campaignId,
+    strategyId: strategies?.strategyId,
+    successPaymentId: successPaymentId
+    
+  })
 
   useEffect(() => {
     // Define the fetch call inside useEffect to fetch data when the component mounts
