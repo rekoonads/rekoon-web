@@ -15,12 +15,6 @@ import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
 
-
-
-
-
-
-
 // Extend the Window interface
 declare global {
   interface Window {
@@ -46,9 +40,8 @@ export default function SummaryComponent() {
   const [campaigns, setCampaigns] = useState([]);
   const [error, setError] = useState(null);
   const [strategies, setStrategies] = useState([]);
-  const [successPaymentId, setSuccessPaymentId] = useState<string>('')
-  
-  
+  const [successPaymentId, setSuccessPaymentId] = useState<string>('');
+
   useEffect(() => {
     // Define the fetch call inside useEffect to fetch data when the component mounts
     const fetchCampaigns = async () => {
@@ -58,7 +51,7 @@ export default function SummaryComponent() {
           throw new Error(`Error: ${response.statusText}`);
         }
         const data = await response.json();
-        setCampaigns(data)
+        setCampaigns(data);
       } catch (error) {
         setError(error.message);
       }
@@ -68,8 +61,6 @@ export default function SummaryComponent() {
     fetchCampaigns();
   }, [userId]);
 
- 
- 
   useEffect(() => {
     // Define the fetch call inside useEffect to fetch data when the component mounts
     const fetchStrategies = async () => {
