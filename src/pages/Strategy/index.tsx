@@ -22,6 +22,7 @@ import { FaGenderless } from 'react-icons/fa';
 import { FaPeopleArrows } from 'react-icons/fa';
 import { MdOutlineScreenshotMonitor } from 'react-icons/md';
 import { useAuth, useUser } from '@clerk/clerk-react';
+import axios from 'axios';
 
 interface Goal {
   id: string;
@@ -123,6 +124,19 @@ const Strategy = () => {
     const fileInput = event.target;
     if (fileInput.files && fileInput.files.length > 0) {
       const file = fileInput.files[0];
+
+      const formData = new FormData();
+      formData.append('video', file);
+      const response = await axios.post(
+        'http://localhost:3001/upload_video',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+
       setFileName(file.name);
       console.log(response);
     } else {
@@ -156,9 +170,9 @@ const Strategy = () => {
   //   creatives: fileName,
   // });
   const { orgId, userId } = useAuth();
-  console.log(orgId, userId)
+  console.log(orgId, userId);
   //Fetching The Campaign Id
-  const [campaignId, setCampaignId] = useState<string>('') 
+  const [campaignId, setCampaignId] = useState<string>('');
   useEffect(() => {
     const fetchCampaignId = async (id: String) => {
       try {
@@ -175,16 +189,17 @@ const Strategy = () => {
           })
           .then((data) => {
             return data.json();
-          }).catch(er => console.log(er))
+          })
+          .catch((er) => console.log(er));
 
-          setCampaignId(idData._id)
+        setCampaignId(idData._id);
       } catch (error) {
-        console.log(error)
-      };
+        console.log(error);
+      }
     };
-    fetchCampaignId(user?.id)
+    fetchCampaignId(user?.id);
   }, [user?.id]);
-console.log(`campaign id: ${campaignId}`)
+  console.log(`campaign id: ${campaignId}`);
   //Handling Submission of data dont taper with this
 
   const handleSubmit = async () => {
@@ -207,7 +222,7 @@ console.log(`campaign id: ${campaignId}`)
           selectedChannels: selectedChannels,
           deliveryTimeSlots: daySettings,
           creatives: fileName,
-          campaignId: campaignId
+          campaignId: campaignId,
         }),
       });
 

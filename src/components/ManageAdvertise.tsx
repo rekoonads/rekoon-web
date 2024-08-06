@@ -24,8 +24,8 @@ export default function ManageAdvertise() {
   const { orgId, userId } = useAuth();
   const { user } = useUser();
 
-  const appId = 'lmpb9r';
-  const appKey = 's8106of4ld6arcneuln3';
+  const appId = '1pamnh';
+  const appKey = 'pmzmvrg9legon1ky2uwm';
   const transactionId = '05szuy8uajfo-DEMO';
 
   const url = 'https://ind-lookup.hyperverge.co/api/lookup/searchGSTIN';
