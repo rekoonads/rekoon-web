@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '../components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '../components/ui/avatar';
 import { Link, useNavigate } from 'react-router-dom';
@@ -17,13 +17,12 @@ export default function ManageAdvertise() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isAdd, setIsAdd] = useState<UserData | undefined>(undefined);
   const [agencyId, setAgencyId] = useState<UserField | undefined>(undefined);
+  const [legalName, setLegalName] = useState<string>('');
+  const [address, setAddress] = useState<string>('');
+  const [gstNumber, setGstNumber] = useState<string>('');
   const navigate = useNavigate();
   const { orgId, userId } = useAuth();
   const { user } = useUser();
-
-  // gst validation
-
-  const [gstNumber, setGstNumber] = useState<string>('');
 
   const appId = 'lmpb9r';
   const appKey = 's8106of4ld6arcneuln3';
@@ -37,7 +36,6 @@ export default function ManageAdvertise() {
     transactionId: transactionId,
     'Content-Type': 'application/json',
   };
-
   const handleGSTChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -52,12 +50,30 @@ export default function ManageAdvertise() {
       try {
         const response = await axios.post(url, data, { headers });
         console.log('Response:', response.data);
+
+        if (response.data && response.data.status === 'success') {
+          const legalName = response.data.result.data.legalName || '';
+          const address = response.data.result.data.pradr.fullAddress || '';
+
+          setLegalName(legalName);
+          setAddress(address);
+
+          console.log('Legal Name:', legalName);
+          console.log('Address:', address);
+        } else {
+          setLegalName('');
+          setAddress('');
+        }
       } catch (error) {
         console.error('Error:', error);
+        setLegalName('');
+        setAddress('');
       }
+    } else {
+      setLegalName('');
+      setAddress('');
     }
   };
-  //end
 
   useEffect(() => {
     const fetchData = async (id: string) => {
@@ -84,8 +100,6 @@ export default function ManageAdvertise() {
       fetchData(orgId);
     }
   }, [orgId]);
-
-  console.log(agencyId);
 
   useEffect(() => {
     const fetchData = async (id: string) => {
@@ -131,9 +145,8 @@ export default function ManageAdvertise() {
     navigate('/report');
   };
 
-  console.log(user?.fullName);
-  const userType = isAdd?.type_of_user ?? 'Unknown'; // Default value if undefined
-  console.log(userType);
+  const userType = isAdd?.type_of_user ?? 'Unknown';
+
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="flex items-center justify-between p-4 bg-white text-white">
@@ -326,6 +339,7 @@ export default function ManageAdvertise() {
                   type="text"
                   placeholder="Enter GST Number"
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                  value={gstNumber}
                   onChange={handleGSTChange}
                 />
                 <div>
@@ -336,6 +350,8 @@ export default function ManageAdvertise() {
                     type="text"
                     placeholder="Enter Legal Name"
                     className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                    value={legalName}
+                    readOnly
                   />
                 </div>
                 <div>
@@ -346,6 +362,8 @@ export default function ManageAdvertise() {
                     type="text"
                     placeholder="Enter Address"
                     className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                    value={address}
+                    readOnly
                   />
                 </div>
                 <div className="mt-2">
