@@ -7,7 +7,7 @@ import CheckboxOne from '../../components/Checkboxes/CheckboxOne';
 import DateSection from '../../components/DateSection';
 import { Button } from '../../components/ui/button';
 import { Tabs, TabsList } from '../../components/ui/tabs';
-
+import { v4 as uuidv4 } from 'uuid';
 import { BsThunderboltFill } from 'react-icons/bs';
 import { FaInfoCircle } from 'react-icons/fa';
 import { LuRadioReceiver } from 'react-icons/lu';
@@ -177,7 +177,7 @@ const Strategy = () => {
             return data.json();
           }).catch(er => console.log(er))
 
-          setCampaignId(idData._id)
+          setCampaignId(idData.campaignId)
       } catch (error) {
         console.log(error)
       };
@@ -196,6 +196,7 @@ console.log(`campaign id: ${campaignId}`)
         },
         body: JSON.stringify({
           userId: userId,
+          strategyId: `ST-${uuidv4()}`,
           ageRange: selectedTab,
           gender: selectedGender,
           screens: selectedDevice,

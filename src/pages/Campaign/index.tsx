@@ -14,7 +14,7 @@ import { FaAdversal } from 'react-icons/fa';
 import { FaUserClock } from 'react-icons/fa';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import { Apple } from 'lucide-react';
-
+import { v4 as uuidv4 } from 'uuid';
 const Campaigns = () => {
   const [campaignName, setCampaignName] = useState('');
   const [campaignGoal, setCampaignGoal] = useState<string | null>(null);
@@ -36,7 +36,7 @@ const Campaigns = () => {
 
     const campaignData = {
       userId: user?.id, 
-      campaignId: `CAM_${user?.id}`,
+      campaignId: `CAM-${uuidv4()}`,
       campaignName,
       campaignGoal,
       campaignAdvertiserBudget: advertiser,
