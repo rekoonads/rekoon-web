@@ -53,14 +53,15 @@ export default function SummaryComponent() {
       console.log(data);
       handlePaymentVerify(data.data);
     } catch (error) {
-      console.log(error);
+      console.error('Error creating order:', error);
+      toast.error('Failed to create order. Please try again.');
     }
   };
 
   // handlePaymentVerify Function
   const handlePaymentVerify = async (data: PaymentData) => {
     const options = {
-      key: 'rzp_test_SZrvteybFNdghB',
+      key: 'rzp_test_SZrvteybFNdghB', // Use your Razorpay Test Key
       amount: data.amount,
       currency: data.currency,
       name: 'Rekoon Ads',
@@ -85,9 +86,11 @@ export default function SummaryComponent() {
 
           if (verifyData.message) {
             toast.success(verifyData.message);
+            console.log('Payment ID:', response.razorpay_payment_id);
           }
         } catch (error) {
-          console.log(error);
+          console.error('Error verifying payment:', error);
+          toast.error('Payment verification failed. Please contact support.');
         }
       },
       theme: {
