@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '../components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '../components/ui/avatar';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import {
   OrganizationSwitcher,
   useAuth,
@@ -22,38 +23,40 @@ export default function ManageAdvertise() {
 
   // gst validation
 
-  const [gstNumber, setGstNumber] = useState<String>('');
-  const handlegstChange = async (event) => {
-    const { value } = event.target;
-    setGstNumber(value);
+  const [gstNumber, setGstNumber] = useState<string>('');
 
-    if (value.length === 15) {
-      const url = 'https://ind-lookup.hyperverge.co/api/lookup/searchGSTIN';
-      const options = {
-        method: 'POST',
-        headers: {
-          appId: 'lmpb9r',
-          appKey: 's8106of4ld6arcneuln3',
-          transactionId: '05szuy8uajfo-DEMO',
-          'Content-Type': 'application/json',
-        },
-        data: {
-          gstin: gstNumber,
-        },
-      };
+  const appId = 'lmpb9r';
+  const appKey = 's8106of4ld6arcneuln3';
+  const transactionId = '05szuy8uajfo-DEMO';
 
-      await fetch(url, options)
-        .then((res) => {
-          if (!res.ok) {
-            throw Error('Respoonse not ok');
-          }
-          return res;
-        })
-        .then((data) => console.log(data.json))
-        .catch((err) => console.error('error:' + err));
-    }
+  const url = 'https://ind-lookup.hyperverge.co/api/lookup/searchGSTIN';
+
+  const headers = {
+    appId: appId,
+    appKey: appKey,
+    transactionId: transactionId,
+    'Content-Type': 'application/json',
   };
 
+  const handleGSTChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const newGstNumber = event.target.value;
+    setGstNumber(newGstNumber);
+
+    if (newGstNumber) {
+      const data = {
+        gstin: newGstNumber,
+      };
+
+      try {
+        const response = await axios.post(url, data, { headers });
+        console.log('Response:', response.data);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+  };
   //end
 
   useEffect(() => {
@@ -323,7 +326,7 @@ export default function ManageAdvertise() {
                   type="text"
                   placeholder="Enter GST Number"
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-                  onChange={handlegstChange}
+                  onChange={handleGSTChange}
                 />
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
