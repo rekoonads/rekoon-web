@@ -192,11 +192,7 @@ const Strategy = () => {
           })
           .catch((er) => console.log(er));
 
-<<<<<<< HEAD
-        setCampaignId(idData._id);
-=======
-          setCampaignId(idData.campaignId)
->>>>>>> 55e1b2870fe36ce67b5349ce0abc9c3d839ee32c
+        setCampaignId(idData.campaignId);
       } catch (error) {
         console.log(error);
       }
