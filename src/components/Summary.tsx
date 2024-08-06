@@ -10,9 +10,16 @@ import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { CalendarIcon, ClipboardPenIcon, PresentationIcon } from 'lucide-react';
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@clerk/clerk-react';
+
+
+
+
+
+
 
 // Extend the Window interface
 declare global {
@@ -35,6 +42,52 @@ interface RazorpayResponse {
 
 export default function SummaryComponent() {
   const [amount, setAmount] = useState<number>(1);
+  const { userId } = useAuth();
+  const [campaigns, setCampaigns] = useState([]);
+  const [error, setError] = useState(null);
+  const [strategies, setStrategies] = useState([]);
+  
+  
+  
+  useEffect(() => {
+    // Define the fetch call inside useEffect to fetch data when the component mounts
+    const fetchCampaigns = async () => {
+      try {
+        const response = await fetch(`/api/campaigns/${userId}`);
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+        const data = await response.json();
+        setCampaigns(data)
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
+    // Call the function
+    fetchCampaigns();
+  }, [userId]);
+
+ 
+ 
+  useEffect(() => {
+    // Define the fetch call inside useEffect to fetch data when the component mounts
+    const fetchStrategies = async () => {
+      try {
+        const response = await fetch(`/api/strategy/${userId}`);
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+        const data = await response.json();
+        setStrategies(data);
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
+    // Call the function
+    fetchStrategies();
+  }, [userId]);
 
   // handlePayment Function
   const handlePayment = async () => {

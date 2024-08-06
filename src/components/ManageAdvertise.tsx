@@ -89,10 +89,10 @@ export default function ManageAdvertise() {
       }
     };
 
-    if (orgId) {
-      fetchData(orgId);
+    if (user?.id) {
+      fetchData(user?.id);
     }
-  }, [orgId]);
+  }, [user?.id]);
 
   console.log(agencyId);
 
