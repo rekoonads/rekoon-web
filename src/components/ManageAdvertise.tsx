@@ -75,32 +75,32 @@ export default function ManageAdvertise() {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async (id: string) => {
-      try {
-        const response = await fetch(`/api/search-agency/${id}`, {
-          method: 'GET',
-          headers: {
-            'Content-type': 'application/json',
-          },
-        });
+//   useEffect(() => {
+//     const fetchData = async (id: string) => {
+//       try {
+//         const response = await fetch(`/api/search-agency/${id}`, {
+//           method: 'GET',
+//           headers: {
+//             'Content-type': 'application/json',
+//           },
+//         });
 
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data: UserField = await response.json();
-        setAgencyId(data);
-        console.log(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+//         if (!response.ok) {
+//           throw new Error('Network response was not ok');
+//         }
+//         const data: UserField = await response.json();
+//         setAgencyId(data);
+//         console.log(data);
+//       } catch (error) {
+//         console.log(error);
+//       }
+//     };
 
-    if (orgId) {
-      fetchData(orgId);
-    }
-  }, [orgId]);
-console.log(agencyId)
+//     if (orgId) {
+//       fetchData(orgId);
+//     }
+//   }, [orgId]);
+// console.log(agencyId)
   
 useEffect(() => {
     const fetchData = async (id: string) => {
@@ -128,6 +128,7 @@ useEffect(() => {
     }
   }, [user?.id]);
 
+  console.log(isAdd?.data[0].agencyName)
 
   //for getting the advertiser 
   console.log(isAdd?.data[0].advertiserName)
@@ -253,7 +254,7 @@ useEffect(() => {
                 ) : userType === 'Agency' ? (
                   <>
                     <span>Agency Name:</span>
-                    <span>{agencyId.agencyName}</span>
+                     <span>{isAdd?.data[0].agencyName}</span> 
                   </>
                 ) : null}
               </div>
