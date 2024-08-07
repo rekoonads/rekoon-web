@@ -23,6 +23,7 @@ import { FaPeopleArrows } from 'react-icons/fa';
 import { MdOutlineScreenshotMonitor } from 'react-icons/md';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import axios from 'axios';
+import InputSelect from '../../components/InputSelect';
 
 interface Goal {
   id: string;
@@ -66,9 +67,10 @@ const Strategy = () => {
   const [audienceArr, setAudienceArr] = useState<string[]>([]);
   const [strategyName, setStrategyName] = useState<string>('');
   const [strategyDailyBudget, setStrategyDailyBudget] = useState<string>('');
-  const { user } = useUser();
+
   //for Debugging
 
+  const { user } = useUser();
   const handleReset = () => {
     setSelectedTab('18-20');
     setSelectedGender('Women');
@@ -1043,20 +1045,13 @@ const Strategy = () => {
               <div className="border-t border-stroke py-4 px-6.5 dark:border-strokedark">
                 <div className="flex items-center gap-2 justify-between font-medium text-black dark:text-white">
                   <h2>Audience located in</h2>
-                  <Button variant={'outline'}>Upload ZIP codes in bulk</Button>
+                  <button className="btn btn-outline">
+                    Upload ZIP codes in bulk
+                  </button>
                 </div>
                 <div className="mt-4 mb-4">
-                  <input
-                    type="text"
-                    placeholder="🔍 Search for audience criteria"
-                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  />
+                  <InputSelect />
                 </div>
-                <input
-                  type="text"
-                  placeholder="India"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                />
               </div>
               <div className="flex justify-end">
                 <Button
