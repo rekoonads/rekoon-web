@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,6 +15,7 @@ import { FaUserClock } from 'react-icons/fa';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import { Apple } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
+import { getAdvertiser } from '../../asyncCall/asyncCall';
 const Campaigns = () => {
   const [campaignName, setCampaignName] = useState('');
   const [campaignGoal, setCampaignGoal] = useState<string | null>(null);
@@ -33,23 +34,60 @@ const Campaigns = () => {
   
   const isIdAdvertOrAgent = orgId || userId 
   console.log(isIdAdvertOrAgent)
+  
+  // searches for the type of user
+  const [isAdd, setIsAdd] = useState<string>('')
+  useEffect(() => {
+    const fetchData = async (id: string) => {
+      try {
+        const response = await fetch(`/api/search-user/${id}`, {
+          method: 'GET',
+          headers: {
+            'Content-type': 'application/json',
+          },
+        });
 
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data: UserData = await response.json();
+        setIsAdd(data);
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (user?.id) {
+      fetchData(user.id);
+    }
+  }, [user?.id]);
+
+console.log(isAdd?.type_of_user)
+
+//getting The advertiser's Data 
+const [addData, setAddData] = useState<string>('')
+useEffect(() => {
+  if (isAdd?.type_of_user === 'Advertiser' && user?.id) {
+    const fetchingData = async () => {
+      try {
+        const adData = await getAdvertiser(user.id);
+        console.log(adData);
+        setAddData(adData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchingData();
+  }
+}, [isAdd, user?.id]);
+console.log(addData?.advertiserId)
+
+
+//handling Submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    // const campaignData = {
-    //   userId: user?.id, 
-    //   campaignId: `CAM-${uuidv4()}`,
-    //   campaignName,
-    //   campaignGoal,
-    //   campaignAdvertiserBudget: advertiser,
-    //   campaignBudget,
-    //   campaignType,
-    //   startDate: startDate?.toDateString(),
-    //   endDate: endDate?.toDateString(),
-    // };
-
-    if(orgId){
+    if(isAdd?.type_of_user === 'Agency'){
       try {
         const response = await fetch('/api/campaigns', {
           method: 'POST',
@@ -84,7 +122,7 @@ const Campaigns = () => {
         console.error('Error:', error);
         toast.error('An error occurred while submitting the campaign.');
       }
-    } else {
+    } else if(isAdd?.type_of_user === 'Advertiser') {
       try {
         const response = await fetch('/api/campaigns', {
           method: 'POST',

@@ -11,12 +11,13 @@ import {
 } from '@clerk/clerk-react';
 import { DropdownMenuDemo } from './SettingsMenu';
 import JSEncrypt from 'jsencrypt';
+import { getAgency, searchUser } from '../asyncCall/asyncCall';
 
 export default function ManageAdvertise() {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isAdd, setIsAdd] = useState<UserData | undefined>(undefined);
-  const [agencyId, setAgencyId] = useState<UserField | undefined>(undefined);
+  // const [agencyId, setAgencyId] = useState<UserField | undefined>(undefined);
   const [legalName, setLegalName] = useState<string>('');
   const [address, setAddress] = useState<string>('');
   const [gstNumber, setGstNumber] = useState<string>('');
@@ -133,6 +134,29 @@ useEffect(() => {
   //for getting the advertiser 
   console.log(isAdd?.data[0].advertiserName)
   
+  //for Agencies only 
+  const [agencyData, setAgencyData] = useState<string>('');
+ console.log(orgId)
+  useEffect(() => {
+    if(isAdd?.type_of_user === 'Agency'){
+      const handleSearch = async () => {
+        if (!orgId) return;  // Prevents running on initial render
+        try {
+          const data = await getAgency(orgId);
+          setAgencyData(data);
+        } catch (err) {
+         
+          console.log(err);
+        }
+      };
+  
+      handleSearch();
+    }
+   
+  }, [orgId]);
+
+console.log(agencyData)
+
 
   const openDrawer = () => {
     setIsDrawerVisible(true);
@@ -254,7 +278,7 @@ useEffect(() => {
                 ) : userType === 'Agency' ? (
                   <>
                     <span>Agency Name:</span>
-                     <span>{isAdd?.data[0].agencyName}</span> 
+                     <span>{agencyData?.agencyName}</span> 
                   </>
                 ) : null}
               </div>
