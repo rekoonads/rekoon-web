@@ -46,14 +46,11 @@ export default function LoginOptions() {
         setError('Please enter an advertiser name.');
         return;
       }
-      // Add your advertiser creation logic here
-      // After successfully creating the advertiser, redirect to /manage-advertise
+      
       navigate('/manage-advertise');
     }
   };
-  // useEffect(() => {
-  //   isCreated === true ? navigate('/auth/sign-up') : navigate('/login-options');
-  // }, [isCreated]);
+  
 
   const closeModal = () => {
     setModalIsOpen(false);

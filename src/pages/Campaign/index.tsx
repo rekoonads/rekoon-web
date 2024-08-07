@@ -34,7 +34,11 @@ const Campaigns = () => {
   
   const isIdAdvertOrAgent = orgId || userId 
   console.log(isIdAdvertOrAgent)
+ 
   
+
+
+
   // searches for the type of user
   const [isAdd, setIsAdd] = useState<string>('')
   useEffect(() => {
@@ -62,8 +66,11 @@ const Campaigns = () => {
       fetchData(user.id);
     }
   }, [user?.id]);
-
 console.log(isAdd?.type_of_user)
+
+
+
+
 
 //getting The advertiser's Data 
 const [addData, setAddData] = useState<string>('')
@@ -82,6 +89,8 @@ useEffect(() => {
   }
 }, [isAdd, user?.id]);
 console.log(addData?.advertiserId)
+
+
 
 
 //handling Submission
@@ -132,7 +141,7 @@ console.log(addData?.advertiserId)
           body: JSON.stringify({
             userId: user?.id, 
             campaignId: `CAM-${uuidv4()}`,
-            advertiserId: uuidv4(),
+            advertiserId: addData?.advertiserId,
             campaignName,
             campaignGoal,
             campaignAdvertiserBudget: advertiser,

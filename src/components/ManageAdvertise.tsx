@@ -10,7 +10,6 @@ import {
   useUser,
 } from '@clerk/clerk-react';
 import { DropdownMenuDemo } from './SettingsMenu';
-import JSEncrypt from 'jsencrypt';
 import { getAgency, searchUser } from '../asyncCall/asyncCall';
 
 export default function ManageAdvertise() {
@@ -76,33 +75,10 @@ export default function ManageAdvertise() {
     }
   };
 
-//   useEffect(() => {
-//     const fetchData = async (id: string) => {
-//       try {
-//         const response = await fetch(`/api/search-agency/${id}`, {
-//           method: 'GET',
-//           headers: {
-//             'Content-type': 'application/json',
-//           },
-//         });
 
-//         if (!response.ok) {
-//           throw new Error('Network response was not ok');
-//         }
-//         const data: UserField = await response.json();
-//         setAgencyId(data);
-//         console.log(data);
-//       } catch (error) {
-//         console.log(error);
-//       }
-//     };
 
-//     if (orgId) {
-//       fetchData(orgId);
-//     }
-//   }, [orgId]);
-// console.log(agencyId)
-  
+
+//Searching User Type
 useEffect(() => {
     const fetchData = async (id: string) => {
       try {
@@ -129,11 +105,18 @@ useEffect(() => {
     }
   }, [user?.id]);
 
+  
+  
+  //for getting the agency 
   console.log(isAdd?.data[0].agencyName)
 
   //for getting the advertiser 
   console.log(isAdd?.data[0].advertiserName)
   
+ 
+ 
+ 
+ 
   //for Agencies only 
   const [agencyData, setAgencyData] = useState<string>('');
  console.log(orgId)
@@ -153,7 +136,7 @@ useEffect(() => {
       handleSearch();
     }
    
-  }, [orgId]);
+  }, [isAdd,orgId]);
 
 console.log(agencyData)
 

@@ -68,7 +68,6 @@ const Strategy = () => {
   const [strategyName, setStrategyName] = useState<string>('');
   const [strategyDailyBudget, setStrategyDailyBudget] = useState<string>('');
 
-  //for Debugging
 
   const { user } = useUser();
   const handleReset = () => {
@@ -157,6 +156,9 @@ const Strategy = () => {
   const handleDaySettingsChange = (newDaySettings) => {
     setDaySettings(newDaySettings);
   };
+
+  //for Debugging
+
   // console.log({
   //   userId: user?.id,
   //   ageRange: selectedTab,
@@ -171,10 +173,14 @@ const Strategy = () => {
   //   deliveryTimeSlots: daySettings,
   //   creatives: fileName,
   // });
+
+  //Advertiser id is the orgId
   const { orgId, userId } = useAuth();
   console.log(orgId, userId);
+ 
+ 
   //Fetching The Campaign Id
-  const [campaignId, setCampaignId] = useState<string>('');
+  const [campaignInfo, setCampaignInfo] = useState<string>('');
   useEffect(() => {
     const fetchCampaignId = async (id: String) => {
       try {
@@ -194,17 +200,53 @@ const Strategy = () => {
           })
           .catch((er) => console.log(er));
 
-        setCampaignId(idData.campaignId);
+        setCampaignInfo(idData);
       } catch (error) {
         console.log(error);
       }
     };
     fetchCampaignId(user?.id);
   }, [user?.id]);
-  console.log(`campaign id: ${campaignId}`);
-  //Handling Submission of data dont taper with this
+  console.log(campaignInfo);
+  
+ let infoId =  campaignInfo?.advertiserId ? campaignInfo?.advertiserId : campaignInfo?.agencyId ? campaignInfo?.agencyId : null
+ console.log(infoId)
 
+   // searches for the type of user
+   const [isAdd, setIsAdd] = useState<string>('')
+   useEffect(() => {
+     const fetchData = async (id: string) => {
+       try {
+         const response = await fetch(`/api/search-user/${id}`, {
+           method: 'GET',
+           headers: {
+             'Content-type': 'application/json',
+           },
+         });
+ 
+         if (!response.ok) {
+           throw new Error('Network response was not ok');
+         }
+         const data: UserData = await response.json();
+         setIsAdd(data);
+         console.log(data);
+       } catch (error) {
+         console.log(error);
+       }
+     };
+ 
+     if (user?.id) {
+       fetchData(user.id);
+     }
+   }, [user?.id]);
+ 
+ console.log(isAdd?.type_of_user)
+ 
+
+  //Handling Submission of data dont taper with this
+ console.log(campaignInfo?.campaignId)
   const handleSubmit = async () => {
+   if(isAdd?.type_of_user === 'Agency'){
     try {
       const response = await fetch(`/api/strategy`, {
         method: 'POST',
@@ -214,6 +256,7 @@ const Strategy = () => {
         body: JSON.stringify({
           userId: userId,
           strategyId: `ST-${uuidv4()}`,
+          agencyId: infoId,
           ageRange: selectedTab,
           gender: selectedGender,
           screens: selectedDevice,
@@ -225,7 +268,7 @@ const Strategy = () => {
           selectedChannels: selectedChannels,
           deliveryTimeSlots: daySettings,
           creatives: fileName,
-          campaignId: campaignId,
+          campaignId: campaignInfo?.campaignId,
         }),
       });
 
@@ -240,6 +283,44 @@ const Strategy = () => {
     } catch (error) {
       console.error('Error updating campaign:', error);
     }
+   } else if (isAdd?.type_of_user === 'Advertiser'){
+    try {
+      const response = await fetch(`/api/strategy`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: userId,
+          strategyId: `ST-${uuidv4()}`,
+          advertiserId: infoId,
+          ageRange: selectedTab,
+          gender: selectedGender,
+          screens: selectedDevice,
+          audiences: audienceArr,
+          strategyName: strategyName,
+          strategyDailyBudget: strategyDailyBudget,
+          selectedGoal: selectedGoal,
+          selectedOption: selectedOption,
+          selectedChannels: selectedChannels,
+          deliveryTimeSlots: daySettings,
+          creatives: fileName,
+          campaignId: campaignInfo?.campaignId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      } else {
+        alert(`Channels Created`);
+      }
+      const updatedCampaign = await response.json();
+      console.log('Campaign updated successfully:', updatedCampaign);
+      return updatedCampaign;
+    } catch (error) {
+      console.error('Error updating campaign:', error);
+    }
+   }
   };
   return (
     <>
