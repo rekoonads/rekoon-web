@@ -16,6 +16,8 @@ export default function VideoUpload() {
   const [fileName, setFileName] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [isUploadComplete, setIsUploadComplete] = useState<boolean>(false);
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -68,6 +70,7 @@ export default function VideoUpload() {
 
         // If all validations pass, upload the video
         setErrorMessage(null);
+        setIsUploading(true);
         const formData = new FormData();
         formData.append('video', file);
 
@@ -87,14 +90,19 @@ export default function VideoUpload() {
           })
           .then((response) => {
             setFileName(file.name);
+            setIsUploadComplete(true);
+            setIsUploading(false);
             console.log(response);
           })
           .catch((error) => {
             setErrorMessage('Upload failed. Please try again.');
+            setIsUploading(false);
           });
       };
     } else {
       setFileName(null);
+      setIsUploading(false);
+      setIsUploadComplete(false);
     }
   };
 
@@ -149,20 +157,24 @@ export default function VideoUpload() {
             </ul>
           </div>
         </div>
-        <div className="aspect-video bg-muted rounded-md overflow-hidden">
-          <img
-            src="/placeholder.svg"
-            alt="Preview"
-            width={800}
-            height={450}
-            className="object-cover w-full h-full"
-            style={{ aspectRatio: '800/450', objectFit: 'cover' }}
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label>Upload Progress</Label>
-          <Progress value={uploadProgress} aria-label="Upload progress" />
-        </div>
+        {isUploading && (
+          <div className="grid gap-2">
+            <Label>Upload Progress</Label>
+            <Progress value={uploadProgress} aria-label="Upload progress" />
+          </div>
+        )}
+        {isUploadComplete && (
+          <div className="aspect-video bg-muted rounded-md overflow-hidden">
+            <img
+              src="/placeholder.svg"
+              alt="Preview"
+              width={800}
+              height={450}
+              className="object-cover w-full h-full"
+              style={{ aspectRatio: '800/450', objectFit: 'cover' }}
+            />
+          </div>
+        )}
       </CardContent>
     </Card>
   );
