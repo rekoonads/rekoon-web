@@ -11,12 +11,13 @@ import {
 } from '@clerk/clerk-react';
 import { DropdownMenuDemo } from './SettingsMenu';
 import JSEncrypt from 'jsencrypt';
+import { getAgency, searchUser } from '../asyncCall/asyncCall';
 
 export default function ManageAdvertise() {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isAdd, setIsAdd] = useState<UserData | undefined>(undefined);
-  const [agencyId, setAgencyId] = useState<UserField | undefined>(undefined);
+  // const [agencyId, setAgencyId] = useState<UserField | undefined>(undefined);
   const [legalName, setLegalName] = useState<string>('');
   const [address, setAddress] = useState<string>('');
   const [gstNumber, setGstNumber] = useState<string>('');
@@ -75,32 +76,32 @@ export default function ManageAdvertise() {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async (id: string) => {
-      try {
-        const response = await fetch(`/api/search-agency/${id}`, {
-          method: 'GET',
-          headers: {
-            'Content-type': 'application/json',
-          },
-        });
+//   useEffect(() => {
+//     const fetchData = async (id: string) => {
+//       try {
+//         const response = await fetch(`/api/search-agency/${id}`, {
+//           method: 'GET',
+//           headers: {
+//             'Content-type': 'application/json',
+//           },
+//         });
 
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data: UserField = await response.json();
-        setAgencyId(data);
-        console.log(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+//         if (!response.ok) {
+//           throw new Error('Network response was not ok');
+//         }
+//         const data: UserField = await response.json();
+//         setAgencyId(data);
+//         console.log(data);
+//       } catch (error) {
+//         console.log(error);
+//       }
+//     };
 
-    if (orgId) {
-      fetchData(orgId);
-    }
-  }, [orgId]);
-console.log(agencyId)
+//     if (orgId) {
+//       fetchData(orgId);
+//     }
+//   }, [orgId]);
+// console.log(agencyId)
   
 useEffect(() => {
     const fetchData = async (id: string) => {
@@ -128,10 +129,34 @@ useEffect(() => {
     }
   }, [user?.id]);
 
+  console.log(isAdd?.data[0].agencyName)
 
   //for getting the advertiser 
   console.log(isAdd?.data[0].advertiserName)
   
+  //for Agencies only 
+  const [agencyData, setAgencyData] = useState<string>('');
+ console.log(orgId)
+  useEffect(() => {
+    if(isAdd?.type_of_user === 'Agency'){
+      const handleSearch = async () => {
+        if (!orgId) return;  // Prevents running on initial render
+        try {
+          const data = await getAgency(orgId);
+          setAgencyData(data);
+        } catch (err) {
+         
+          console.log(err);
+        }
+      };
+  
+      handleSearch();
+    }
+   
+  }, [orgId]);
+
+console.log(agencyData)
+
 
   const openDrawer = () => {
     setIsDrawerVisible(true);
@@ -253,7 +278,7 @@ useEffect(() => {
                 ) : userType === 'Agency' ? (
                   <>
                     <span>Agency Name:</span>
-                    <span>{agencyId.agencyName}</span>
+                     <span>{agencyData?.agencyName}</span> 
                   </>
                 ) : null}
               </div>
