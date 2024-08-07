@@ -24,6 +24,7 @@ import { MdOutlineScreenshotMonitor } from 'react-icons/md';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import axios from 'axios';
 import InputSelect from '../../components/InputSelect';
+import VideoUpload from '../../components/VideoUpload';
 
 interface Goal {
   id: string;
@@ -117,33 +118,7 @@ const Strategy = () => {
     setSelectedOption(value);
   };
   console.log(selectedOption);
-  const [fileName, setFileName] = useState<string | null>(null);
 
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const fileInput = event.target;
-    if (fileInput.files && fileInput.files.length > 0) {
-      const file = fileInput.files[0];
-
-      const formData = new FormData();
-      formData.append('video', file);
-      const response = await axios.post(
-        'http://localhost:3001/upload_video',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        },
-      );
-
-      setFileName(file.name);
-      console.log(response);
-    } else {
-      setFileName(null);
-    }
-  };
   const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
 
   const handleSelectedChannelsChange = (channels: string[]) => {
@@ -1258,52 +1233,7 @@ const Strategy = () => {
           </div>
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h2 className="font-medium text-black dark:text-white">
-                Creatives
-              </h2>
-              <p className="mt-2 font-medium text-black dark:text-white">
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iure,
-                necessitatibus.
-              </p>
-              <h3 className="mt-8 font-medium text-black dark:text-white text-lg">
-                Guidelines for video creatives
-              </h3>
-
-              <div className="flex items-center gap-2">
-                <RiCheckFill className="text-green-500" /> Resolutionn: 1080p
-                (HD): 1920x1080
-              </div>
-              <div className="flex items-center gap-2">
-                <RiCheckFill className="text-green-500" /> Aspect ratio: 16:9
-              </div>
-              <div className="flex items-center gap-2">
-                <RiCheckFill className="text-green-500" /> Format: .mp4
-              </div>
-              <div className="flex items-center gap-2">
-                <RiCheckFill className="text-green-500" /> Maximum file size: Up
-                to 500MB
-              </div>
-              <div className="flex items-center gap-2">
-                <RiCheckFill className="text-green-500" /> Length between 5 and
-                30 seconds
-              </div>
-            </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Attach file
-                </label>
-                <input
-                  type="file"
-                  className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
-                  onChange={handleFileChange}
-                />
-                {fileName && (
-                  <p className="mt-2 text-black dark:text-white">
-                    File selected: {fileName}
-                  </p>
-                )}
-              </div>
+              <VideoUpload />
             </div>
           </div>
           <form onSubmit={handleSubmit}>
