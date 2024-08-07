@@ -43,11 +43,13 @@ export default function SummaryComponent() {
   const [successPaymentId, setSuccessPaymentId] = useState<string>('');
   
   console.log({
+    userId: userId,
     campaignId : campaigns?.campaignId,
     strategyId: strategies?.strategyId,
     successPaymentId: successPaymentId
-    
   })
+ 
+console.log(strategies)
 
   useEffect(() => {
     // Define the fetch call inside useEffect to fetch data when the component mounts
@@ -167,7 +169,7 @@ export default function SummaryComponent() {
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="font-semibold">darksihsolu</p>
+            <p className="font-semibold">Campaign Name goes here</p>
             <Link to={'/campaign'}>
               <Button variant="ghost" className="p-0 text-sm text-blue-700">
                 <ClipboardPenIcon className="inline-block w-4 h-4 mr-1" />
@@ -176,20 +178,19 @@ export default function SummaryComponent() {
             </Link>
           </div>
           <div className="text-right">
-            <p className="font-semibold">$100 daily budget</p>
+            <p className="font-semibold">Campaign budget goes here with eitheir Daily bud or Weekly bud</p>
           </div>
         </div>
         <div className="flex items-center">
           <CalendarIcon className="w-5 h-5 mr-2" />
           <p>
-            Between <span className="font-semibold">06/23/24</span> and the end
-            date of your choice
+            Start Date and End Date goes here
           </p>
         </div>
         <div className="space-y-2">
-          <p className="font-semibold">Strategy #1</p>
+          <p className="font-semibold">Strategy Name goes here</p>
           <div className="flex items-center justify-between">
-            <p>3 Apps & Channels - TV - Entire US</p>
+            <p>Selected Channels goes here</p>
             <Link to={'/strategy'}>
               <Button variant="ghost" className="p-0 text-sm text-blue-700">
                 <ClipboardPenIcon className="inline-block w-4 h-4 mr-1" />
