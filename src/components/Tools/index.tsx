@@ -1,30 +1,43 @@
-import toolsImage from "../../assets/images/tools.svg";
+import toolsImage from '../../assets/image.png';
 
 const Tools = () => {
-	return (
-		<div className="w-full md:pt-44 pt-36 md:px-24 px-5 flex md:flex-row flex-col items-center md:justify-around justify-center md:gap-0 gap-10">
-			<div className="flex flex-col gap-5 md:w-[35%] w-full">
-				<span className="font-bold md:text-[75px] text-[50px] max-w-full md:leading-[90px] leading-[70px]">
-					Get all the tools your team needs
-				</span>
-				<p className="leading-7 text-gray-600 md:max-w-[580px] max-w-[95%]">
-					Egestas fringilla aliquam leo, habitasse arcu varius lorem elit. Neque pellentesque
-					donec et tellus ac varius tortor, bibendum. Nulla felis ac turpis at amet. Purus
-					malesuada placerat arcu at enim elit in accumsan.
-				</p>
-				<a
-					href="#"
-					className="text-blue-600 font-semibold"
-				>
-					Check the tools
-				</a>
-			</div>
-			<img
-				src={toolsImage}
-				className="md:w-[35%] w-full"
-			/>
-		</div>
-	);
+  return (
+    <div
+      id="agency"
+      className="w-full pt-12 md:pt-24 px-4 md:px-8 flex flex-col md:flex-row items-center md:justify-between justify-center gap-8 md:gap-12 mt-12 mb-24"
+    >
+      <div className="flex flex-col gap-6 md:w-1/2 w-full">
+        <span className="font-bold text-4xl md:text-5xl lg:text-6xl leading-tight max-w-full">
+          Start Your Agency Journey with Us
+        </span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-600">
+          <p className="flex items-center">
+            ✅ <span className="ml-2">Strategic Expertise</span>
+          </p>
+          <p className="flex items-center">
+            ✅ <span className="ml-2">Creative Excellence</span>
+          </p>
+          <p className="flex items-center">
+            ✅ <span className="ml-2">Multichannel Integration</span>
+          </p>
+          <p className="flex items-center">
+            ✅ <span className="ml-2">Technological Innovation</span>
+          </p>
+          <p className="flex items-center">
+            ✅ <span className="ml-2">Performance Measurement</span>
+          </p>
+          <p className="flex items-center">
+            ✅ <span className="ml-2">Building Brand Identity</span>
+          </p>
+        </div>
+      </div>
+      <img
+        src={toolsImage}
+        className="md:w-1/2 w-full shadow-xl object-cover"
+        alt="Tools"
+      />
+    </div>
+  );
 };
 
 export default Tools;
