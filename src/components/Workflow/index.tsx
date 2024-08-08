@@ -4,15 +4,15 @@ const Workflow = () => {
   return (
     <div
       id="advertiser"
-      className="w-full md:pt-44 pt-36 md:px-24 px-5 flex md:flex-row flex-col items-center md:justify-around justify-center md:gap-10 gap-5 mt-24 mb-48"
+      className="w-full pt-12 md:pt-24 px-4 md:px-8 flex flex-col md:flex-row items-center md:justify-between justify-center gap-8 md:gap-10 mt-12 mb-24"
     >
       <img
         src={workflowImage}
-        className="md:w-[50%] w-full md:order-1 order-2  shadow-xl"
+        className="md:w-1/2 w-full md:order-1 order-2 shadow-xl object-cover"
         alt="Workflow"
       />
-      <div className="flex flex-col gap-5 md:w-[35%] w-full md:order-2 order-1">
-        <span className="font-bold md:text-[75px] text-[50px] max-w-full md:leading-[90px] leading-[70px]">
+      <div className="flex flex-col gap-6 md:w-1/2 w-full md:order-2 order-1">
+        <span className="font-bold text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-tight">
           Join Us as an Advertiser
         </span>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-600">
