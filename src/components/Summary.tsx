@@ -13,7 +13,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
-import { useAuth } from '@clerk/clerk-react';
+import { useAuth, useUser } from '@clerk/clerk-react';
 
 // Extend the Window interface
 declare global {
@@ -35,59 +35,183 @@ interface RazorpayResponse {
 }
 
 export default function SummaryComponent() {
-  const [amount, setAmount] = useState<number>(1);
-  const { userId } = useAuth();
+  const [amount, setAmount] = useState<number>();
+  const { userId, orgId } = useAuth();
   const [campaigns, setCampaigns] = useState([]);
   const [error, setError] = useState(null);
   const [strategies, setStrategies] = useState([]);
   const [successPaymentId, setSuccessPaymentId] = useState<string>('');
-  
+  const { user } = useUser();
+
   console.log({
     userId: userId,
-    campaignId : campaigns?.campaignId,
+    campaignId: campaigns?.campaignId,
     strategyId: strategies?.strategyId,
-    successPaymentId: successPaymentId
-  })
- 
-console.log(strategies)
+    successPaymentId: successPaymentId,
+  });
 
+  console.log(strategies);
+
+  /*
+    0> to get the type of user 
+    1> if Agency [
+        1> get the lastest campaign details of that agency id 
+        2> to get the agency Id need to use orgId 
+        3> get the strategy details for that campaign id 
+    ]
+    2> if Advertiser [
+        1> get the latest campaign details of that user id [or get the advertiserId using the user?.id then use that to get the latest campaign details ]
+        2> to get this.id user?.id is required 
+        3> get the strategy details for that campaign id 
+    ]
+    3> make changes to the Summery.tsx accordingly 
+    4> then send the latest Campaign and Strategy details accordingly to the bill endpoint using handle submission 
+*/
+
+  // 0> get the type of user
+  const [isAdd, setIsAdd] = useState<string>('');
   useEffect(() => {
-    // Define the fetch call inside useEffect to fetch data when the component mounts
-    const fetchCampaigns = async () => {
+    const fetchData = async (id: string) => {
       try {
-        const response = await fetch(`/api/campaigns/${userId}`);
+        const response = await fetch(`/api/search-user/${id}`, {
+          method: 'GET',
+          headers: {
+            'Content-type': 'application/json',
+          },
+        });
+
         if (!response.ok) {
-          throw new Error(`Error: ${response.statusText}`);
+          throw new Error('Network response was not ok');
         }
-        const data = await response.json();
-        setCampaigns(data);
+        const data: UserData = await response.json();
+        setIsAdd(data);
+        console.log(data);
       } catch (error) {
-        setError(error.message);
+        console.log(error);
       }
     };
 
-    // Call the function
-    fetchCampaigns();
-  }, [userId]);
+    if (user?.id) {
+      fetchData(user.id);
+    }
+  }, [user?.id]);
 
+  console.log(isAdd?.type_of_user);
+
+  /*
+1> if Agency [
+        1> get the lastest campaign details of that agency id 
+        2> to get the agency Id need to use orgId 
+        3> get the strategy details for that campaign id 
+    ]
+    2> if Advertiser [
+        1> get the latest campaign details of that user id [or get the advertiserId using the user?.id then use that to get the latest campaign details ]
+        2> to get this.id user?.id is required 
+        3> get the strategy details for that campaign id 
+    ] 
+*/
+  const [campaignInfo, setCampaignInfo] = useState<string>('');
+  console.log(isAdd?.type_of_user);
+  //getting the latest campign details
   useEffect(() => {
-    // Define the fetch call inside useEffect to fetch data when the component mounts
-    const fetchStrategies = async () => {
+    const fetchCampaignId = async (url: string) => {
       try {
-        const response = await fetch(`/api/strategy/${userId}`);
+        const response = await fetch(url, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
         }
-        const data = await response.json();
-        setStrategies(data);
+
+        const idData = await response.json();
+        setCampaignInfo(idData);
       } catch (error) {
-        setError(error.message);
+        console.error(error);
       }
     };
 
-    // Call the function
-    fetchStrategies();
-  }, [userId]);
+    if (isAdd?.type_of_user === 'Advertiser') {
+      fetchCampaignId(`/api/campaigns/${user?.id}`);
+    } else if (isAdd?.type_of_user === 'Agency') {
+      fetchCampaignId(`/api/campaigns-agency/${orgId}`);
+    }
+  }, [isAdd?.type_of_user, user?.id, orgId]);
+  console.log(campaignInfo[campaignInfo.length - 1]);
+
+  useEffect(() => {
+    if (campaignInfo) {
+      setCampaigns(campaignInfo[campaignInfo.length - 1]);
+    }
+  }, [campaignInfo]);
+  console.log(campaigns?.campaignId);
+
+  //getting the latest strategy details
+  useEffect(() => {
+    if (campaignInfo) {
+      const fetchStrategyDetails = async (url: string) => {
+        try {
+          const { data } = await axios.get(url);
+          setStrategies(data);
+          console.log(data);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      fetchStrategyDetails(`/api/strategy-campaign/${campaigns?.campaignId}`);
+    }
+  }, [campaigns?.campaignId]);
+  console.log(strategies);
+
+  //3> make changes to the Summery.tsx accordingly
+  useEffect(() => {
+    if (strategies) {
+      setAmount(campaigns?.campaignBudget);
+    }
+  }, [campaigns?.campaignBudget, strategies]);
+
+  //4> then send the latest Campaign and Strategy details accordingly to the bill endpoint using handle submission
+  const [successFullpayment, setSuccessFullpeyment] = useState<boolean>(false);
+  useEffect(() => {
+    if (successPaymentId) {
+      const postBillData = async () => {
+        const data = await axios.post(
+          '/api/bill',
+          {
+            userId: userId,
+            campaignId: campaigns?.campaignId,
+            strategyId: strategies?.strategyId,
+            successPaymentId: successPaymentId,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+        console.log(data);
+      };
+      try {
+        postBillData();
+      } catch (error) {
+        console.log(error);
+        // I must add custom error handler logic from here
+      }
+    }
+  }, [successPaymentId]);
+  //if payment is successful then the confirmation to payment success is received here
+
+  useEffect(() => {
+    const paymentConfirmation = async () => {
+      const payStData = await axios.get(`/api/bill/${campaigns?.campaignId}`);
+      console.log(payStData?.data.paymentSuccess);
+      setSuccessFullpeyment(payStData?.data.paymentSuccess);
+    };
+    paymentConfirmation();
+  }, [campaigns?.campaignId]);
 
   // handlePayment Function
   const handlePayment = async () => {
@@ -154,7 +278,7 @@ console.log(strategies)
     const rzp1 = new window.Razorpay(options);
     rzp1.open();
   };
-
+  console.log(campaigns);
   return (
     <Card className="w-full max-w-lg p-4 rounded-lg border border-stroke bg-white shadow-2xl dark:border-strokedark dark:bg-boxdark">
       <CardHeader className="pb-2">
@@ -169,7 +293,9 @@ console.log(strategies)
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="font-semibold">Campaign Name goes here</p>
+            <p className="font-semibold">
+              Campaign Name: {campaigns?.campaignName}
+            </p>
             <Link to={'/campaign'}>
               <Button variant="ghost" className="p-0 text-sm text-blue-700">
                 <ClipboardPenIcon className="inline-block w-4 h-4 mr-1" />
@@ -178,17 +304,22 @@ console.log(strategies)
             </Link>
           </div>
           <div className="text-right">
-            <p className="font-semibold">Campaign budget goes here with eitheir Daily bud or Weekly bud</p>
+            <p className="font-semibold">
+              Campaign budget ${campaigns?.campaignBudget}
+            </p>
           </div>
         </div>
         <div className="flex items-center">
           <CalendarIcon className="w-5 h-5 mr-2" />
           <p>
-            Start Date and End Date goes here
+            Start Date: {campaigns?.startDate} and End Date:{' '}
+            {campaigns?.endDate}
           </p>
         </div>
         <div className="space-y-2">
-          <p className="font-semibold">Strategy Name goes here</p>
+          <p className="font-semibold">
+            Strategy Name : {strategies?.strategyName}
+          </p>
           <div className="flex items-center justify-between">
             <p>Selected Channels goes here</p>
             <Link to={'/strategy'}>
@@ -208,12 +339,18 @@ console.log(strategies)
       </CardContent>
       <CardFooter className="flex justify-between pt-4 border-t">
         <p className="text-muted-foreground">Total campaign budget</p>
-        <p className="text-lg font-semibold">$100/day</p>
+        <p className="text-lg font-semibold">${campaigns?.campaignBudget}</p>
       </CardFooter>
       <div className="justify-end">
-        <Button className="text-white" onClick={handlePayment}>
-          Pay Now
-        </Button>
+        {successFullpayment ? (
+          <>Paid</>
+        ) : (
+          <>
+            <Button className="text-white" onClick={handlePayment}>
+              Pay Now
+            </Button>
+          </>
+        )}
       </div>
     </Card>
   );

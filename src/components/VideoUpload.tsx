@@ -14,16 +14,17 @@ import { useState } from 'react';
 import axios from 'axios';
 
 interface VideoUploadProps {
-  onFileNameChange: (fileName: string | null) => void;
+  // onFileNameChange: (fileName: string | null) => void;
+  onURLSet : (fileName: string | null) => void;
 }
 
-export default function VideoUpload({ onFileNameChange }: VideoUploadProps) {
+export default function VideoUpload({  onURLSet }: VideoUploadProps) {
   const [fileName, setFileName] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [isUploadComplete, setIsUploadComplete] = useState<boolean>(false);
-
+  const [url, setUrl] = useState<string>('')
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -97,8 +98,9 @@ export default function VideoUpload({ onFileNameChange }: VideoUploadProps) {
             setFileName(file.name);
             setIsUploadComplete(true);
             setIsUploading(false);
-            onFileNameChange(file.name);  // Send the fileName to the parent
             console.log(response);
+            setUrl(response.data?.url)
+            onURLSet(response.data?.url)
           })
           .catch((error) => {
             setErrorMessage('Upload failed. Please try again.');
@@ -109,10 +111,10 @@ export default function VideoUpload({ onFileNameChange }: VideoUploadProps) {
       setFileName(null);
       setIsUploading(false);
       setIsUploadComplete(false);
-      onFileNameChange(null);  // Reset the fileName in the parent if no file is selected
+       // Reset the fileName in the parent if no file is selected
     }
   };
-
+console.log(url)
   return (
     <Card className="w-full max-w-xl">
       <CardHeader>
@@ -180,6 +182,7 @@ export default function VideoUpload({ onFileNameChange }: VideoUploadProps) {
               className="object-cover w-full h-full"
               style={{ aspectRatio: '800/450', objectFit: 'cover' }}
             />
+            <video src={url} />
           </div>
         )}
       </CardContent>
