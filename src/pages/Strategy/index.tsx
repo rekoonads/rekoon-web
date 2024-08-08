@@ -132,6 +132,12 @@ const Strategy = () => {
     setDaySettings(newDaySettings);
   };
 
+  //Video Upload 
+ const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+
+  const handleFileNameChange = (fileName: string | null) => {
+    setUploadedFileName(fileName);
+  };
   //for Debugging
 
   // console.log({
@@ -152,43 +158,53 @@ const Strategy = () => {
   //Advertiser id is the orgId
   const { orgId, userId } = useAuth();
   console.log(orgId, userId);
- 
+  const [isAdd, setIsAdd] = useState<string>('')
  
   //Fetching The Campaign Id
   const [campaignInfo, setCampaignInfo] = useState<string>('');
+  console.log(isAdd?.type_of_user)
+  
   useEffect(() => {
-    const fetchCampaignId = async (id: String) => {
+    const fetchCampaignId = async (url: string) => {
       try {
-        let idData = await fetch(`/api/campaigns/${id}`, {
+        const response = await fetch(url, {
           headers: {
             'Content-Type': 'application/json',
           },
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw console.error(response);
-            }
-            return response;
-          })
-          .then((data) => {
-            return data.json();
-          })
-          .catch((er) => console.log(er));
-
+        });
+  
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+  
+        const idData = await response.json();
         setCampaignInfo(idData);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
-    fetchCampaignId(user?.id);
-  }, [user?.id]);
-  console.log(campaignInfo);
   
- let infoId =  campaignInfo?.advertiserId ? campaignInfo?.advertiserId : campaignInfo?.agencyId ? campaignInfo?.agencyId : null
- console.log(infoId)
+    if (isAdd?.type_of_user === 'Advertiser') {
+      fetchCampaignId(`/api/campaigns/${user?.id}`);
+    } else if (isAdd?.type_of_user === 'Agency') {
+      fetchCampaignId(`/api/campaigns-agency/${orgId}`);
+    }
+  }, [isAdd?.type_of_user, user?.id, orgId]);
+  
+//for Getting the Latest ids 
+  console.log(campaignInfo);
+  const [info, setInfo] = useState<string>('')
+  useEffect(() => {
+    console.log(campaignInfo);
+    if(isAdd?.type_of_user === 'Agency'){
+      setInfo(orgId)
+    } else if (isAdd?.type_of_user === 'Advertiser'){
+      setInfo(campaignInfo[campaignInfo.length - 1]?.advertiserId)
+    }
+  }, [campaignInfo]);
+  console.log(info)
 
    // searches for the type of user
-   const [isAdd, setIsAdd] = useState<string>('')
    useEffect(() => {
      const fetchData = async (id: string) => {
        try {
@@ -219,7 +235,7 @@ const Strategy = () => {
  
 
   //Handling Submission of data dont taper with this
- console.log(campaignInfo?.campaignId)
+ console.log(campaignInfo[campaignInfo.length - 1]?.campaignId)
   const handleSubmit = async () => {
    if(isAdd?.type_of_user === 'Agency'){
     try {
@@ -231,7 +247,7 @@ const Strategy = () => {
         body: JSON.stringify({
           userId: userId,
           strategyId: `ST-${uuidv4()}`,
-          agencyId: infoId,
+          agencyId: info,
           ageRange: selectedTab,
           gender: selectedGender,
           screens: selectedDevice,
@@ -242,8 +258,8 @@ const Strategy = () => {
           selectedOption: selectedOption,
           selectedChannels: selectedChannels,
           deliveryTimeSlots: daySettings,
-          creatives: fileName,
-          campaignId: campaignInfo?.campaignId,
+          creatives: uploadedFileName,
+          campaignId: campaignInfo[campaignInfo.length - 1]?.campaignId,
         }),
       });
 
@@ -268,7 +284,7 @@ const Strategy = () => {
         body: JSON.stringify({
           userId: userId,
           strategyId: `ST-${uuidv4()}`,
-          advertiserId: infoId,
+          advertiserId: info,
           ageRange: selectedTab,
           gender: selectedGender,
           screens: selectedDevice,
@@ -279,8 +295,8 @@ const Strategy = () => {
           selectedOption: selectedOption,
           selectedChannels: selectedChannels,
           deliveryTimeSlots: daySettings,
-          creatives: fileName,
-          campaignId: campaignInfo?.campaignId,
+          creatives: uploadedFileName,
+          campaignId: campaignInfo[campaignInfo.length - 1]?.campaignId,
         }),
       });
 
@@ -1233,7 +1249,7 @@ const Strategy = () => {
           </div>
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <VideoUpload />
+            <VideoUpload onFileNameChange={handleFileNameChange} />
             </div>
           </div>
           <form onSubmit={handleSubmit}>

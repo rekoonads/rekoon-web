@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Card,
   CardHeader,
@@ -12,7 +13,11 @@ import { CheckIcon } from 'lucide-react';
 import { useState } from 'react';
 import axios from 'axios';
 
-export default function VideoUpload() {
+interface VideoUploadProps {
+  onFileNameChange: (fileName: string | null) => void;
+}
+
+export default function VideoUpload({ onFileNameChange }: VideoUploadProps) {
   const [fileName, setFileName] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -92,6 +97,7 @@ export default function VideoUpload() {
             setFileName(file.name);
             setIsUploadComplete(true);
             setIsUploading(false);
+            onFileNameChange(file.name);  // Send the fileName to the parent
             console.log(response);
           })
           .catch((error) => {
@@ -103,6 +109,7 @@ export default function VideoUpload() {
       setFileName(null);
       setIsUploading(false);
       setIsUploadComplete(false);
+      onFileNameChange(null);  // Reset the fileName in the parent if no file is selected
     }
   };
 
