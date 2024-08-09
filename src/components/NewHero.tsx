@@ -1,4 +1,3 @@
-import logo1 from '../assets/images/logo1.svg';
 import heroImage from '../assets/images/hero.png';
 import { ArrowRightIcon } from 'lucide-react';
 import advertiser1 from '../../src/assets/images/advertiser1.jpg';
@@ -11,7 +10,11 @@ const Hero = () => {
     <div className="min-h-screen bg-gradient-to-r from-blue-50 to-purple-50">
       <header className="flex flex-col md:flex-row justify-between items-center p-4 md:p-8">
         <div className="mb-4 md:mb-0">
-          <img src={logo1} alt="Logo" className="w-40 md:w-56 h-auto" />
+          <img
+            src={'/logo/Logo4-01-removebg-preview.png'}
+            alt="Logo"
+            className="w-40 md:w-56 h-auto"
+          />
         </div>
         <nav className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6">
           <a
