@@ -1,7 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '../../components/ui/button';
 import { Building2, Plus, Copy } from 'lucide-react';
 import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
+import axios from 'axios';
+import { useAuth, useUser } from '@clerk/clerk-react';
+
+
+interface UserData {
+  type_of_user: string;
+  
+}
 
 export default function Advertisers() {
   const [isNewAdvertiserDrawerVisible, setIsNewAdvertiserDrawerVisible] =
@@ -55,7 +63,100 @@ export default function Advertisers() {
       setIsEditAdvertiserDrawerVisible(false);
     }, 500); // Duration should match the transition duration
   };
+  const {orgId} = useAuth(); 
+  const {user} = useUser()
+  const [name, setName] = useState<string>('');
+  const [website, setWebsite] = useState<string>('');
+  const [businessEmail, setBusinessEmail] = useState<string>('');
+  const [businessContact, setBusinessContact] = useState<string>('')
+  const [respondedData, setRespondedData] = useState<any>()
 
+  //type of user 
+  const [isAdd, setIsAdd] = useState<UserData | null>(null);
+
+useEffect(() => {
+  const fetchData = async (id: string) => {
+    try {
+      const response = await fetch(`/api/search-user/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-type': 'application/json',
+          'Cache-Control': 'no-cache', 
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data: UserData = await response.json();
+      setIsAdd(data);
+      console.log(data);
+    } catch (error) {
+      console.error('Fetch error:', error);
+    }
+  };
+
+  if (user?.id) {
+    fetchData(user.id);
+  }
+}, [user?.id]);
+
+console.log(isAdd?.type_of_user);
+
+const [adId, setAdId] = useState<string>('')
+useEffect(() => {
+  if (isAdd?.type_of_user === 'Advertiser') {
+    const getAdvertiserId = async () => {
+      try {
+        const response = await axios.get(`/api/advertisers/${user?.id}`, {
+          headers: { 'Content-Type': 'application/json' },
+          params: {
+            _: new Date().getTime(), 
+          },
+        });
+        console.log(response.data);
+        setAdId(response.data?.advertiserId)
+      } catch (error) {
+        console.error('Axios error:', error);
+      }
+    };
+    getAdvertiserId();
+  }
+}, [isAdd?.type_of_user, user?.id]);
+console.log(adId)
+
+  //Handling Save and Posting to the route 
+  const handleSubmit = async(event) =>{
+    event.preventDefault(); 
+     
+    if(isAdd?.type_of_user === 'Agency'){
+     try {
+      const postData = await axios.post('/api/add-website', {name,websiteUrl:website,websiteContact: businessContact,websiteEmail: businessEmail, agencyId: orgId, createdBy: user?.id}, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log(postData)
+      setRespondedData(postData)
+     } catch (error) {
+      console.log(error)
+     }
+    } else if (isAdd?.type_of_user === 'Advertiser'){
+     try {
+      const postData = await axios.post('/api/add-website', {name,websiteUrl: website,websiteContact: businessContact,websiteEmail: businessEmail, advertiserId: adId, createdBy: user?.id}, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log(postData)
+      setRespondedData(postData)
+     } catch (error) {
+      console.log(error)
+     }
+    }
+  }
+console.log(respondedData)
   return (
     <main className="w-full py-12 px-4 md:px-6 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <header className="mb-8">
@@ -116,7 +217,7 @@ export default function Advertisers() {
 
       {/* New Advertiser Drawer */}
       {isNewAdvertiserDrawerVisible && (
-        <div className="fixed inset-0 flex items-start justify-end bg-black bg-opacity-50 z-50 transition-opacity duration-500">
+        <div className="overflow-auto fixed inset-0 flex items-start justify-end bg-black bg-opacity-50 z-50 transition-opacity duration-500">
           <div
             className={`bg-white w-1/3 h-full p-8 overflow-y-auto shadow-lg transition-transform duration-500 ${
               isNewAdvertiserDrawerOpen
@@ -148,6 +249,7 @@ export default function Advertisers() {
                   type="text"
                   placeholder="Enter Name"
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                  onChange={event => setName(event.target.value)}
                 />
               </div>
               <div className="space-y-4">
@@ -173,11 +275,34 @@ export default function Advertisers() {
                   type="text"
                   placeholder="www.yourbrand.com"
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                  onChange={event => setWebsite(event.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Business Email
+                </label>
+                <input
+                  type="text"
+                  placeholder="www.yourbrand.com"
+                  className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                  onChange={event => setBusinessEmail(event.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Business Contact
+                </label>
+                <input
+                  type="text"
+                  placeholder="www.yourbrand.com"
+                  className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                  onChange={event => setBusinessContact(event.target.value)}
                 />
               </div>
 
               <div className="flex justify-end">
-                <Button className="bg-blue-600 text-white">Save</Button>
+                <Button className="bg-blue-600 text-white" onClick={handleSubmit}>Save</Button>
               </div>
             </div>
           </div>
