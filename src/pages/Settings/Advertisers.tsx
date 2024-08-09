@@ -127,35 +127,50 @@ useEffect(() => {
 console.log(adId)
 
   //Handling Save and Posting to the route 
-  const handleSubmit = async(event) =>{
-    event.preventDefault(); 
-     
-    if(isAdd?.type_of_user === 'Agency'){
-     try {
-      const postData = await axios.post('/api/add-website', {name,websiteUrl:website,websiteContact: businessContact,websiteEmail: businessEmail, agencyId: orgId, createdBy: user?.id}, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      console.log(postData)
-      setRespondedData(postData)
-     } catch (error) {
-      console.log(error)
-     }
-    } else if (isAdd?.type_of_user === 'Advertiser'){
-     try {
-      const postData = await axios.post('/api/add-website', {name,websiteUrl: website,websiteContact: businessContact,websiteEmail: businessEmail, advertiserId: adId, createdBy: user?.id}, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      console.log(postData)
-      setRespondedData(postData)
-     } catch (error) {
-      console.log(error)
-     }
-    }
+ 
+const handleSubmit = async (event: React.FormEvent) => {
+  event.preventDefault(); 
+   
+  if (isAdd?.type_of_user === 'Agency') {
+      try {
+          const postData = await axios.post('/api/add-website', {
+              name,
+              websiteUrl: website,
+              websiteContact: businessContact,
+              websiteEmail: businessEmail,
+              agencyId: orgId,
+              createdBy: user?.id
+          }, {
+              headers: {
+                  'Content-Type': 'application/json'
+              }
+          });
+          console.log(postData);
+          setRespondedData(postData);
+      } catch (error) {
+          console.log(error);
+      }
+  } else if (isAdd?.type_of_user === 'Advertiser') {
+      try {
+          const postData = await axios.post('/api/add-website', {
+              name,
+              websiteUrl: website,
+              websiteContact: businessContact,
+              websiteEmail: businessEmail,
+              advertiserId: adId,
+              createdBy: user?.id
+          }, {
+              headers: {
+                  'Content-Type': 'application/json'
+              }
+          });
+          console.log(postData);
+          setRespondedData(postData);
+      } catch (error) {
+          console.log(error);
+      }
   }
+}
 console.log(respondedData)
   return (
     <main className="w-full py-12 px-4 md:px-6 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">

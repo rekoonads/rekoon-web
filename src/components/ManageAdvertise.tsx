@@ -11,6 +11,7 @@ import {
 } from '@clerk/clerk-react';
 import { DropdownMenuDemo } from './SettingsMenu';
 import { getAgency, searchUser } from '../asyncCall/asyncCall';
+import { events } from '@react-three/fiber';
 
 export default function ManageAdvertise() {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
@@ -99,7 +100,6 @@ useEffect(() => {
         console.log(error);
       }
     };
-
     if (user?.id) {
       fetchData(user.id);
     }
@@ -117,8 +117,8 @@ useEffect(() => {
  
  
  
-  //for Agencies only 
-  const [agencyData, setAgencyData] = useState<string>('');
+ //for Agencies only 
+ const [agencyData, setAgencyData] = useState<string>('');
  console.log(orgId)
   useEffect(() => {
     if(isAdd?.type_of_user === 'Agency'){
@@ -161,6 +161,13 @@ console.log(agencyData)
 
   const userType = isAdd?.type_of_user ?? 'Unknown';
   console.log(userType)
+
+ const [cinNumber, setCinNumber] = useState<string>('')
+  console.log(legalName)
+  console.log(cinNumber)
+
+
+  
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="flex items-center justify-between p-4 bg-white text-white">
@@ -398,6 +405,7 @@ console.log(agencyData)
                   type="text"
                   placeholder="Enter CIN Number"
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                  onChange={event => setCinNumber(event.target.value)}
                 />
               </div>
 
