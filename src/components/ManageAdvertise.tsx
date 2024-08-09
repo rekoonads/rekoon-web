@@ -157,16 +157,20 @@ export default function ManageAdvertise() {
   console.log(isAdd?.data[0]?.advertiserId);
   const [name, setName] = useState<string>('');
 
-  const sendGSTCertificate = async (event:any) => {
+  const sendGSTCertificate = async (event: any) => {
     const gstData = event.target.value;
     const formData = new FormData();
     formData.append('image', gstData);
-    const data = await axios.post('http://localhost:3001/upload_video', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
+    const data = await axios.post(
+      'http://localhost:3001/upload_video',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       },
-    });
-    console.log(data)
+    );
+    console.log(data);
   };
 
   // Change the name based on the Type

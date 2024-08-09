@@ -315,10 +315,11 @@ console.log(respondedData)
                   onChange={event => setBusinessContact(event.target.value)}
                 />
               </div>
-
+              <form onSubmit={handleSubmit}>
               <div className="flex justify-end">
-                <Button className="bg-blue-600 text-white" onClick={handleSubmit}>Save</Button>
+                <Button className="bg-blue-600 text-white" type='submit'>Save</Button>
               </div>
+              </form>
             </div>
           </div>
         </div>
