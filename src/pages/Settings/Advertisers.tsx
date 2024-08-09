@@ -65,7 +65,7 @@ export default function Advertisers() {
   };
   const {orgId} = useAuth(); 
   const {user} = useUser()
-  const [name, setName] = useState<string>('');
+  const [websiteName, setWebsiteName] = useState<string>('');
   const [website, setWebsite] = useState<string>('');
   const [businessEmail, setBusinessEmail] = useState<string>('');
   const [businessContact, setBusinessContact] = useState<string>('')
@@ -134,7 +134,7 @@ const handleSubmit = async (event: React.FormEvent) => {
   if (isAdd?.type_of_user === 'Agency') {
       try {
           const postData = await axios.post('/api/add-website', {
-              name,
+              websiteName,
               websiteUrl: website,
               websiteContact: businessContact,
               websiteEmail: businessEmail,
@@ -153,7 +153,7 @@ const handleSubmit = async (event: React.FormEvent) => {
   } else if (isAdd?.type_of_user === 'Advertiser') {
       try {
           const postData = await axios.post('/api/add-website', {
-              name,
+              websiteName,
               websiteUrl: website,
               websiteContact: businessContact,
               websiteEmail: businessEmail,
@@ -264,7 +264,7 @@ console.log(respondedData)
                   type="text"
                   placeholder="Enter Name"
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-                  onChange={event => setName(event.target.value)}
+                  onChange={event => setWebsiteName(event.target.value)}
                 />
               </div>
               <div className="space-y-4">

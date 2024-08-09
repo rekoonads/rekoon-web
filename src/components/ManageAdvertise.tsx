@@ -76,11 +76,8 @@ export default function ManageAdvertise() {
     }
   };
 
-
-
-
-//Searching User Type
-useEffect(() => {
+  //Searching User Type
+  useEffect(() => {
     const fetchData = async (id: string) => {
       try {
         const response = await fetch(`/api/search-user/${id}`, {
@@ -105,41 +102,32 @@ useEffect(() => {
     }
   }, [user?.id]);
 
-  
-  
-  //for getting the agency 
-  console.log(isAdd?.data[0].agencyName)
+  //for getting the agency
+  console.log(isAdd?.data[0].agencyName);
 
-  //for getting the advertiser 
-  console.log(isAdd?.data[0].advertiserName)
-  
- 
- 
- 
- 
- //for Agencies only 
- const [agencyData, setAgencyData] = useState<string>('');
- console.log(orgId)
+  //for getting the advertiser
+  console.log(isAdd?.data[0].advertiserName);
+
+  //for Agencies only
+  const [agencyData, setAgencyData] = useState<string>('');
+  console.log(orgId);
   useEffect(() => {
-    if(isAdd?.type_of_user === 'Agency'){
+    if (isAdd?.type_of_user === 'Agency') {
       const handleSearch = async () => {
-        if (!orgId) return;  // Prevents running on initial render
+        if (!orgId) return; // Prevents running on initial render
         try {
           const data = await getAgency(orgId);
           setAgencyData(data);
         } catch (err) {
-         
           console.log(err);
         }
       };
-  
+
       handleSearch();
     }
-   
-  }, [isAdd,orgId]);
+  }, [isAdd, orgId]);
 
-console.log(agencyData)
-
+  console.log(agencyData);
 
   const openDrawer = () => {
     setIsDrawerVisible(true);
@@ -160,14 +148,97 @@ console.log(agencyData)
   };
 
   const userType = isAdd?.type_of_user ?? 'Unknown';
-  console.log(userType)
+  console.log(userType);
 
- const [cinNumber, setCinNumber] = useState<string>('')
-  console.log(legalName)
-  console.log(cinNumber)
+  const [cinNumber, setCinNumber] = useState<string>('');
+  console.log(legalName);
+  console.log(cinNumber);
+  console.log(agencyData?.agencyId);
+  console.log(isAdd?.data[0]?.advertiserId);
+  const [name, setName] = useState<string>('');
 
+  const sendGSTCertificate = async (event:any) => {
+    const gstData = event.target.value;
+    const formData = new FormData();
+    formData.append('image', gstData);
+    const data = await axios.post('http://localhost:3001/upload_video', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    console.log(data)
+  };
 
-  
+  // Change the name based on the Type
+  useEffect(() => {
+    isAdd?.type_of_user === 'Agency'
+      ? setName(agencyData?.agencyName)
+      : isAdd?.type_of_user === 'Advertiser'
+      ? setName(isAdd?.data[0].advertiserName)
+      : 'No Name';
+  }, [isAdd?.type_of_user]);
+
+  const [respondedData, setRespondedData] = useState<any>();
+
+  const sendUpdateData = async (event: React.FormEvent) => {
+    event.preventDefault();
+    // /api/update_user
+    if (isAdd?.type_of_user === 'Agency') {
+      try {
+        const postData = await axios.post(
+          '/api/update_user',
+          {
+            typeofuser: 'Agency',
+            agencyName: isAdd?.data[0]?.agencyName,
+            logo: '',
+            gstNumber: gstNumber,
+            legalName: legalName,
+            address: address,
+            agencyId: agencyData?.agencyId,
+            gstCertificate: '',
+            cinNumber: cinNumber,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+        console.log(postData);
+        setRespondedData(postData);
+      } catch (error) {
+        console.log(error);
+      }
+    } else if (isAdd?.type_of_user === 'Advertiser') {
+      try {
+        const postData = await axios.post(
+          '/api/update_user',
+          {
+            typeofuser: 'Advertiser',
+            advertiserName: isAdd?.data[0].advertiserName,
+            logo: '',
+            gstNumber: gstNumber,
+            legalName: legalName,
+            address: address,
+            advertiserId: isAdd?.data[0]?.advertiserId,
+            gstCertificate: '',
+            cinNumber: cinNumber,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+        console.log(postData);
+        setRespondedData(postData);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+  console.log(respondedData);
+
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="flex items-center justify-between p-4 bg-white text-white">
@@ -268,7 +339,7 @@ console.log(agencyData)
                 ) : userType === 'Agency' ? (
                   <>
                     <span>Agency Name:</span>
-                     <span>{agencyData?.agencyName}</span> 
+                    <span>{agencyData?.agencyName}</span>
                   </>
                 ) : null}
               </div>
@@ -334,13 +405,24 @@ console.log(agencyData)
             </div>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Advertiser Name
-                </label>
+                {isAdd?.type_of_user === 'Advertiser' ? (
+                  <>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Advertiser Name
+                    </label>
+                  </>
+                ) : isAdd?.type_of_user === 'Agency' ? (
+                  <>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Agency Name
+                    </label>
+                  </>
+                ) : null}
                 <input
                   type="text"
                   placeholder="Enter Advertiser Name"
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                  value={name}
                 />
                 <div className="mt-2">
                   <label className="mb-3 block text-black dark:text-white">
@@ -394,6 +476,7 @@ console.log(agencyData)
                   <input
                     type="file"
                     className="w-full rounded-md border border-stroke p-3 outline-none transition file:mr-4 file:rounded file:border-[0.5px] file:border-stroke file:bg-[#EEEEEE] file:py-1 file:px-2.5 file:text-sm focus:border-primary file:focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-strokedark dark:file:bg-white/30 dark:file:text-white"
+                    onChange={sendGSTCertificate}
                   />
                 </div>
               </div>
@@ -405,13 +488,16 @@ console.log(agencyData)
                   type="text"
                   placeholder="Enter CIN Number"
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-                  onChange={event => setCinNumber(event.target.value)}
+                  onChange={(event) => setCinNumber(event.target.value)}
                 />
               </div>
-
-              <div className="flex justify-end">
-                <Button className="bg-blue-600 text-white">Save</Button>
-              </div>
+              <form onSubmit={sendUpdateData}>
+                <div className="flex justify-end">
+                  <Button className="bg-blue-600 text-white" type="submit">
+                    Save
+                  </Button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
