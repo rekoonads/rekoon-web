@@ -32,6 +32,15 @@ interface Goal {
   title: string;
   description: string;
 }
+interface DaySetting {
+  startTime: string;
+  endTime: string;
+  selected: boolean;
+}
+
+interface DaySettings {
+  [key: string]: DaySetting;
+}
 
 const goals: Goal[] = [
   {
@@ -125,9 +134,10 @@ const Strategy = () => {
     console.log('Selected channels in parent:', channels);
   };
 
-  const [daySettings, setDaySettings] = useState(defaultDaySettings);
+  const [daySettings, setDaySettings] =
+    useState<DaySettings>(defaultDaySettings);
 
-  const handleDaySettingsChange = (newDaySettings) => {
+  const handleDaySettingsChange = (newDaySettings: DaySettings) => {
     setDaySettings(newDaySettings);
   };
 
@@ -138,13 +148,12 @@ const Strategy = () => {
 
   const handleFileNameChange = (fileName: string | null) => {
     setUploadedFileName(fileName);
-    
   };
 
-  const saveVideoDuration = (duration:number | null) =>{
+  const saveVideoDuration = (duration: number | null) => {
     setVideoDuration(duration);
-  }
-  console.log(videoDuration)
+  };
+  console.log(videoDuration);
   //for Debugging
 
   // console.log({
@@ -1257,7 +1266,10 @@ const Strategy = () => {
           </div>
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <VideoUpload onURLSet={handleFileNameChange} onVideoDuration={saveVideoDuration} />
+              <VideoUpload
+                onURLSet={handleFileNameChange}
+                onVideoDuration={saveVideoDuration}
+              />
             </div>
           </div>
           <form onSubmit={handleSubmit}>
