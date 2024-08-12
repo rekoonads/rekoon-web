@@ -24,7 +24,7 @@ export default function Advertisers() {
     name: 'Rekoon',
     category: 'Business',
     website: 'https://imaginify-ayan471.vercel.app',
-    id: '', // Added ID field
+    id: '', 
   });
   const { toast } = useToast();
   const handleCopyId = () => {
