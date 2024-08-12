@@ -4,11 +4,10 @@ import { Building2, Plus, Copy } from 'lucide-react';
 import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
 import axios from 'axios';
 import { useAuth, useUser } from '@clerk/clerk-react';
-
+import { useToast } from '../../components/ui/use-toast';
 
 interface UserData {
   type_of_user: string;
-  
 }
 
 export default function Advertisers() {
@@ -27,7 +26,7 @@ export default function Advertisers() {
     website: 'https://imaginify-ayan471.vercel.app',
     id: '', // Added ID field
   });
-
+  const { toast } = useToast();
   const handleCopyId = () => {
     if (advertiser.id) {
       navigator.clipboard.writeText(advertiser.id).then(() => {
@@ -63,115 +62,146 @@ export default function Advertisers() {
       setIsEditAdvertiserDrawerVisible(false);
     }, 500); // Duration should match the transition duration
   };
-  const {orgId} = useAuth(); 
-  const {user} = useUser()
+  const { orgId } = useAuth();
+  const { user } = useUser();
   const [websiteName, setWebsiteName] = useState<string>('');
   const [website, setWebsite] = useState<string>('');
   const [businessEmail, setBusinessEmail] = useState<string>('');
-  const [businessContact, setBusinessContact] = useState<string>('')
-  const [respondedData, setRespondedData] = useState<any>()
+  const [businessContact, setBusinessContact] = useState<string>('');
+  const [respondedData, setRespondedData] = useState<any>();
 
-  //type of user 
+  //type of user
   const [isAdd, setIsAdd] = useState<UserData | null>(null);
 
-useEffect(() => {
-  const fetchData = async (id: string) => {
-    try {
-      const response = await fetch(`/api/search-user/${id}`, {
-        method: 'GET',
-        headers: {
-          'Content-type': 'application/json',
-          'Cache-Control': 'no-cache', 
-        },
-      });
+  useEffect(() => {
+    const fetchData = async (id: string) => {
+      try {
+        const response = await fetch(`/api/search-user/${id}`, {
+          method: 'GET',
+          headers: {
+            'Content-type': 'application/json',
+            'Cache-Control': 'no-cache',
+          },
+        });
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data: UserData = await response.json();
+        setIsAdd(data);
+        console.log(data);
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
+    };
+
+    if (user?.id) {
+      fetchData(user.id);
+    }
+  }, [user?.id]);
+
+  console.log(isAdd?.type_of_user);
+
+  const [adId, setAdId] = useState<string>('');
+  useEffect(() => {
+    if (isAdd?.type_of_user === 'Advertiser') {
+      const getAdvertiserId = async () => {
+        try {
+          const response = await axios.get(`/api/advertisers/${user?.id}`, {
+            headers: { 'Content-Type': 'application/json' },
+            params: {
+              _: new Date().getTime(),
+            },
+          });
+          console.log(response.data);
+          setAdId(response.data?.advertiserId);
+        } catch (error) {
+          console.error('Axios error:', error);
+        }
+      };
+      getAdvertiserId();
+    }
+  }, [isAdd?.type_of_user, user?.id]);
+  console.log(adId);
+
+  //Handling Save and Posting to the route
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    try {
+      let postData: any; // Define the type if possible based on your API response
+
+      if (isAdd?.type_of_user === 'Agency') {
+        postData = await axios.post(
+          '/api/add-website',
+          {
+            websiteName,
+            websiteUrl: website,
+            websiteContact: businessContact,
+            websiteEmail: businessEmail,
+            agencyId: orgId,
+            createdBy: user?.id,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+      } else if (isAdd?.type_of_user === 'Advertiser') {
+        postData = await axios.post(
+          '/api/add-website',
+          {
+            websiteName,
+            websiteUrl: website,
+            websiteContact: businessContact,
+            websiteEmail: businessEmail,
+            advertiserId: adId,
+            createdBy: user?.id,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        );
       }
 
-      const data: UserData = await response.json();
-      setIsAdd(data);
-      console.log(data);
+      if (postData && postData.data) {
+        // Update the advertiser state with the new website data
+        setAdvertiser({
+          name: postData.data.name,
+          category: postData.data.category,
+          website: postData.data.websiteUrl,
+          id: postData.data.id, // assuming the response includes an id
+        });
+
+        // Close the drawer
+        closeNewAdvertiserDrawer();
+
+        // Show a success toast
+        toast({
+          title: 'Website added successfully!',
+          description: `The website ${postData.data.websiteUrl} has been added.`,
+        });
+
+        console.log(postData);
+        setRespondedData(postData);
+      }
     } catch (error) {
-      console.error('Fetch error:', error);
+      console.log(error);
+
+      // Show an error toast
+      toast({
+        title: 'Error adding website',
+        description: 'There was an issue adding the website. Please try again.',
+      });
     }
   };
 
-  if (user?.id) {
-    fetchData(user.id);
-  }
-}, [user?.id]);
-
-console.log(isAdd?.type_of_user);
-
-const [adId, setAdId] = useState<string>('')
-useEffect(() => {
-  if (isAdd?.type_of_user === 'Advertiser') {
-    const getAdvertiserId = async () => {
-      try {
-        const response = await axios.get(`/api/advertisers/${user?.id}`, {
-          headers: { 'Content-Type': 'application/json' },
-          params: {
-            _: new Date().getTime(), 
-          },
-        });
-        console.log(response.data);
-        setAdId(response.data?.advertiserId)
-      } catch (error) {
-        console.error('Axios error:', error);
-      }
-    };
-    getAdvertiserId();
-  }
-}, [isAdd?.type_of_user, user?.id]);
-console.log(adId)
-
-  //Handling Save and Posting to the route 
- 
-const handleSubmit = async (event: React.FormEvent) => {
-  event.preventDefault(); 
-   
-  if (isAdd?.type_of_user === 'Agency') {
-      try {
-          const postData = await axios.post('/api/add-website', {
-              websiteName,
-              websiteUrl: website,
-              websiteContact: businessContact,
-              websiteEmail: businessEmail,
-              agencyId: orgId,
-              createdBy: user?.id
-          }, {
-              headers: {
-                  'Content-Type': 'application/json'
-              }
-          });
-          console.log(postData);
-          setRespondedData(postData);
-      } catch (error) {
-          console.log(error);
-      }
-  } else if (isAdd?.type_of_user === 'Advertiser') {
-      try {
-          const postData = await axios.post('/api/add-website', {
-              websiteName,
-              websiteUrl: website,
-              websiteContact: businessContact,
-              websiteEmail: businessEmail,
-              advertiserId: adId,
-              createdBy: user?.id
-          }, {
-              headers: {
-                  'Content-Type': 'application/json'
-              }
-          });
-          console.log(postData);
-          setRespondedData(postData);
-      } catch (error) {
-          console.log(error);
-      }
-  }
-}
-console.log(respondedData)
+  console.log(respondedData);
   return (
     <main className="w-full py-12 px-4 md:px-6 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <header className="mb-8">
@@ -264,7 +294,7 @@ console.log(respondedData)
                   type="text"
                   placeholder="Enter Name"
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-                  onChange={event => setWebsiteName(event.target.value)}
+                  onChange={(event) => setWebsiteName(event.target.value)}
                 />
               </div>
               <div className="space-y-4">
@@ -290,7 +320,7 @@ console.log(respondedData)
                   type="text"
                   placeholder="www.yourbrand.com"
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-                  onChange={event => setWebsite(event.target.value)}
+                  onChange={(event) => setWebsite(event.target.value)}
                 />
               </div>
               <div>
@@ -301,7 +331,7 @@ console.log(respondedData)
                   type="text"
                   placeholder="www.yourbrand.com"
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-                  onChange={event => setBusinessEmail(event.target.value)}
+                  onChange={(event) => setBusinessEmail(event.target.value)}
                 />
               </div>
               <div>
@@ -312,13 +342,15 @@ console.log(respondedData)
                   type="text"
                   placeholder="www.yourbrand.com"
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-                  onChange={event => setBusinessContact(event.target.value)}
+                  onChange={(event) => setBusinessContact(event.target.value)}
                 />
               </div>
               <form onSubmit={handleSubmit}>
-              <div className="flex justify-end">
-                <Button className="bg-blue-600 text-white" type='submit'>Save</Button>
-              </div>
+                <div className="flex justify-end">
+                  <Button className="bg-blue-600 text-white" type="submit">
+                    Save
+                  </Button>
+                </div>
               </form>
             </div>
           </div>

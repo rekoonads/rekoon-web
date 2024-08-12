@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import {
   Card,
   CardHeader,
@@ -10,21 +11,20 @@ import { Label } from '../components/ui/label';
 import { Input } from '../components/ui/input';
 import { Progress } from '../components/ui/progress';
 import { CheckIcon } from 'lucide-react';
-import { useState } from 'react';
-import axios from 'axios';
 
 interface VideoUploadProps {
-  // onFileNameChange: (fileName: string | null) => void;
-  onURLSet : (fileName: string | null) => void;
+  onURLSet: (url: string | null) => void;
 }
 
-export default function VideoUpload({  onURLSet }: VideoUploadProps) {
+export default function VideoUpload({ onURLSet }: VideoUploadProps) {
   const [fileName, setFileName] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [isUploadComplete, setIsUploadComplete] = useState<boolean>(false);
-  const [url, setUrl] = useState<string>('')
+  const [url, setUrl] = useState<string>('');
+  const [videoDuration, setVideoDuration] = useState<number | null>(null);
+
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -49,6 +49,8 @@ export default function VideoUpload({  onURLSet }: VideoUploadProps) {
       // Validate video properties
       const videoElement = document.createElement('video');
       videoElement.src = URL.createObjectURL(file);
+
+      // Ensure the metadata is loaded
       videoElement.onloadedmetadata = () => {
         const { videoWidth, videoHeight, duration } = videoElement;
 
@@ -74,6 +76,9 @@ export default function VideoUpload({  onURLSet }: VideoUploadProps) {
           return;
         }
 
+        // Update video duration (in seconds)
+        setVideoDuration(Math.round(duration));
+
         // If all validations pass, upload the video
         setErrorMessage(null);
         setIsUploading(true);
@@ -98,23 +103,32 @@ export default function VideoUpload({  onURLSet }: VideoUploadProps) {
             setFileName(file.name);
             setIsUploadComplete(true);
             setIsUploading(false);
-            console.log(response);
-            setUrl(response.data?.url)
-            onURLSet(response.data?.url)
+            setUrl(response.data?.url);
+            onURLSet(response.data?.url);
           })
           .catch((error) => {
             setErrorMessage('Upload failed. Please try again.');
             setIsUploading(false);
           });
       };
+
+      // Handle video duration
+      videoElement.onloadeddata = () => {
+        if (videoElement.duration) {
+          setVideoDuration(Math.round(videoElement.duration));
+        }
+      };
     } else {
       setFileName(null);
       setIsUploading(false);
       setIsUploadComplete(false);
-       // Reset the fileName in the parent if no file is selected
+      setVideoDuration(null);
+      onURLSet(null);
     }
   };
-console.log(url)
+
+  console.log(videoDuration);
+
   return (
     <Card className="w-full max-w-xl">
       <CardHeader>
@@ -139,29 +153,28 @@ console.log(url)
             <Label>Guidelines for video creatives</Label>
             <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-4 h-4 fill-green-500" />
-                Resolution: 1080p (HD): 1920x1080
+                <CheckIcon className="w-4 h-4 fill-green-500" /> Resolution:
+                1080p (HD): 1920x1080
               </li>
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-4 h-4 fill-green-500" />
-                Aspect ratio: 16:9
+                <CheckIcon className="w-4 h-4 fill-green-500" /> Aspect ratio:
+                16:9
               </li>
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-4 h-4 fill-green-500" />
-                Format: .mp4
+                <CheckIcon className="w-4 h-4 fill-green-500" /> Format: .mp4
               </li>
             </ul>
           </div>
           <div className="grid gap-2">
-            <Label>Guidelines for video creatives</Label>
+            <Label>Additional guidelines</Label>
             <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-4 h-4 fill-green-500" />
-                Maximum file size: Up to 500MB
+                <CheckIcon className="w-4 h-4 fill-green-500" /> Maximum file
+                size: Up to 500MB
               </li>
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-4 h-4 fill-green-500" />
-                Length between 5 and 30 seconds
+                <CheckIcon className="w-4 h-4 fill-green-500" /> Length between
+                5 and 30 seconds
               </li>
             </ul>
           </div>
@@ -174,15 +187,17 @@ console.log(url)
         )}
         {isUploadComplete && (
           <div className="aspect-video bg-muted rounded-md overflow-hidden">
-            <img
-              src="/placeholder.svg"
-              alt="Preview"
-              width={800}
-              height={450}
-              className="object-cover w-full h-full"
-              style={{ aspectRatio: '800/450', objectFit: 'cover' }}
+            <video
+              src={url}
+              controls
+              className="w-full h-full object-cover"
+              style={{ aspectRatio: '16/9' }}
             />
-            <video src={url} />
+            {videoDuration !== null && (
+              <div className="text-sm mt-2">
+                Duration: {videoDuration} seconds
+              </div>
+            )}
           </div>
         )}
       </CardContent>

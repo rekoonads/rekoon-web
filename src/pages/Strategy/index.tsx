@@ -69,7 +69,6 @@ const Strategy = () => {
   const [strategyName, setStrategyName] = useState<string>('');
   const [strategyDailyBudget, setStrategyDailyBudget] = useState<string>('');
 
-
   const { user } = useUser();
   const handleReset = () => {
     setSelectedTab('18-20');
@@ -132,11 +131,14 @@ const Strategy = () => {
     setDaySettings(newDaySettings);
   };
 
-  //Video Upload 
- const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  //Video Upload
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+
+  const [videoDuration, setVideoDuration] = useState<string | null>(null);
 
   const handleFileNameChange = (fileName: string | null) => {
     setUploadedFileName(fileName);
+    setVideoDuration(fileName);
   };
   //for Debugging
 
@@ -158,12 +160,12 @@ const Strategy = () => {
   //Advertiser id is the orgId
   const { orgId, userId } = useAuth();
   console.log(orgId, userId);
-  const [isAdd, setIsAdd] = useState<string>('')
- 
+  const [isAdd, setIsAdd] = useState<string>('');
+
   //Fetching The Campaign Id
   const [campaignInfo, setCampaignInfo] = useState<string>('');
-  console.log(isAdd?.type_of_user)
-  
+  console.log(isAdd?.type_of_user);
+
   useEffect(() => {
     const fetchCampaignId = async (url: string) => {
       try {
@@ -172,146 +174,146 @@ const Strategy = () => {
             'Content-Type': 'application/json',
           },
         });
-  
+
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
         }
-  
+
         const idData = await response.json();
         setCampaignInfo(idData);
       } catch (error) {
         console.error(error);
       }
     };
-  
+
     if (isAdd?.type_of_user === 'Advertiser') {
       fetchCampaignId(`/api/campaigns/${user?.id}`);
     } else if (isAdd?.type_of_user === 'Agency') {
       fetchCampaignId(`/api/campaigns-agency/${orgId}`);
     }
   }, [isAdd?.type_of_user, user?.id, orgId]);
-  
-//for Getting the Latest ids 
+
+  //for Getting the Latest ids
   console.log(campaignInfo);
-  const [info, setInfo] = useState<string>('')
+  const [info, setInfo] = useState<string>('');
   useEffect(() => {
     console.log(campaignInfo);
-    if(isAdd?.type_of_user === 'Agency'){
-      setInfo(orgId)
-    } else if (isAdd?.type_of_user === 'Advertiser'){
-      setInfo(campaignInfo[campaignInfo.length - 1]?.advertiserId)
+    if (isAdd?.type_of_user === 'Agency') {
+      setInfo(orgId);
+    } else if (isAdd?.type_of_user === 'Advertiser') {
+      setInfo(campaignInfo[campaignInfo.length - 1]?.advertiserId);
     }
   }, [campaignInfo]);
-  console.log(info)
+  console.log(info);
 
-   // searches for the type of user
-   useEffect(() => {
-     const fetchData = async (id: string) => {
-       try {
-         const response = await fetch(`/api/search-user/${id}`, {
-           method: 'GET',
-           headers: {
-             'Content-type': 'application/json',
-           },
-         });
- 
-         if (!response.ok) {
-           throw new Error('Network response was not ok');
-         }
-         const data: UserData = await response.json();
-         setIsAdd(data);
-         console.log(data);
-       } catch (error) {
-         console.log(error);
-       }
-     };
- 
-     if (user?.id) {
-       fetchData(user.id);
-     }
-   }, [user?.id]);
- 
- console.log(isAdd?.type_of_user)
- 
+  // searches for the type of user
+  useEffect(() => {
+    const fetchData = async (id: string) => {
+      try {
+        const response = await fetch(`/api/search-user/${id}`, {
+          method: 'GET',
+          headers: {
+            'Content-type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data: UserData = await response.json();
+        setIsAdd(data);
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (user?.id) {
+      fetchData(user.id);
+    }
+  }, [user?.id]);
+
+  console.log(isAdd?.type_of_user);
 
   //Handling Submission of data dont taper with this
- console.log(campaignInfo[campaignInfo.length - 1]?.campaignId)
+  console.log(campaignInfo[campaignInfo.length - 1]?.campaignId);
   const handleSubmit = async () => {
-   if(isAdd?.type_of_user === 'Agency'){
-    try {
-      const response = await fetch(`/api/strategy`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: userId,
-          strategyId: `ST-${uuidv4()}`,
-          agencyId: info,
-          ageRange: selectedTab,
-          gender: selectedGender,
-          screens: selectedDevice,
-          audiences: audienceArr,
-          strategyName: strategyName,
-          strategyDailyBudget: strategyDailyBudget,
-          selectedGoal: selectedGoal,
-          selectedOption: selectedOption,
-          selectedChannels: selectedChannels,
-          deliveryTimeSlots: daySettings,
-          creatives: uploadedFileName,
-          campaignId: campaignInfo[campaignInfo.length - 1]?.campaignId,
-        }),
-      });
+    if (isAdd?.type_of_user === 'Agency') {
+      try {
+        const response = await fetch(`/api/strategy`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: userId,
+            strategyId: `ST-${uuidv4()}`,
+            agencyId: info,
+            ageRange: selectedTab,
+            gender: selectedGender,
+            screens: selectedDevice,
+            audiences: audienceArr,
+            strategyName: strategyName,
+            strategyDailyBudget: strategyDailyBudget,
+            selectedGoal: selectedGoal,
+            selectedOption: selectedOption,
+            selectedChannels: selectedChannels,
+            deliveryTimeSlots: daySettings,
+            creatives: uploadedFileName,
+            duration: videoDuration,
+            campaignId: campaignInfo[campaignInfo.length - 1]?.campaignId,
+          }),
+        });
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      } else {
-        alert(`Channels Created`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        } else {
+          alert(`Channels Created`);
+        }
+        const updatedCampaign = await response.json();
+        console.log('Campaign updated successfully:', updatedCampaign);
+        return updatedCampaign;
+      } catch (error) {
+        console.error('Error updating campaign:', error);
       }
-      const updatedCampaign = await response.json();
-      console.log('Campaign updated successfully:', updatedCampaign);
-      return updatedCampaign;
-    } catch (error) {
-      console.error('Error updating campaign:', error);
-    }
-   } else if (isAdd?.type_of_user === 'Advertiser'){
-    try {
-      const response = await fetch(`/api/strategy`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: userId,
-          strategyId: `ST-${uuidv4()}`,
-          advertiserId: info,
-          ageRange: selectedTab,
-          gender: selectedGender,
-          screens: selectedDevice,
-          audiences: audienceArr,
-          strategyName: strategyName,
-          strategyDailyBudget: strategyDailyBudget,
-          selectedGoal: selectedGoal,
-          selectedOption: selectedOption,
-          selectedChannels: selectedChannels,
-          deliveryTimeSlots: daySettings,
-          creatives: uploadedFileName,
-          campaignId: campaignInfo[campaignInfo.length - 1]?.campaignId,
-        }),
-      });
+    } else if (isAdd?.type_of_user === 'Advertiser') {
+      try {
+        const response = await fetch(`/api/strategy`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: userId,
+            strategyId: `ST-${uuidv4()}`,
+            advertiserId: info,
+            ageRange: selectedTab,
+            gender: selectedGender,
+            screens: selectedDevice,
+            audiences: audienceArr,
+            strategyName: strategyName,
+            strategyDailyBudget: strategyDailyBudget,
+            selectedGoal: selectedGoal,
+            selectedOption: selectedOption,
+            selectedChannels: selectedChannels,
+            deliveryTimeSlots: daySettings,
+            creatives: uploadedFileName,
+            campaignId: campaignInfo[campaignInfo.length - 1]?.campaignId,
+          }),
+        });
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      } else {
-        alert(`Channels Created`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        } else {
+          alert(`Channels Created`);
+        }
+        const updatedCampaign = await response.json();
+        console.log('Campaign updated successfully:', updatedCampaign);
+        return updatedCampaign;
+      } catch (error) {
+        console.error('Error updating campaign:', error);
       }
-      const updatedCampaign = await response.json();
-      console.log('Campaign updated successfully:', updatedCampaign);
-      return updatedCampaign;
-    } catch (error) {
-      console.error('Error updating campaign:', error);
     }
-   }
   };
   return (
     <>
@@ -1249,7 +1251,7 @@ const Strategy = () => {
           </div>
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-            <VideoUpload onURLSet={handleFileNameChange} />
+              <VideoUpload onURLSet={handleFileNameChange} />
             </div>
           </div>
           <form onSubmit={handleSubmit}>
