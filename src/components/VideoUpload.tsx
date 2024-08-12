@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   Card,
@@ -14,9 +14,10 @@ import { CheckIcon } from 'lucide-react';
 
 interface VideoUploadProps {
   onURLSet: (url: string | null) => void;
+  onVideoDuration : (videoDuration: number | null) => void
 }
 
-export default function VideoUpload({ onURLSet }: VideoUploadProps) {
+export default function VideoUpload({ onURLSet, onVideoDuration }: VideoUploadProps) {
   const [fileName, setFileName] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -53,7 +54,7 @@ export default function VideoUpload({ onURLSet }: VideoUploadProps) {
       // Ensure the metadata is loaded
       videoElement.onloadedmetadata = () => {
         const { videoWidth, videoHeight, duration } = videoElement;
-
+          
         // Check resolution (1080p)
         if (videoWidth !== 1920 || videoHeight !== 1080) {
           setErrorMessage(
@@ -78,7 +79,7 @@ export default function VideoUpload({ onURLSet }: VideoUploadProps) {
 
         // Update video duration (in seconds)
         setVideoDuration(Math.round(duration));
-
+       
         // If all validations pass, upload the video
         setErrorMessage(null);
         setIsUploading(true);
@@ -128,6 +129,12 @@ export default function VideoUpload({ onURLSet }: VideoUploadProps) {
   };
 
   console.log(videoDuration);
+
+  useEffect(()=>{
+    if(videoDuration){
+      onVideoDuration(videoDuration)
+    }
+  },[videoDuration])
 
   return (
     <Card className="w-full max-w-xl">

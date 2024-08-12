@@ -134,12 +134,17 @@ const Strategy = () => {
   //Video Upload
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
 
-  const [videoDuration, setVideoDuration] = useState<string | null>(null);
+  const [videoDuration, setVideoDuration] = useState<number | null>(null);
 
   const handleFileNameChange = (fileName: string | null) => {
     setUploadedFileName(fileName);
-    setVideoDuration(fileName);
+    
   };
+
+  const saveVideoDuration = (duration:number | null) =>{
+    setVideoDuration(duration);
+  }
+  console.log(videoDuration)
   //for Debugging
 
   // console.log({
@@ -297,6 +302,7 @@ const Strategy = () => {
             selectedOption: selectedOption,
             selectedChannels: selectedChannels,
             deliveryTimeSlots: daySettings,
+            duration: videoDuration,
             creatives: uploadedFileName,
             campaignId: campaignInfo[campaignInfo.length - 1]?.campaignId,
           }),
@@ -1251,7 +1257,7 @@ const Strategy = () => {
           </div>
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <VideoUpload onURLSet={handleFileNameChange} />
+              <VideoUpload onURLSet={handleFileNameChange} onVideoDuration={saveVideoDuration} />
             </div>
           </div>
           <form onSubmit={handleSubmit}>
