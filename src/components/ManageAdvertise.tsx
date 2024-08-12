@@ -31,6 +31,11 @@ export default function ManageAdvertise() {
 
   const url = 'https://ind-lookup.hyperverge.co/api/lookup/searchGSTIN';
 
+  const [cinNumber, setCinNumber] = useState<string>('');
+  const cinChange = (event: React.ChangeEvent) => {
+    setCinNumber(event.target.value);
+  };
+
   const headers = {
     appId: appId,
     appKey: appKey,
@@ -150,88 +155,69 @@ export default function ManageAdvertise() {
   const userType = isAdd?.type_of_user ?? 'Unknown';
   console.log(userType);
 
-  const [cinNumber, setCinNumber] = useState<string>('');
   console.log(legalName);
   console.log(cinNumber);
   console.log(agencyData?.agencyId);
   console.log(isAdd?.data[0]?.advertiserId);
   const [name, setName] = useState<string>('');
-  const [responseFile, setResponseFile] = useState<any>()
+  const [responseFile, setResponseFile] = useState<any>();
 
-//Send GST Certificate 
+  //Send GST Certificate
   const sendGSTCertificate = async (event: any) => {
-    const gstData = event.target.files[0]; 
+    const gstData = event.target.files[0];
     const formData = new FormData();
-    formData.append('file', gstData); 
+    formData.append('file', gstData);
 
     try {
-        const response = await axios.post(
-            '/api/file-cloud',
-            formData,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            },
-        );
-        console.log(response.data);
-        setResponseFile(response.data);
+      const response = await axios.post('/api/file-cloud', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log(response.data);
+      setResponseFile(response.data);
     } catch (error) {
-        console.error('Error uploading the file', error);
-        
+      console.error('Error uploading the file', error);
     }
-};
- console.log(responseFile?.url)
-useEffect(()=> {
-  if(responseFile){
-    alert(`Certificate Updated Successfully`)
-  }
-}, [responseFile])
+  };
+  console.log(responseFile?.url);
+  useEffect(() => {
+    if (responseFile) {
+      alert(`Certificate Updated Successfully`);
+    }
+  }, [responseFile]);
 
- // Sending GST logo 
- const [imageData, setImageData] = useState<any>()
- const [imgFile, setImgFile] = useState<any>()
- const sendGSTLogo = async(event: any) =>{
-  const gstLogo = event.target.files[0]; 
+  // Sending GST logo
+  const [imageData, setImageData] = useState<any>();
+  const [imgFile, setImgFile] = useState<any>();
+  const sendGSTLogo = async (event: any) => {
+    const gstLogo = event.target.files[0];
 
     const formData = new FormData();
-    formData.append('file', gstLogo); 
+    formData.append('file', gstLogo);
 
     try {
-      const response = await axios.post(
-          '/api/file-cloud',
-          formData,
-          {
-              headers: {
-                  'Content-Type': 'multipart/form-data',
-              },
-          },
-      );
+      const response = await axios.post('/api/file-cloud', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       console.log(response.data);
       setImageData(response.data);
-  } catch (error) {
+    } catch (error) {
       console.error('Error uploading the file', error);
-      
-  }
- }
- useEffect(()=> {
-  if(imageData){
-    alert(`Image Updated Successfully`)
-  }
-}, [imageData])
-
-console.log(imageData?.url)
-
-
-  // Change the name based on the Type
+    }
+  };
   useEffect(() => {
-    isAdd?.type_of_user === 'Agency'
-      ? setName(agencyData?.agencyName)
-      : isAdd?.type_of_user === 'Advertiser'
-      ? setName(isAdd?.data[0].advertiserName)
-      : 'No Name';
-  }, [isAdd?.type_of_user]);
+    if (imageData) {
+      alert(`Image Updated Successfully`);
+    }
+  }, [imageData]);
 
+  console.log(imageData?.url);
+
+  console.log(agencyData);
+  console.log(name);
   const [respondedData, setRespondedData] = useState<any>();
 
   const sendUpdateData = async (event: React.FormEvent) => {
@@ -292,13 +278,12 @@ console.log(imageData?.url)
     }
   };
   console.log(respondedData);
- 
-  useEffect(()=>{
-    if(respondedData){
-      alert(`The data has been stored`)
+
+  useEffect(() => {
+    if (respondedData) {
+      alert(`The data has been stored`);
     }
-  },[respondedData])
- 
+  }, [respondedData]);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -405,16 +390,28 @@ console.log(imageData?.url)
                 ) : null}
               </div>
               <div className="flex justify-between">
-                <span>GST Number:</span>
-                <span>-</span>
+                <span>GST Number: </span>
+                <span>{isAdd?.type_of_user === 'Agency'
+                      ? agencyData?.gstNumber
+                      : isAdd?.type_of_user === 'Advertiser'
+                      ? isAdd?.data[0]?.gstNumber
+                      : null}</span>
               </div>
               <div className="flex justify-between">
                 <span>Legal Name:</span>
-                <span>-</span>
+                <span>{ isAdd?.type_of_user === 'Agency'
+                        ? agencyData?.legalName
+                        : isAdd?.type_of_user === 'Advertiser'
+                        ? isAdd?.data[0]?.legalName
+                        : null}</span>
               </div>
-              <div className="flex justify-between">
-                <span>Address:</span>
-                <span>-</span>
+              <div className="flex justify-between ">
+                <span>Address: </span>
+                <span className='  pl-6 relative left-10 '> {isAdd?.type_of_user === 'Agency'
+                        ? agencyData?.address
+                        : isAdd?.type_of_user === 'Advertiser'
+                        ? isAdd?.data[0]?.address
+                        : null}</span>
               </div>
             </div>
             <div className="bg-orange-100 p-4 rounded mt-4">
@@ -483,7 +480,13 @@ console.log(imageData?.url)
                   type="text"
                   placeholder="Enter Advertiser Name"
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-                  value={name}
+                  value={
+                    isAdd?.type_of_user === 'Agency'
+                      ? agencyData?.agencyName
+                      : isAdd?.type_of_user === 'Advertiser'
+                      ? isAdd?.data[0].advertiserName
+                      : 'No Name'
+                  }
                 />
                 <div className="mt-2">
                   <label className="mb-3 block text-black dark:text-white">
@@ -494,6 +497,22 @@ console.log(imageData?.url)
                     onChange={sendGSTLogo}
                     className="w-full rounded-md border border-stroke p-3 outline-none transition file:mr-4 file:rounded file:border-[0.5px] file:border-stroke file:bg-[#EEEEEE] file:py-1 file:px-2.5 file:text-sm focus:border-primary file:focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-strokedark dark:file:bg-white/30 dark:file:text-white"
                   />
+                  {agencyData?.advertiserLogo ||
+                  isAdd?.data[0]?.advertiserLogo ? (
+                    <>
+                      <img
+                        src={
+                          isAdd?.type_of_user === 'Agency'
+                            ? agencyData?.gstCertificate
+                            : isAdd?.type_of_user === 'Advertiser'
+                            ? isAdd?.data[0]?.advertiserLogo
+                            : null
+                        }
+                        alt="logo-img"
+                        className="w-[100px] h-[100px] rounded-md relative left-[30%]"
+                      />
+                    </>
+                  ) : null}
                 </div>
               </div>
               <div className="space-y-4">
@@ -504,7 +523,13 @@ console.log(imageData?.url)
                   type="text"
                   placeholder="Enter GST Number"
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-                  value={gstNumber}
+                  value={
+                    gstNumber || isAdd?.type_of_user === 'Agency'
+                      ? agencyData?.gstNumber
+                      : isAdd?.type_of_user === 'Advertiser'
+                      ? isAdd?.data[0]?.gstNumber
+                      : null
+                  }
                   onChange={handleGSTChange}
                 />
                 <div>
@@ -515,7 +540,13 @@ console.log(imageData?.url)
                     type="text"
                     placeholder="Enter Legal Name"
                     className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-                    value={legalName}
+                    value={
+                      legalName || isAdd?.type_of_user === 'Agency'
+                        ? agencyData?.legalName
+                        : isAdd?.type_of_user === 'Advertiser'
+                        ? isAdd?.data[0]?.legalName
+                        : null
+                    }
                     readOnly
                   />
                 </div>
@@ -527,7 +558,13 @@ console.log(imageData?.url)
                     type="text"
                     placeholder="Enter Address"
                     className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-                    value={address}
+                    value={
+                      address || isAdd?.type_of_user === 'Agency'
+                        ? agencyData?.address
+                        : isAdd?.type_of_user === 'Advertiser'
+                        ? isAdd?.data[0]?.address
+                        : null
+                    }
                     readOnly
                   />
                 </div>
@@ -540,6 +577,22 @@ console.log(imageData?.url)
                     className="w-full rounded-md border border-stroke p-3 outline-none transition file:mr-4 file:rounded file:border-[0.5px] file:border-stroke file:bg-[#EEEEEE] file:py-1 file:px-2.5 file:text-sm focus:border-primary file:focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-strokedark dark:file:bg-white/30 dark:file:text-white"
                     onChange={sendGSTCertificate}
                   />
+                  {agencyData?.gstCertificate ||
+                  isAdd?.data[0]?.gstCertificate ? (
+                    <>
+                      <a
+                        href={
+                          isAdd?.type_of_user === 'Agency'
+                            ? agencyData?.gstCertificate
+                            : isAdd?.type_of_user === 'Advertiser'
+                            ? isAdd?.data[0]?.gstCertificate
+                            : null
+                        }
+                      >
+                        Click to see the certificate
+                      </a>
+                    </>
+                  ) : null}
                 </div>
               </div>
               <div>
@@ -550,14 +603,37 @@ console.log(imageData?.url)
                   type="text"
                   placeholder="Enter CIN Number"
                   className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-                  onChange={(event) => setCinNumber(event.target.value)}
+                  onChange={cinChange}
+                  value={
+                    cinNumber || isAdd?.type_of_user === 'Agency'
+                      ? agencyData?.cinNumber
+                      : isAdd?.type_of_user === 'Advertiser'
+                      ? isAdd?.data[0]?.cinNumber
+                      : null
+                  }
                 />
               </div>
               <form onSubmit={sendUpdateData}>
                 <div className="flex justify-end">
-                  <Button className="bg-blue-600 text-white" type="submit">
-                    Save
-                  </Button>
+                  {agencyData?.gstNumber || isAdd?.data[0]?.gstNumber ? (
+                    <>
+                      {' '}
+                      <Button
+                        disabled={true}
+                        className="bg-blue-600 text-white"
+                        
+                      >
+                        Saved
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      {' '}
+                      <Button  disabled={false} className="bg-blue-600 text-white" type="submit">
+                        Save
+                      </Button>
+                    </>
+                  )}
                 </div>
               </form>
             </div>
