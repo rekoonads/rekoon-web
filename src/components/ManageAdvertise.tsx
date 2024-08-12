@@ -156,22 +156,72 @@ export default function ManageAdvertise() {
   console.log(agencyData?.agencyId);
   console.log(isAdd?.data[0]?.advertiserId);
   const [name, setName] = useState<string>('');
+  const [responseFile, setResponseFile] = useState<any>()
 
+//Send GST Certificate 
   const sendGSTCertificate = async (event: any) => {
-    const gstData = event.target.value;
+    const gstData = event.target.files[0]; 
     const formData = new FormData();
-    formData.append('image', gstData);
-    const data = await axios.post(
-      'http://localhost:3001/upload_video',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      },
-    );
-    console.log(data);
-  };
+    formData.append('file', gstData); 
+
+    try {
+        const response = await axios.post(
+            '/api/file-cloud',
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            },
+        );
+        console.log(response.data);
+        setResponseFile(response.data);
+    } catch (error) {
+        console.error('Error uploading the file', error);
+        
+    }
+};
+ console.log(responseFile?.url)
+useEffect(()=> {
+  if(responseFile){
+    alert(`Certificate Updated Successfully`)
+  }
+}, [responseFile])
+
+ // Sending GST logo 
+ const [imageData, setImageData] = useState<any>()
+ const [imgFile, setImgFile] = useState<any>()
+ const sendGSTLogo = async(event: any) =>{
+  const gstLogo = event.target.files[0]; 
+
+    const formData = new FormData();
+    formData.append('file', gstLogo); 
+
+    try {
+      const response = await axios.post(
+          '/api/file-cloud',
+          formData,
+          {
+              headers: {
+                  'Content-Type': 'multipart/form-data',
+              },
+          },
+      );
+      console.log(response.data);
+      setImageData(response.data);
+  } catch (error) {
+      console.error('Error uploading the file', error);
+      
+  }
+ }
+ useEffect(()=> {
+  if(imageData){
+    alert(`Image Updated Successfully`)
+  }
+}, [imageData])
+
+console.log(imageData?.url)
+
 
   // Change the name based on the Type
   useEffect(() => {
@@ -189,17 +239,17 @@ export default function ManageAdvertise() {
     // /api/update_user
     if (isAdd?.type_of_user === 'Agency') {
       try {
-        const postData = await axios.post(
+        const postData = await axios.patch(
           '/api/update_user',
           {
             typeofuser: 'Agency',
             agencyName: isAdd?.data[0]?.agencyName,
-            logo: '',
+            logo: imageData?.url,
             gstNumber: gstNumber,
             legalName: legalName,
             address: address,
             agencyId: agencyData?.agencyId,
-            gstCertificate: '',
+            gstCertificate: responseFile?.url,
             cinNumber: cinNumber,
           },
           {
@@ -215,17 +265,17 @@ export default function ManageAdvertise() {
       }
     } else if (isAdd?.type_of_user === 'Advertiser') {
       try {
-        const postData = await axios.post(
+        const postData = await axios.patch(
           '/api/update_user',
           {
             typeofuser: 'Advertiser',
             advertiserName: isAdd?.data[0].advertiserName,
-            logo: '',
+            logo: imageData?.url,
             gstNumber: gstNumber,
             legalName: legalName,
             address: address,
             advertiserId: isAdd?.data[0]?.advertiserId,
-            gstCertificate: '',
+            gstCertificate: responseFile?.url,
             cinNumber: cinNumber,
           },
           {
@@ -242,6 +292,13 @@ export default function ManageAdvertise() {
     }
   };
   console.log(respondedData);
+ 
+  useEffect(()=>{
+    if(respondedData){
+      alert(`The data has been stored`)
+    }
+  },[respondedData])
+ 
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -434,6 +491,7 @@ export default function ManageAdvertise() {
                   </label>
                   <input
                     type="file"
+                    onChange={sendGSTLogo}
                     className="w-full rounded-md border border-stroke p-3 outline-none transition file:mr-4 file:rounded file:border-[0.5px] file:border-stroke file:bg-[#EEEEEE] file:py-1 file:px-2.5 file:text-sm focus:border-primary file:focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-strokedark dark:file:bg-white/30 dark:file:text-white"
                   />
                 </div>
