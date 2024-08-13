@@ -15,7 +15,6 @@ import { events } from '@react-three/fiber';
 import { PlusCircle } from 'lucide-react';
 import { toast } from 'react-toastify';
 
-
 declare global {
   interface Window {
     Razorpay: any;
@@ -34,13 +33,6 @@ interface RazorpayResponse {
   razorpay_signature: string;
 }
 
-
-
-
-
-
-
-
 export default function ManageAdvertise() {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -52,78 +44,76 @@ export default function ManageAdvertise() {
   const navigate = useNavigate();
   const { orgId, userId } = useAuth();
   const { user } = useUser();
+  const [amount, setAmount] = useState<string>('5000');
 
- // handlePayment Function
- const [amount, setAmount] = useState<string>('500');
- const handlePayment = async () => {
-  try {
-    const res = await fetch('/api/payment/order', {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        amount,
-      }),
-    });
+  // handlePayment Function
 
-    const data = await res.json();
-    console.log(data);
-    handlePaymentVerify(data.data);
-  } catch (error) {
-    console.error('Error creating order:', error);
-    toast.error('Failed to create order. Please try again.');
-  }
-};
+  const handlePayment = async () => {
+    try {
+      const res = await fetch('/api/payment/order', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount,
+        }),
+      });
 
-// handlePaymentVerify Function
-const [successPaymentId, setSuccessPaymentId] = useState<string>('');
-const handlePaymentVerify = async (data: PaymentData) => {
-  const options = {
-    key: 'rzp_test_SZrvteybFNdghB', // Use your Razorpay Test Key
-    amount: data.amount,
-    currency: data.currency,
-    name: 'Rekoon Ads',
-    description: 'Test Mode',
-    order_id: data.id,
-    handler: async (response: RazorpayResponse) => {
-      console.log('response', response);
-      try {
-        const res = await fetch('/api/payment/verify', {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-          },
-          body: JSON.stringify({
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_signature: response.razorpay_signature,
-          }),
-        });
-
-        const verifyData = await res.json();
-
-        if (verifyData.message) {
-          toast.success(verifyData.message);
-          setSuccessPaymentId(response.razorpay_payment_id);
-          console.log('Payment ID:', response.razorpay_payment_id);
-        }
-      } catch (error) {
-        console.error('Error verifying payment:', error);
-        toast.error('Payment verification failed. Please contact support.');
-      }
-    },
-    theme: {
-      color: '#5f63b8',
-    },
+      const data = await res.json();
+      console.log(data);
+      handlePaymentVerify(data.data);
+    } catch (error) {
+      console.error('Error creating order:', error);
+      toast.error('Failed to create order. Please try again.');
+    }
   };
-  const rzp1 = new window.Razorpay(options);
-  rzp1.open();
-};
 
+  // handlePaymentVerify Function
+  const [successPaymentId, setSuccessPaymentId] = useState<string>('');
+  const handlePaymentVerify = async (data: PaymentData) => {
+    const options = {
+      key: 'rzp_test_SZrvteybFNdghB', // Use your Razorpay Test Key
+      amount: data.amount,
+      currency: data.currency,
+      name: 'Rekoon Ads',
+      description: 'Test Mode',
+      order_id: data.id,
+      handler: async (response: RazorpayResponse) => {
+        console.log('response', response);
+        try {
+          const res = await fetch('/api/payment/verify', {
+            method: 'POST',
+            headers: {
+              'content-type': 'application/json',
+            },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            }),
+          });
 
+          const verifyData = await res.json();
 
-//REST
+          if (verifyData.message) {
+            toast.success(verifyData.message);
+            console.log('Payment ID:', response.razorpay_payment_id);
+          }
+        } catch (error) {
+          console.error('Error verifying payment:', error);
+          toast.error('Payment verification failed. Please contact support.');
+        }
+      },
+      theme: {
+        color: '#5f63b8',
+      },
+    };
+    const rzp1 = new window.Razorpay(options);
+    rzp1.open();
+  };
+
+  //REST
   const appId = '1pamnh';
   const appKey = 'pmzmvrg9legon1ky2uwm';
   const transactionId = '05szuy8uajfo-DEMO';
@@ -180,7 +170,7 @@ const handlePaymentVerify = async (data: PaymentData) => {
     }
   };
 
-  console.log(user)
+  console.log(user);
   //Searching User Type
   useEffect(() => {
     const fetchData = async (id: string) => {
@@ -232,7 +222,7 @@ const handlePaymentVerify = async (data: PaymentData) => {
     }
   }, [isAdd, orgId]);
 
-  console.log(isAdd?.user?.walletBalance)
+  console.log(isAdd?.user?.walletBalance);
 
   console.log(agencyData);
 
@@ -402,22 +392,23 @@ const handlePaymentVerify = async (data: PaymentData) => {
             {userType === 'Agency' ? <OrganizationSwitcher /> : null}
           </div>
         </div>
-        
-          <div className='flex flex-col relative md:left-[30%]'>
-            <p className="flex flex-col text-sm mb-1 font-[400] text-slate-600 dark:text-white">
-              Account balance
-            </p>
-            <div className='flex items-center -mt-3 ml-4'>
-            <p className='text-slate-600'>₹{isAdd?.user?.walletBalance}</p>
-            <form onSubmit={handlePayment}>
-            <Button variant={'outline'} className='border-none' type='submit'>
-              <PlusCircle className='text-slate-600 w-4 h-4 -ml-3'/>
+
+        <div className="flex flex-col relative md:left-[30%]">
+          <p className="flex flex-col text-sm mb-1 font-[400] text-slate-600 dark:text-white">
+            Account balance
+          </p>
+          <div className="flex items-center -mt-3 ml-4">
+            <p className="text-slate-600">₹{isAdd?.user?.walletBalance}</p>
+            <Button
+              variant={'outline'}
+              className="border-none"
+              onClick={handlePayment}
+            >
+              <PlusCircle className="text-slate-600 w-4 h-4 -ml-3" />
             </Button>
-            </form>
-            </div>
-            
           </div>
-        
+        </div>
+
         <div className="flex items-center gap-4">
           <DropdownMenuDemo name="Kunal" email="mkkm@gmail.com" />
           <Link to={'/dashboard'}>
@@ -739,19 +730,16 @@ const handlePaymentVerify = async (data: PaymentData) => {
               </div>
               <form onSubmit={sendUpdateData}>
                 <div className="flex justify-end">
-                  
-                  
-                    <>
-                      {' '}
-                      <Button
-                        disabled={false}
-                        className="bg-blue-600 text-white"
-                        type="submit"
-                      >
-                        Save
-                      </Button>
-                    </>
-                 
+                  <>
+                    {' '}
+                    <Button
+                      disabled={false}
+                      className="bg-blue-600 text-white"
+                      type="submit"
+                    >
+                      Save
+                    </Button>
+                  </>
                 </div>
               </form>
             </div>
