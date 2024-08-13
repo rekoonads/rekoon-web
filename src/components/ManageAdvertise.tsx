@@ -14,6 +14,7 @@ import { getAgency, searchUser } from '../asyncCall/asyncCall';
 import { events } from '@react-three/fiber';
 import { PlusCircle } from 'lucide-react';
 import { toast } from 'react-toastify';
+import PaymentPopup from './popup/addBalance';
 
 declare global {
   interface Window {
@@ -44,34 +45,48 @@ export default function ManageAdvertise() {
   const navigate = useNavigate();
   const { orgId, userId } = useAuth();
   const { user } = useUser();
-  const [amount, setAmount] = useState<string>('');
+  const [ balance, setBalance] = useState<number>(0);
+ 
 
   // handlePayment Function
+  
+    const [isPopupOpen, setPopupOpen] = useState(false);
+  
+    const handleOpenPopup = () => {
+      setPopupOpen(true);
+    };
+  
+    const handleClosePopup = () => {
+      setPopupOpen(false);
+    };
+  
+    const handlePaymentSubmit = async (amount: number) => {
+      try {
+        setBalance(amount);
+        const res = await fetch('/api/payment/order', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            amount,
+          }),
+        });
+  
+        const data = await res.json();
+        console.log(data);
+        handlePaymentVerify(data.data);
+      } catch (error) {
+        console.error('Error creating order:', error);
+        toast.error('Failed to create order. Please try again.');
+      }
+    };
 
-  const handlePayment = async () => {
-    try {
-      const res = await fetch('/api/payment/order', {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount,
-        }),
-      });
-
-      const data = await res.json();
-      console.log(data);
-      handlePaymentVerify(data.data);
-    } catch (error) {
-      console.error('Error creating order:', error);
-      toast.error('Failed to create order. Please try again.');
-    }
-  };
 
   // handlePaymentVerify Function
   const [successPaymentId, setSuccessPaymentId] = useState<string>('');
   const handlePaymentVerify = async (data: PaymentData) => {
+    console.log(data);
     const options = {
       key: 'rzp_test_SZrvteybFNdghB', // Use your Razorpay Test Key
       amount: data.amount,
@@ -97,6 +112,17 @@ export default function ManageAdvertise() {
           const verifyData = await res.json();
 
           if (verifyData.message) {
+            const updated_user = await fetch('/api/update-balance', {
+              method: 'POST',
+              headers: {
+                'content-type': 'application/json',
+              },
+              body: JSON.stringify({
+                userId : userId, 
+                addedBalance : data.amount
+              })
+            });
+            console.log(updated_user);
             toast.success(verifyData.message);
             console.log('Payment ID:', response.razorpay_payment_id);
           }
@@ -223,10 +249,7 @@ export default function ManageAdvertise() {
   }, [isAdd, orgId]);
 
   console.log(isAdd?.user?.walletBalance);
-useEffect(()=>{
-  setAmount(`${isAdd?.user?.walletBalance}`)
-},[isAdd?.user?.walletBalance])
-  console.log(agencyData);
+
 
   const openDrawer = () => {
     setIsDrawerVisible(true);
@@ -395,23 +418,27 @@ useEffect(()=>{
           </div>
         </div>
 
-        <div className="flex flex-col relative md:left-[30%]">
-          <p className="flex flex-col text-sm mb-1 font-[400] text-slate-600 dark:text-white">
-            Account balance
-          </p>
-          <div className="flex items-center -mt-3 ml-4">
-            <p className="text-slate-600">₹{isAdd?.user?.walletBalance}</p>
-            <Button
-              variant={'outline'}
-              className="border-none"
-              onClick={handlePayment}
-            >
-              <PlusCircle className="text-slate-600 w-4 h-4 -ml-3" />
-            </Button>
-          </div>
-        </div>
+        
 
         <div className="flex items-center gap-4">
+          <div className="flex flex-col">
+            <p className="flex flex-col text-sm mb-1 font-[400] text-slate-600 dark:text-white">
+              Account balance
+            </p>
+            <div className="flex items-center -mt-3 ml-4">
+              <p className="text-slate-600">₹{isAdd?.user?.walletBalance}</p>
+              <Button
+                variant={'outline'}
+                className="border-none"
+                onClick={handleOpenPopup}
+              >
+                <PaymentPopup open={isPopupOpen}
+        onClose={handleClosePopup}
+        onSubmit={handlePaymentSubmit} />
+                <PlusCircle className="text-slate-600 w-4 h-4 -ml-3" />
+              </Button>
+            </div>
+          </div>
           <DropdownMenuDemo name="Kunal" email="mkkm@gmail.com" />
           <Link to={'/dashboard'}>
             <Button>Go to Dashboard</Button>
