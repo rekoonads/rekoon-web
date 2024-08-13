@@ -13,6 +13,33 @@ import { DropdownMenuDemo } from './SettingsMenu';
 import { getAgency, searchUser } from '../asyncCall/asyncCall';
 import { events } from '@react-three/fiber';
 import { PlusCircle } from 'lucide-react';
+import { toast } from 'react-toastify';
+
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
+interface PaymentData {
+  amount: number;
+  currency: string;
+  id: string;
+}
+
+interface RazorpayResponse {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+}
+
+
+
+
+
+
+
 
 export default function ManageAdvertise() {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
@@ -26,6 +53,77 @@ export default function ManageAdvertise() {
   const { orgId, userId } = useAuth();
   const { user } = useUser();
 
+ // handlePayment Function
+ const [amount, setAmount] = useState<string>('500');
+ const handlePayment = async () => {
+  try {
+    const res = await fetch('/api/payment/order', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        amount,
+      }),
+    });
+
+    const data = await res.json();
+    console.log(data);
+    handlePaymentVerify(data.data);
+  } catch (error) {
+    console.error('Error creating order:', error);
+    toast.error('Failed to create order. Please try again.');
+  }
+};
+
+// handlePaymentVerify Function
+const [successPaymentId, setSuccessPaymentId] = useState<string>('');
+const handlePaymentVerify = async (data: PaymentData) => {
+  const options = {
+    key: 'rzp_test_SZrvteybFNdghB', // Use your Razorpay Test Key
+    amount: data.amount,
+    currency: data.currency,
+    name: 'Rekoon Ads',
+    description: 'Test Mode',
+    order_id: data.id,
+    handler: async (response: RazorpayResponse) => {
+      console.log('response', response);
+      try {
+        const res = await fetch('/api/payment/verify', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+          }),
+        });
+
+        const verifyData = await res.json();
+
+        if (verifyData.message) {
+          toast.success(verifyData.message);
+          setSuccessPaymentId(response.razorpay_payment_id);
+          console.log('Payment ID:', response.razorpay_payment_id);
+        }
+      } catch (error) {
+        console.error('Error verifying payment:', error);
+        toast.error('Payment verification failed. Please contact support.');
+      }
+    },
+    theme: {
+      color: '#5f63b8',
+    },
+  };
+  const rzp1 = new window.Razorpay(options);
+  rzp1.open();
+};
+
+
+
+//REST
   const appId = '1pamnh';
   const appKey = 'pmzmvrg9legon1ky2uwm';
   const transactionId = '05szuy8uajfo-DEMO';
@@ -133,6 +231,8 @@ export default function ManageAdvertise() {
       handleSearch();
     }
   }, [isAdd, orgId]);
+
+  console.log(isAdd?.user?.walletBalance)
 
   console.log(agencyData);
 
@@ -308,10 +408,12 @@ export default function ManageAdvertise() {
               Account balance
             </p>
             <div className='flex items-center -mt-3 ml-4'>
-            <p className='text-slate-600'>₹0.00</p>
-            <Button variant={'outline'} className='border-none'>
+            <p className='text-slate-600'>₹{isAdd?.user?.walletBalance}</p>
+            <form onSubmit={handlePayment}>
+            <Button variant={'outline'} className='border-none' type='submit'>
               <PlusCircle className='text-slate-600 w-4 h-4 -ml-3'/>
             </Button>
+            </form>
             </div>
             
           </div>
@@ -637,17 +739,8 @@ export default function ManageAdvertise() {
               </div>
               <form onSubmit={sendUpdateData}>
                 <div className="flex justify-end">
-                  {agencyData?.gstNumber || isAdd?.data[0]?.gstNumber ? (
-                    <>
-                      {' '}
-                      <Button
-                        disabled={true}
-                        className="bg-blue-600 text-white"
-                      >
-                        Saved
-                      </Button>
-                    </>
-                  ) : (
+                  
+                  
                     <>
                       {' '}
                       <Button
@@ -658,7 +751,7 @@ export default function ManageAdvertise() {
                         Save
                       </Button>
                     </>
-                  )}
+                 
                 </div>
               </form>
             </div>
