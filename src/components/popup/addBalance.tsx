@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog';
+import { Button } from '../ui/button';
+import { CiMoneyBill } from 'react-icons/ci';
 
 interface PopupProps {
   open: boolean;
@@ -8,47 +18,71 @@ interface PopupProps {
 }
 
 const PaymentPopup: React.FC<PopupProps> = ({ open, onClose, onSubmit }) => {
-  const [amount, setAmount] = useState<number>(0);
+  const [selectedPlan, setSelectedPlan] = useState<number | null>(null); // State to track selected plan
   const [error, setError] = useState<string>('');
 
+  const handlePlanSelect = (amount: number) => {
+    setSelectedPlan(amount);
+    setError(''); // Clear any existing error when a plan is selected
+  };
+
   const handleSubmit = () => {
-    if (amount > 500) {
-      onSubmit(amount);
+    if (selectedPlan && selectedPlan > 500) {
+      onSubmit(selectedPlan);
       onClose();
     } else {
-      setError('Amount must be greater than 500');
+      setError(
+        'Please select a plan and ensure the amount is greater than ₹500',
+      );
     }
   };
 
   if (!open) return null;
 
   return ReactDOM.createPortal(
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-lg font-bold mb-4">Enter Amount</h2>
-        <input
-          type="number"
-          className="border p-2 w-full mb-4"
-          value={amount}
-          onChange={(e) => setAmount(Number(e.target.value))}
-          placeholder="Enter amount"
-        />
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        <button
-          className="bg-blue-500 text-white py-2 px-4 rounded mr-2"
-          onClick={handleSubmit}
-        >
-          Pay Now
-        </button>
-        <button
-          className="bg-gray-500 text-white py-2 px-4 rounded"
-          onClick={onClose}
-        >
-          Cancel
-        </button>
-      </div>
-    </div>,
-    document.body
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[425px] bg-white">
+        <DialogHeader>
+          <DialogTitle>Choose Your Plan</DialogTitle>
+          <DialogDescription>
+            Select the plan that best fits your needs.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          {[
+            { amount: 5000, label: 'Starter' },
+            { amount: 10000, label: 'Pro' },
+            { amount: 20000, label: 'Enterprise' },
+          ].map((plan) => (
+            <div
+              key={plan.amount}
+              className={`flex items-center justify-between rounded-md border p-4 cursor-pointer ${
+                selectedPlan === plan.amount
+                  ? 'border-primary border-2 bg-muted'
+                  : 'border-muted bg-background hover:bg-muted'
+              }`}
+              onClick={() => handlePlanSelect(plan.amount)}
+            >
+              <div>
+                <p className="text-2xl font-medium">₹{plan.amount}</p>
+                <p className="text-sm text-muted-foreground">{plan.label}</p>
+              </div>
+              <CiMoneyBill className="h-8 w-8 text-primary" />
+            </div>
+          ))}
+        </div>
+        {error && <p className="text-red-500">{error}</p>}
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} className="text-white">
+            Submit
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>,
+    document.body,
   );
 };
 
