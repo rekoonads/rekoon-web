@@ -1,12 +1,43 @@
 import { Link } from "react-router-dom";
 import { IoMdLogOut } from "react-icons/io";
+import { useEffect, useState } from "react";
+import { useUser } from "@clerk/clerk-react";
 
 interface BalanceProps {
   accountBalance?: float,
   spentThisMonth?: float
 }
 
+
+
 const Balance = ({accountBalance, spentThisMonth}:BalanceProps) => {
+  const [isAdd, setIsAdd] = useState<UserData | undefined>(undefined);
+  const { user} = useUser();
+    //Searching User Type
+    useEffect(() => {
+      const fetchData = async (id: string) => {
+        try {
+          const response = await fetch(`/api/search-user/${id}`, {
+            method: 'GET',
+            headers: {
+              'Content-type': 'application/json',
+            },
+          });
+  
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const data: UserData = await response.json();
+          setIsAdd(data);
+          console.log(data);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      if (user?.id) {
+        fetchData(user.id);
+      }
+    }, [user?.id]);
   return (
     <main className="w-full py-12 px-4 md:px-6 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
     <div id="balance-container" className="flex flex-col justify-evenly ">
@@ -19,7 +50,7 @@ const Balance = ({accountBalance, spentThisMonth}:BalanceProps) => {
           <div id="account-container" className="flex gap-5 justify-evenly w-full leading-2">
             <div id="account-balance" className="leading-snug mr-1">
               <p className="text-[11px] mb-1 font-[400] text-slate-600 dark:text-white">Account balance</p>
-              <p>₹0.00</p>
+              <p>₹{isAdd?.user?.walletBalance}</p>
             </div>
             <div id="spent-this-month" className="leading-snug">
               <p className="text-[11px] mb-1 font-[400] text-slate-600 dark:text-white">Spent this month</p>

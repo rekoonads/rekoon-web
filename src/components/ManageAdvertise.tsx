@@ -44,7 +44,7 @@ export default function ManageAdvertise() {
   const navigate = useNavigate();
   const { orgId, userId } = useAuth();
   const { user } = useUser();
-  const [amount, setAmount] = useState<string>('5000');
+  const [amount, setAmount] = useState<string>('');
 
   // handlePayment Function
 
@@ -223,7 +223,9 @@ export default function ManageAdvertise() {
   }, [isAdd, orgId]);
 
   console.log(isAdd?.user?.walletBalance);
-
+useEffect(()=>{
+  setAmount(`${isAdd?.user?.walletBalance}`)
+},[isAdd?.user?.walletBalance])
   console.log(agencyData);
 
   const openDrawer = () => {
