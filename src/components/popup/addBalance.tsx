@@ -18,9 +18,9 @@ interface PopupProps {
 }
 
 const PaymentPopup: React.FC<PopupProps> = ({ open, onClose, onSubmit }) => {
-  const [selectedPlan, setSelectedPlan] = useState<number | null>(null); // State to track selected plan
+  const [selectedPlan, setSelectedPlan] = useState<number | null>(null);
   const [error, setError] = useState<string>('');
-
+  console.log(open)
   const handlePlanSelect = (amount: number) => {
     setSelectedPlan(amount);
     setError(''); // Clear any existing error when a plan is selected
@@ -40,7 +40,7 @@ const PaymentPopup: React.FC<PopupProps> = ({ open, onClose, onSubmit }) => {
   if (!open) return null;
 
   return ReactDOM.createPortal(
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="sm:max-w-[425px] bg-white">
         <DialogHeader>
           <DialogTitle>Choose Your Plan</DialogTitle>

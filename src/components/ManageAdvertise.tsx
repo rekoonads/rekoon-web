@@ -57,9 +57,10 @@ export default function ManageAdvertise() {
     };
   
     const handleClosePopup = () => {
+      console.log("Close button clicked");
       setPopupOpen(false);
     };
-  
+   console.log(isPopupOpen)
     const handlePaymentSubmit = async (amount: number) => {
       try {
         setBalance(amount);
@@ -432,11 +433,12 @@ export default function ManageAdvertise() {
                 className="border-none"
                 onClick={handleOpenPopup}
               >
-                <PaymentPopup open={isPopupOpen}
-        onClose={handleClosePopup}
-        onSubmit={handlePaymentSubmit} />
-                <PlusCircle className="text-slate-600 w-4 h-4 -ml-3" />
+              
               </Button>
+              <PaymentPopup open={isPopupOpen}
+                  onClose={handleClosePopup}
+                  onSubmit={handlePaymentSubmit} />
+                <PlusCircle className="text-slate-600 w-4 h-4 -ml-3" />
             </div>
           </div>
           <DropdownMenuDemo name="Kunal" email="mkkm@gmail.com" />
