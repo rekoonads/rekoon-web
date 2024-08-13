@@ -119,7 +119,7 @@ export default function ManageAdvertise() {
               },
               body: JSON.stringify({
                 userId : userId, 
-                addedBalance : data.amount
+                addedBalance : data.amount/ 100,
               })
             });
             console.log(updated_user);
