@@ -12,6 +12,7 @@ import {
 import { DropdownMenuDemo } from './SettingsMenu';
 import { getAgency, searchUser } from '../asyncCall/asyncCall';
 import { events } from '@react-three/fiber';
+import { PlusCircle } from 'lucide-react';
 
 export default function ManageAdvertise() {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
@@ -81,6 +82,7 @@ export default function ManageAdvertise() {
     }
   };
 
+  console.log(user)
   //Searching User Type
   useEffect(() => {
     const fetchData = async (id: string) => {
@@ -300,7 +302,20 @@ export default function ManageAdvertise() {
             {userType === 'Agency' ? <OrganizationSwitcher /> : null}
           </div>
         </div>
-
+        
+          <div className='flex flex-col relative md:left-[30%]'>
+            <p className="flex flex-col text-sm mb-1 font-[400] text-slate-600 dark:text-white">
+              Account balance
+            </p>
+            <div className='flex items-center -mt-3 ml-4'>
+            <p className='text-slate-600'>₹0.00</p>
+            <Button variant={'outline'} className='border-none'>
+              <PlusCircle className='text-slate-600 w-4 h-4 -ml-3'/>
+            </Button>
+            </div>
+            
+          </div>
+        
         <div className="flex items-center gap-4">
           <DropdownMenuDemo name="Kunal" email="mkkm@gmail.com" />
           <Link to={'/dashboard'}>
@@ -391,27 +406,34 @@ export default function ManageAdvertise() {
               </div>
               <div className="flex justify-between">
                 <span>GST Number: </span>
-                <span>{isAdd?.type_of_user === 'Agency'
-                      ? agencyData?.gstNumber
-                      : isAdd?.type_of_user === 'Advertiser'
-                      ? isAdd?.data[0]?.gstNumber
-                      : null}</span>
+                <span>
+                  {(isAdd?.type_of_user === 'Agency'
+                    ? agencyData?.gstNumber
+                    : isAdd?.type_of_user === 'Advertiser'
+                    ? isAdd?.data[0]?.gstNumber
+                    : null) || gstNumber}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span>Legal Name:</span>
-                <span>{ isAdd?.type_of_user === 'Agency'
-                        ? agencyData?.legalName
-                        : isAdd?.type_of_user === 'Advertiser'
-                        ? isAdd?.data[0]?.legalName
-                        : null}</span>
+                <span>
+                  {(isAdd?.type_of_user === 'Agency'
+                    ? agencyData?.legalName
+                    : isAdd?.type_of_user === 'Advertiser'
+                    ? isAdd?.data[0]?.legalName
+                    : null) || legalName}
+                </span>
               </div>
               <div className="flex justify-between ">
                 <span>Address: </span>
-                <span className='  pl-6 relative left-10 '> {isAdd?.type_of_user === 'Agency'
-                        ? agencyData?.address
-                        : isAdd?.type_of_user === 'Advertiser'
-                        ? isAdd?.data[0]?.address
-                        : null}</span>
+                <span className="  pl-6 relative left-10 ">
+                  {' '}
+                  {(isAdd?.type_of_user === 'Agency'
+                    ? agencyData?.address
+                    : isAdd?.type_of_user === 'Advertiser'
+                    ? isAdd?.data[0]?.address
+                    : null) || address}
+                </span>
               </div>
             </div>
             <div className="bg-orange-100 p-4 rounded mt-4">
@@ -541,11 +563,11 @@ export default function ManageAdvertise() {
                     placeholder="Enter Legal Name"
                     className="mt-1 p-2 w-full border border-gray-300 rounded-md"
                     value={
-                      legalName || isAdd?.type_of_user === 'Agency'
+                      (isAdd?.type_of_user === 'Agency'
                         ? agencyData?.legalName
                         : isAdd?.type_of_user === 'Advertiser'
                         ? isAdd?.data[0]?.legalName
-                        : null
+                        : null) || legalName
                     }
                     readOnly
                   />
@@ -559,11 +581,11 @@ export default function ManageAdvertise() {
                     placeholder="Enter Address"
                     className="mt-1 p-2 w-full border border-gray-300 rounded-md"
                     value={
-                      address || isAdd?.type_of_user === 'Agency'
+                      (isAdd?.type_of_user === 'Agency'
                         ? agencyData?.address
                         : isAdd?.type_of_user === 'Advertiser'
                         ? isAdd?.data[0]?.address
-                        : null
+                        : null) || address
                     }
                     readOnly
                   />
@@ -621,7 +643,6 @@ export default function ManageAdvertise() {
                       <Button
                         disabled={true}
                         className="bg-blue-600 text-white"
-                        
                       >
                         Saved
                       </Button>
@@ -629,7 +650,11 @@ export default function ManageAdvertise() {
                   ) : (
                     <>
                       {' '}
-                      <Button  disabled={false} className="bg-blue-600 text-white" type="submit">
+                      <Button
+                        disabled={false}
+                        className="bg-blue-600 text-white"
+                        type="submit"
+                      >
                         Save
                       </Button>
                     </>

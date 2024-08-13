@@ -19,11 +19,11 @@ const Balance = ({accountBalance, spentThisMonth}:BalanceProps) => {
           <div id="account-container" className="flex gap-5 justify-evenly w-full leading-2">
             <div id="account-balance" className="leading-snug mr-1">
               <p className="text-[11px] mb-1 font-[400] text-slate-600 dark:text-white">Account balance</p>
-              <p>$0.00</p>
+              <p>₹0.00</p>
             </div>
             <div id="spent-this-month" className="leading-snug">
               <p className="text-[11px] mb-1 font-[400] text-slate-600 dark:text-white">Spent this month</p>
-              <p>$0.00</p>
+              <p>₹0.00</p>
             </div>
           </div> 
           <button className="px-1 w-[100%] h-[2.1rem] bg-blue-900 border-blue-600 dark:bg-yellow-200 dark:text-yellow-900 dark:hover:bg-blue-700 dark:hover:text-white rounded-md text-white hover:text-green-50 hover:bg-purple-600 transition font-[500]"> + Add credits</button>  
