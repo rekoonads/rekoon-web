@@ -192,7 +192,28 @@ export default function SummaryComponent() {
             },
           },
         );
-        console.log(data);
+        await console.log("xxxxxxxxxxxxxxxxxxxxxxxxxx",data);
+        const invocationCode = data?.data?.invocation_code;
+
+        if (!invocationCode) {
+          throw new Error('Invocation code is missing from the response');
+        }
+        const bidding = await axios.post('http://localhost:3002/add-bidder',
+          {
+            userId: userId,
+            deliveryTimeSlots: strategies?.deliveryTimeSlots,
+            campaignBudget: campaigns?.campaignBudget,
+            reviveUrl: invocationCode,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+
+        console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",data);
+        console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",bidding);
       };
       try {
         postBillData();

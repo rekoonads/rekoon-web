@@ -433,12 +433,12 @@ export default function ManageAdvertise() {
                 className="border-none"
                 onClick={handleOpenPopup}
               >
-              
+              <PlusCircle className="text-slate-600 w-4 h-4 -ml-3" />
               </Button>
               <PaymentPopup open={isPopupOpen}
                   onClose={handleClosePopup}
                   onSubmit={handlePaymentSubmit} />
-                <PlusCircle className="text-slate-600 w-4 h-4 -ml-3" />
+                
             </div>
           </div>
           <DropdownMenuDemo name="Kunal" email="mkkm@gmail.com" />
