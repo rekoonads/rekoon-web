@@ -114,7 +114,7 @@ export default function ManageAdvertise() {
 
           if (verifyData.message) {
             const updated_user = await fetch('/api/update-balance', {
-              method: 'POST',
+              method: 'PATCH',
               headers: {
                 'content-type': 'application/json',
               },
