@@ -32,13 +32,14 @@ export default function Footer() {
         </div>
         <div className="text-center md:text-left">
           <h2 className="text-lg md:text-xl font-bold">
-            Rekoon Technology INC.
+            Lemonade Digital Media Technology pvt limited. Rekoon Technology
+            INC.
           </h2>
-          <p className="mt-2 text-gray-600 text-sm md:text-base">
+          {/* <p className="mt-2 text-gray-600 text-sm md:text-base">
             91 Spring Board,
             <br />
             Jhandewalan Delhi-110093, INDIA.
-          </p>
+          </p> */}
           <div className="mt-4">
             <h3 className="text-lg font-bold">Contact Us</h3>
             <p className="mt-2 text-gray-600 text-sm md:text-base">
@@ -49,7 +50,8 @@ export default function Footer() {
       </div>
       <div className="container mx-auto px-4 mt-8 border-t pt-4 text-center text-gray-600">
         <p className="text-sm md:text-base">
-          © 2024 Purple Stack Ventures Private Limited. All rights reserved.
+          © 2024 Lemonade Digital Media Technology pvt limited. All rights
+          reserved.
         </p>
         <div className="flex justify-center space-x-4 mt-2 text-sm md:text-base">
           <a href="#" className="text-gray-600 hover:underline">
