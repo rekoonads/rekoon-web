@@ -34,11 +34,11 @@ export default function Footer() {
           <h2 className="text-lg md:text-xl font-bold">
             Rekoon Technology INC.
           </h2>
-          {/* <p className="mt-2 text-gray-600 text-sm md:text-base">
-            91 Spring Board,
+          <p className="mt-2 text-gray-600 text-sm md:text-base">
+            INDIA,
             <br />
-            Jhandewalan Delhi-110093, INDIA.
-          </p> */}
+            USA
+          </p>
           <div className="mt-4">
             <h3 className="text-lg font-bold">Contact Us</h3>
             <p className="mt-2 text-gray-600 text-sm md:text-base">
