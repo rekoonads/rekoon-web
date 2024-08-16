@@ -32,8 +32,7 @@ export default function Footer() {
         </div>
         <div className="text-center md:text-left">
           <h2 className="text-lg md:text-xl font-bold">
-            Lemonade Digital Media Technology pvt limited. Rekoon Technology
-            INC.
+            Rekoon Technology INC.
           </h2>
           {/* <p className="mt-2 text-gray-600 text-sm md:text-base">
             91 Spring Board,
