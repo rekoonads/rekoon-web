@@ -13,9 +13,10 @@ import { MdCampaign } from 'react-icons/md';
 import { FaAdversal } from 'react-icons/fa';
 import { FaUserClock } from 'react-icons/fa';
 import { useAuth, useUser } from '@clerk/clerk-react';
-import { Apple } from 'lucide-react';
+import { Apple, Earth } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { getAdvertiser } from '../../asyncCall/asyncCall';
+import axios from 'axios';
 const Campaigns = () => {
   const [campaignName, setCampaignName] = useState('');
   const [campaignGoal, setCampaignGoal] = useState<string | null>(null);
@@ -26,21 +27,21 @@ const Campaigns = () => {
   const [selectInput, setSelectInput] = useState<string>('');
   const [campaignBudget, setCampaignBudget] = useState('');
   const { user } = useUser();
+  const [websiteName, setWebsiteName] = useState<string>('');
+  const [website, setWebsite] = useState<string>('');
+  const [businessEmail, setBusinessEmail] = useState<string>('');
+  const [businessContact, setBusinessContact] = useState<string>('');
   const [received, setReceived] = useState(false);
   const navigate = useNavigate();
-
+  const [postData, setPostData] = useState<any>()
   const { orgId, userId } = useAuth();
-  console.log(user?.id)
-  
-  const isIdAdvertOrAgent = orgId || userId 
-  console.log(isIdAdvertOrAgent)
- 
-  
+  console.log(user?.id);
 
-
+  const isIdAdvertOrAgent = orgId || userId;
+  console.log(isIdAdvertOrAgent);
 
   // searches for the type of user
-  const [isAdd, setIsAdd] = useState<string>('')
+  const [isAdd, setIsAdd] = useState<string>('');
   useEffect(() => {
     const fetchData = async (id: string) => {
       try {
@@ -66,37 +67,30 @@ const Campaigns = () => {
       fetchData(user.id);
     }
   }, [user?.id]);
-console.log(isAdd?.type_of_user)
+  console.log(isAdd?.type_of_user);
 
+  //getting The advertiser's Data
+  const [addData, setAddData] = useState<string>('');
+  useEffect(() => {
+    if (isAdd?.type_of_user === 'Advertiser' && user?.id) {
+      const fetchingData = async () => {
+        try {
+          const adData = await getAdvertiser(user.id);
+          console.log(adData);
+          setAddData(adData);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchingData();
+    }
+  }, [isAdd, user?.id]);
+  console.log(addData?.advertiserId);
 
-
-
-
-//getting The advertiser's Data 
-const [addData, setAddData] = useState<string>('')
-useEffect(() => {
-  if (isAdd?.type_of_user === 'Advertiser' && user?.id) {
-    const fetchingData = async () => {
-      try {
-        const adData = await getAdvertiser(user.id);
-        console.log(adData);
-        setAddData(adData);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchingData();
-  }
-}, [isAdd, user?.id]);
-console.log(addData?.advertiserId)
-
-
-
-
-//handling Submission
+  //handling Submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if(isAdd?.type_of_user === 'Agency'){
+    if (isAdd?.type_of_user === 'Agency') {
       try {
         const response = await fetch('/api/campaigns', {
           method: 'POST',
@@ -104,7 +98,7 @@ console.log(addData?.advertiserId)
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            userId: user?.id, 
+            userId: user?.id,
             campaignId: `CAM-${uuidv4()}`,
             agencyId: orgId,
             campaignName,
@@ -116,7 +110,7 @@ console.log(addData?.advertiserId)
             endDate: endDate?.toDateString(),
           }),
         });
-  
+
         const data = await response.json();
         if (response.ok) {
           console.log('Campaign created successfully:', data);
@@ -131,7 +125,7 @@ console.log(addData?.advertiserId)
         console.error('Error:', error);
         toast.error('An error occurred while submitting the campaign.');
       }
-    } else if(isAdd?.type_of_user === 'Advertiser') {
+    } else if (isAdd?.type_of_user === 'Advertiser') {
       try {
         const response = await fetch('/api/campaigns', {
           method: 'POST',
@@ -139,7 +133,7 @@ console.log(addData?.advertiserId)
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            userId: user?.id, 
+            userId: user?.id,
             campaignId: `CAM-${uuidv4()}`,
             advertiserId: addData?.advertiserId,
             campaignName,
@@ -151,7 +145,7 @@ console.log(addData?.advertiserId)
             endDate: endDate?.toDateString(),
           }),
         });
-  
+
         const data = await response.json();
         if (response.ok) {
           console.log('Campaign created successfully:', data);
@@ -167,8 +161,51 @@ console.log(addData?.advertiserId)
         toast.error('An error occurred while submitting the campaign.');
       }
     }
-
-    
+    try {
+      let postData: any; 
+      if (isAdd?.type_of_user === 'Agency') {
+        postData = await axios.post(
+          '/api/add-website',
+          {    
+            websiteName,
+            websiteUrl: website,
+            websiteContact: businessContact,
+            websiteEmail: businessEmail,
+            agencyId: orgId,
+            createdBy: user?.id,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+        setPostData(postData)
+      } else if (isAdd?.type_of_user === 'Advertiser') {
+        postData = await axios.post(
+          '/api/add-website',
+          {
+            websiteName,
+            websiteUrl: website,
+            websiteContact: businessContact,
+            websiteEmail: businessEmail,
+            advertiserId: addData?.advertiserId,
+            createdBy: user?.id,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+        setPostData(postData)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    if(postData){
+      alert(`Data has been Submitted`)
+    }
   };
 
   const handleStartDate = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -225,7 +262,60 @@ console.log(addData?.advertiserId)
               />
             </div>
           </div>
-
+          {/* Add Website */}
+          <div className="space-y-4 p-4 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+          <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+              <h3 className="font-medium text-black dark:text-white flex items-center gap-2 mr-4">
+                <Earth />
+                Add your Website details
+              </h3>
+            </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter Name"
+                  className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                  onChange={(event) => setWebsiteName(event.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Website
+                </label>
+                <input
+                  type="text"
+                  placeholder="www.yourbrand.com"
+                  className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                  onChange={(event) => setWebsite(event.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Business Email
+                </label>
+                <input
+                  type="text"
+                  placeholder="www.yourbrand.com"
+                  className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                  onChange={(event) => setBusinessEmail(event.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Business Contact
+                </label>
+                <input
+                  type="text"
+                  placeholder="www.yourbrand.com"
+                  className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+                  onChange={(event) => setBusinessContact(event.target.value)}
+                />
+              </div>
+            </div>
+          
           {/* <!-- Advertiser --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className=" flex items-center gap-2 border-b border-stroke py-4 px-6.5 dark:border-strokedark">
