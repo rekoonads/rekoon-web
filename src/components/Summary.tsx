@@ -199,12 +199,13 @@ export default function SummaryComponent() {
           throw new Error('Invocation code is missing from the response');
         }
         if(isAdd?.type_of_user === 'Agency'){
-          const bidding = await axios.post('http://localhost:3002/add-bidder',
+          const bidding = await axios.post('/api/add-bidder',
             {
               agencyId: campaignInfo[campaignInfo.length - 1]?.agencyId,
               deliveryTimeSlots: strategies?.deliveryTimeSlots,
               campaignBudget: campaigns?.campaignBudget,
               reviveUrl: invocationCode,
+              audiences: strategies?.audiences
             },
             {
               headers: {
@@ -214,12 +215,13 @@ export default function SummaryComponent() {
           );
           console.log(bidding)
         } else if (isAdd?.type_of_user === 'Advertiser'){
-          const bidding = await axios.post('http://localhost:3002/add-bidder',
+          const bidding = await axios.post('/api/add-bidder',
             {
               advertiserId: campaignInfo[campaignInfo.length - 1]?.advertiserId,
               deliveryTimeSlots: strategies?.deliveryTimeSlots,
               campaignBudget: campaigns?.campaignBudget,
               reviveUrl: invocationCode,
+              audiences: strategies?.audiences
             },
             {
               headers: {

@@ -152,6 +152,7 @@ export default function VideoUpload({ onURLSet, onVideoDuration }: VideoUploadPr
             type="file"
             accept="video/*"
             onChange={handleFileChange}
+            required
           />
         </div>
         {errorMessage && <div className="text-red-500">{errorMessage}</div>}
