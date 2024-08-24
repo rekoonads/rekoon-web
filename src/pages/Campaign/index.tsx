@@ -107,9 +107,7 @@ const Campaigns = () => {
               websiteName,
               websiteUrl: website,
               websiteContact: businessContact,
-              websiteEmail: businessEmail,
-              agencyId: orgId,
-              createdBy: user?.id,
+              websiteEmail: businessEmail
             },
             campaignAdvertiserBudget: advertiser,
             campaignBudget,
