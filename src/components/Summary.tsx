@@ -192,14 +192,15 @@ export default function SummaryComponent() {
             },
           },
         );
-        await console.log("xxxxxxxxxxxxxxxxxxxxxxxxxx",data);
+        await console.log('xxxxxxxxxxxxxxxxxxxxxxxxxx', data);
         const invocationCode = data?.data?.invocation_code;
 
         if (!invocationCode) {
           throw new Error('Invocation code is missing from the response');
         }
-        if(isAdd?.type_of_user === 'Agency'){
-          const bidding = await axios.post('http://localhost:3002/add-bidder',
+        if (isAdd?.type_of_user === 'Agency') {
+          const bidding = await axios.post(
+            '/api/add-bidder',
             {
               agencyId: campaignInfo[campaignInfo.length - 1]?.agencyId,
               deliveryTimeSlots: strategies?.deliveryTimeSlots,
@@ -212,9 +213,10 @@ export default function SummaryComponent() {
               },
             },
           );
-          console.log(bidding)
-        } else if (isAdd?.type_of_user === 'Advertiser'){
-          const bidding = await axios.post('http://localhost:3002/add-bidder',
+          console.log(bidding);
+        } else if (isAdd?.type_of_user === 'Advertiser') {
+          const bidding = await axios.post(
+            '/api/add-bidder',
             {
               advertiserId: campaignInfo[campaignInfo.length - 1]?.advertiserId,
               deliveryTimeSlots: strategies?.deliveryTimeSlots,
@@ -227,12 +229,11 @@ export default function SummaryComponent() {
               },
             },
           );
-          console.log(bidding)
+          console.log(bidding);
         }
-       
 
-        console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",data);
-        console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",bidding);
+        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', data);
+        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', bidding);
       };
       try {
         postBillData();
@@ -241,7 +242,7 @@ export default function SummaryComponent() {
         // I must add custom error handler logic from here
       }
     }
-  }, [successPaymentId,isAdd?.type_of_user]);
+  }, [successPaymentId, isAdd?.type_of_user]);
   //if payment is successful then the confirmation to payment success is received here
 
   useEffect(() => {
