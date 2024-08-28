@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import axios from 'axios';
 
 const CorporateAds = () => {
@@ -20,7 +19,9 @@ const CorporateAds = () => {
 
   const fetchNextVideo = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/get-video?type=Careers');
+      const response = await axios.get(
+        'http://localhost:3001/api/get-video?type=Careers',
+      );
       const newVideoSrc = response.data;
       setVideoSrc(newVideoSrc);
     } catch (error) {
@@ -53,63 +54,45 @@ const CorporateAds = () => {
     const videoElement = videoRef.current;
 
     if (videoElement && videoSrc) {
-      videoElement.requestFullscreen().catch(err => {
-        console.error('Error attempting to enable full-screen mode:', err);
-      });
-      videoElement.load(); // Ensure the video is reloaded
-      videoElement.play().catch(err => {
+      videoElement.load(); // Reload the video with the new source
+      videoElement.play().catch((err) => {
         console.error('Error attempting to play the video:', err);
       });
     }
   }, [videoSrc]);
 
   return (
-    <div className="h-screen bg-gray-100 flex flex-col">
-      <header className="bg-blue-800 text-white p-4">
-        <h1 className="text-2xl font-bold">Corporate Media Solutions</h1>
-      </header>
-      <main className="flex-grow flex flex-col items-center justify-center p-4">
-        <CurrentDesign />
-        <div className="w-full max-w-6xl mt-4">
-          <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-lg">
-            <video ref={videoRef} controls autoPlay muted>
-              {videoSrc && (
-                <source src={videoSrc} type="video/mp4" />
-              )}
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        </div>
-      </main>
-      <footer className="bg-gray-200 p-4 text-center">
-        <p>&copy; 2024 Corporate Media Solutions. All rights reserved.</p>
-      </footer>
+    <div className="h-screen w-screen bg-black flex items-center justify-center">
+      <video
+        ref={videoRef}
+        className="w-full h-full object-cover"
+        controls
+        autoPlay
+        muted
+      >
+        {videoSrc && <source src={videoSrc} type="video/mp4" />}
+        Your browser does not support the video tag.
+      </video>
       <div className="fixed bottom-4 right-4 flex space-x-2">
         <button
           onClick={prevDesign}
           className="bg-blue-500 text-white p-2 rounded-full"
         >
-          <ChevronLeft size={24} />
+          &lt;
         </button>
         <button
           onClick={nextDesign}
           className="bg-blue-500 text-white p-2 rounded-full"
         >
-          <ChevronRight size={24} />
+          &gt;
         </button>
       </div>
     </div>
   );
 };
 
-const DesignOne = () => (
-  // DesignOne component code
-  <div>Design One</div>
-);
+const DesignOne = () => <div>Design One</div>;
 
-const DesignTwo = () => (
-  // DesignTwo component code
-  <div>Design Two</div>
-);
+const DesignTwo = () => <div>Design Two</div>;
 
 export default CorporateAds;
