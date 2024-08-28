@@ -13,11 +13,11 @@ export default function LoginOptions() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { user } = useUser();
- 
+  const domainName = import.meta.env.VITE_DOMAIN;
   
   const handleCreateAccount = async () => {
     try {
-      const response = await fetch('/api/add-advertiser', {
+      const response = await fetch(`${domainName}/api/add-advertiser`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

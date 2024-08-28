@@ -42,7 +42,9 @@ export default function SummaryComponent() {
   const [strategies, setStrategies] = useState([]);
   const [successPaymentId, setSuccessPaymentId] = useState<string>('');
   const { user } = useUser();
-
+  const domainName = import.meta.env.VITE_DOMAIN;
+  
+  
   console.log({
     userId: userId,
     campaignId: campaigns?.campaignId,
@@ -73,7 +75,7 @@ export default function SummaryComponent() {
   useEffect(() => {
     const fetchData = async (id: string) => {
       try {
-        const response = await fetch(`/api/search-user/${id}`, {
+        const response = await fetch(`${domainName}/api/search-user/${id}`, {
           method: 'GET',
           headers: {
             'Content-type': 'application/json',
@@ -134,9 +136,9 @@ export default function SummaryComponent() {
     };
 
     if (isAdd?.type_of_user === 'Advertiser') {
-      fetchCampaignId(`/api/campaigns/${user?.id}`);
+      fetchCampaignId(`${domainName}/api/campaigns/${user?.id}`);
     } else if (isAdd?.type_of_user === 'Agency') {
-      fetchCampaignId(`/api/campaigns-agency/${orgId}`);
+      fetchCampaignId(`${domainName}/api/campaigns-agency/${orgId}`);
     }
   }, [isAdd?.type_of_user, user?.id, orgId]);
   console.log(campaignInfo[campaignInfo.length - 1]);
@@ -161,7 +163,7 @@ export default function SummaryComponent() {
         }
       };
 
-      fetchStrategyDetails(`/api/strategy-campaign/${campaigns?.campaignId}`);
+      fetchStrategyDetails(`${domainName}/api/strategy-campaign/${campaigns?.campaignId}`);
     }
   }, [campaigns?.campaignId]);
   console.log(strategies);
@@ -179,7 +181,7 @@ export default function SummaryComponent() {
     if (successPaymentId) {
       const postBillData = async () => {
         const data = await axios.post(
-          '/api/bill',
+          `${domainName}/api/bill`,
           {
             userId: userId,
             campaignId: campaigns?.campaignId,
@@ -200,7 +202,7 @@ export default function SummaryComponent() {
         }
         if (isAdd?.type_of_user === 'Agency') {
           const bidding = await axios.post(
-            '/api/add-bidder',
+            `${domainName}/api/add-bidder`,
             {
               agencyId: campaignInfo[campaignInfo.length - 1]?.agencyId,
               deliveryTimeSlots: strategies?.deliveryTimeSlots,
@@ -217,7 +219,7 @@ export default function SummaryComponent() {
           console.log(bidding);
         } else if (isAdd?.type_of_user === 'Advertiser') {
           const bidding = await axios.post(
-            '/api/add-bidder',
+            `${domainName}/api/add-bidder`,
             {
               advertiserId: campaignInfo[campaignInfo.length - 1]?.advertiserId,
               deliveryTimeSlots: strategies?.deliveryTimeSlots,
@@ -249,7 +251,7 @@ export default function SummaryComponent() {
 
   useEffect(() => {
     const paymentConfirmation = async () => {
-      const payStData = await axios.get(`/api/bill/${campaigns?.campaignId}`);
+      const payStData = await axios.get(`${domainName}/api/bill/${campaigns?.campaignId}`);
       console.log(payStData?.data.paymentSuccess);
       setSuccessFullpeyment(payStData?.data.paymentSuccess);
     };
@@ -259,7 +261,7 @@ export default function SummaryComponent() {
   // handlePayment Function
   const handlePayment = async () => {
     try {
-      const res = await fetch('/api/payment/order', {
+      const res = await fetch(`${domainName}/api/payment/order`, {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -290,7 +292,7 @@ export default function SummaryComponent() {
       handler: async (response: RazorpayResponse) => {
         console.log('response', response);
         try {
-          const res = await fetch('/api/payment/verify', {
+          const res = await fetch(`${domainName}/api/payment/verify`, {
             method: 'POST',
             headers: {
               'content-type': 'application/json',

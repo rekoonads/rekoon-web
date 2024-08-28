@@ -36,7 +36,7 @@ const Campaigns = () => {
   const [postData, setPostData] = useState<any>()
   const { orgId, userId } = useAuth();
   console.log(user?.id);
-
+  const domainName = import.meta.env.VITE_DOMAIN;
   const isIdAdvertOrAgent = orgId || userId;
   console.log(isIdAdvertOrAgent);
 
@@ -45,7 +45,7 @@ const Campaigns = () => {
   useEffect(() => {
     const fetchData = async (id: string) => {
       try {
-        const response = await fetch(`/api/search-user/${id}`, {
+        const response = await fetch(`${domainName}/api/search-user/${id}`, {
           method: 'GET',
           headers: {
             'Content-type': 'application/json',
@@ -92,7 +92,7 @@ const Campaigns = () => {
     event.preventDefault();
     if (isAdd?.type_of_user === 'Agency') {
       try {
-        const response = await fetch('/api/campaigns', {
+        const response = await fetch(`${domainName}/api/campaigns`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -133,7 +133,7 @@ const Campaigns = () => {
       }
     } else if (isAdd?.type_of_user === 'Advertiser') {
       try {
-        const response = await fetch('/api/campaigns', {
+        const response = await fetch(`${domainName}/api/campaigns`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -179,7 +179,7 @@ const Campaigns = () => {
       let postData: any; 
       if (isAdd?.type_of_user === 'Agency') {
         postData = await axios.post(
-          '/api/add-website',
+          `${domainName}/api/add-website`,
           {    
             websiteName,
             websiteUrl: website,
@@ -197,7 +197,7 @@ const Campaigns = () => {
         setPostData(postData)
       } else if (isAdd?.type_of_user === 'Advertiser') {
         postData = await axios.post(
-          '/api/add-website',
+          `${domainName}/api/add-website`,
           {
             websiteName,
             websiteUrl: website,
