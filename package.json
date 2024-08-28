@@ -37,6 +37,7 @@
     "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
     "flatpickr": "^4.6.13",
+    "fluid-player": "^3.35.0",
     "framer-motion": "^11.3.13",
     "headlessui": "^0.0.0",
     "jsencrypt": "^3.3.2",
