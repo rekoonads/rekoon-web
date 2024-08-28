@@ -31,6 +31,7 @@ import Receipts from './pages/Settings/Receipts';
 import Coupons from './pages/Settings/Coupons';
 import WebTracking from './pages/Settings/WebTracking';
 import AppTracking from './pages/Settings/AppTracking';
+import CorporateAds from './pages/CorporateAds';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -68,7 +69,15 @@ function App() {
       <Route path="/report" element={<ReportPage />} />
       <Route path="/auth/sign-in" element={<SignInPage />} />
       <Route path="/auth/sign-up" element={<SignUpPage />} />
-
+      <Route
+              path="view-advertisement"
+              element={
+                <>
+                  <PageTitle title="Viewing Advertisement | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <CorporateAds />
+                </>
+              }
+            />
       {isSignedIn ? (
         <>
           <Route path="/" element={<DefaultLayout />}>
