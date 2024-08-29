@@ -392,29 +392,18 @@ const Campaigns = () => {
             </div>
           </div>
           <form onSubmit={handleSubmit}>
-            <button
+          {campaignBudget && advertiser && startDate && endDate && campaignType && (<button
               type="submit"
               className="cursor-pointer p-2 rounded-lg text-white bg-slate-400 w-[10rem] hover:bg-slate-600 transition relative left-[50%] translate-x-[-50%] translate-y-[50%] mb-4"
             >
               Submit Campaign
-            </button>
+            </button>) }
+           
           </form>
         </div>
 
         <div className="flex flex-col gap-9 md:fixed right-5 overflow-auto h-[70vh] scroll-m-3 ">
           <div className="rounded-sm border md:mr-10 md:mt-10 border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            {/* <div className="md:mr-2">
-              <RightSideCard
-                title="Campaign Budget"
-                tab1Label=""
-                tab1Content=""
-                tab2Label="Daily Budget"
-                tab2Content= '40'
-                campaignBudget='2000'
-                startTime='26'
-                endTime='30'
-              />
-            </div> */}
             {campaignBudget && advertiser && startDate && endDate && campaignType && (<div className="md:mr-2">
               <RightSideCard
                 title="Campaign Budget"
