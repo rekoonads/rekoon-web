@@ -198,14 +198,14 @@ export default function SummaryComponent() {
         await console.log('xxxxxxxxxxxxxxxxxxxxxxxxxx', data);
         const invocationCode = data?.data?.invocation_code;
 
-        if(invocationCode == "error"){
+        if(invocationCode.status == "error"){
           const errorId = uuidv4();
             await axios.post('/api/save-error', {
               errorId: errorId,
               userId: userId,
               campaignId: campaigns?.campaignId,
               strategyId: strategies?.strategyId,
-              errorMessage: 'Invocation code error',
+              errorMessage: invocationCode.message,
             });
           toast.error(
             `Something went wrong. Please contact support with this ID: ${errorId}`
@@ -221,7 +221,7 @@ export default function SummaryComponent() {
                 agencyId: campaignInfo[campaignInfo.length - 1]?.agencyId,
                 deliveryTimeSlots: strategies?.deliveryTimeSlots,
                 campaignBudget: campaigns?.campaignBudget,
-                reviveUrl: invocationCode,
+                reviveUrl: invocationCode.value,
                 audiences: strategies?.audiences
               },
               {
@@ -238,7 +238,7 @@ export default function SummaryComponent() {
                 advertiserId: campaignInfo[campaignInfo.length - 1]?.advertiserId,
                 deliveryTimeSlots: strategies?.deliveryTimeSlots,
                 campaignBudget: campaigns?.campaignBudget,
-                reviveUrl: invocationCode,
+                reviveUrl: invocationCode.value,
                 audiences: strategies?.audiences
               },
               {
