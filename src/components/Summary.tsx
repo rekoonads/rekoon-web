@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { useAuth, useUser } from '@clerk/clerk-react';
+import { v4 as uuidv4 } from 'uuid'
 
 // Extend the Window interface
 declare global {
@@ -197,47 +198,61 @@ export default function SummaryComponent() {
         await console.log('xxxxxxxxxxxxxxxxxxxxxxxxxx', data);
         const invocationCode = data?.data?.invocation_code;
 
-        if (!invocationCode) {
-          throw new Error('Invocation code is missing from the response');
-        }
-        if (isAdd?.type_of_user === 'Agency') {
-          const bidding = await axios.post(
-            `${domainName}/api/add-bidder`,
-            {
-              agencyId: campaignInfo[campaignInfo.length - 1]?.agencyId,
-              deliveryTimeSlots: strategies?.deliveryTimeSlots,
-              campaignBudget: campaigns?.campaignBudget,
-              reviveUrl: invocationCode,
-              audiences: strategies?.audiences
-            },
-            {
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            },
+        if(invocationCode == "error"){
+          const errorId = uuidv4();
+            await axios.post('/api/save-error', {
+              errorId: errorId,
+              userId: userId,
+              campaignId: campaigns?.campaignId,
+              strategyId: strategies?.strategyId,
+              errorMessage: 'Invocation code error',
+            });
+          toast.error(
+            `Something went wrong. Please contact support with this ID: ${errorId}`
           );
-          console.log(bidding);
-        } else if (isAdd?.type_of_user === 'Advertiser') {
-          const bidding = await axios.post(
-            `${domainName}/api/add-bidder`,
-            {
-              advertiserId: campaignInfo[campaignInfo.length - 1]?.advertiserId,
-              deliveryTimeSlots: strategies?.deliveryTimeSlots,
-              campaignBudget: campaigns?.campaignBudget,
-              reviveUrl: invocationCode,
-              audiences: strategies?.audiences
-            },
-            {
-              headers: {
-                'Content-Type': 'application/json',
+        }else{
+          if (!invocationCode) {
+            throw new Error('Invocation code is missing from the response');
+          }
+          if (isAdd?.type_of_user === 'Agency') {
+            const bidding = await axios.post(
+              `${domainName}/api/add-bidder`,
+              {
+                agencyId: campaignInfo[campaignInfo.length - 1]?.agencyId,
+                deliveryTimeSlots: strategies?.deliveryTimeSlots,
+                campaignBudget: campaigns?.campaignBudget,
+                reviveUrl: invocationCode,
+                audiences: strategies?.audiences
               },
-            },
-          );
-          console.log(bidding);
-        }
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              },
+            );
+            console.log(bidding);
+          } else if (isAdd?.type_of_user === 'Advertiser') {
+            const bidding = await axios.post(
+              `${domainName}/api/add-bidder`,
+              {
+                advertiserId: campaignInfo[campaignInfo.length - 1]?.advertiserId,
+                deliveryTimeSlots: strategies?.deliveryTimeSlots,
+                campaignBudget: campaigns?.campaignBudget,
+                reviveUrl: invocationCode,
+                audiences: strategies?.audiences
+              },
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              },
+            );
+            console.log(bidding);
+          }
 
-        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', data);
-        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', bidding);
+          console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', data);
+          console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', bidding);
+        }
       };
       try {
         postBillData();
