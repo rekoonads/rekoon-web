@@ -34,6 +34,11 @@ interface RazorpayResponse {
   razorpay_payment_id: string;
   razorpay_signature: string;
 }
+const LoadingScreen = () => (
+  <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+    <div className="text-white text-lg">Loading...</div>
+  </div>
+);
 
 export default function SummaryComponent() {
   const [amount, setAmount] = useState<number>();
@@ -44,7 +49,7 @@ export default function SummaryComponent() {
   const [successPaymentId, setSuccessPaymentId] = useState<string>('');
   const { user } = useUser();
   const domainName = import.meta.env.VITE_DOMAIN;
-  
+  const [loading, setLoading] = useState(false);
   
   console.log({
     userId: userId,
@@ -181,7 +186,9 @@ export default function SummaryComponent() {
   useEffect(() => {
     if (successPaymentId) {
       const postBillData = async () => {
-        const data = await axios.post(
+        setLoading(true);
+        
+           const data = await axios.post(
           `${domainName}/api/bill`,
           {
             userId: userId,
@@ -195,6 +202,9 @@ export default function SummaryComponent() {
             },
           },
         );
+        
+        await setLoading(false);
+       
         await console.log('xxxxxxxxxxxxxxxxxxxxxxxxxx', data);
         const invocationCode = data?.data?.invocation_code;
 
@@ -340,6 +350,8 @@ export default function SummaryComponent() {
   };
   console.log(campaigns);
   return (
+    <>
+    {loading && <LoadingScreen/>}
     <Card className="w-full max-w-lg p-4 rounded-lg border border-stroke bg-white shadow-2xl dark:border-strokedark dark:bg-boxdark">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg font-semibold text-blue-700">
@@ -413,5 +425,6 @@ export default function SummaryComponent() {
         )}
       </div>
     </Card>
+    </>
   );
 }
