@@ -58,7 +58,7 @@ export default function CampaignGoalSelector({
     <div className="p-4 space-y-4">
       <div className="flex items-center space-x-2">
         <FaPlay className="h-5 w-5 text-primary" />
-        <h2 className="text-lg font-semibold">Campaign Goal</h2>
+        <h2 className="text-blue-900 font-semibold dark:text-white text-sm">Campaign Goal</h2>
         <FaInfoCircle className="h-4 w-4 text-muted-foreground" />
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 cursor-pointer">
