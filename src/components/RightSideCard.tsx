@@ -1,9 +1,3 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/FjARN1dfpRz
- * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
- */
-import { BsCalendar } from 'react-icons/bs';
 import {
   Card,
   CardHeader,
@@ -16,49 +10,66 @@ import {
   TabsTrigger,
   TabsContent,
 } from '../components/ui/tabs';
+import { BsCalendar } from 'react-icons/bs';
 import { LuSettings } from 'react-icons/lu';
 
-export default function RightSideCard() {
+interface RightSideCardProps {
+  title: string;
+  tab1Label: string;
+  tab1Content: string;
+  tab2Label: string;
+  tab2Content: string;
+  campaignBudget: string;
+  startTime: string;
+  endTime: string
+}
+
+export default function RightSideCard({
+  title,
+  tab1Label,
+  tab1Content,
+  tab2Label,
+  tab2Content,
+  campaignBudget,
+  startTime,
+  endTime
+}: RightSideCardProps) {
   return (
-    <Card className="w-full max-w-md ">
-      <CardHeader>
+    <Card className="w-full max-w-md  rounded-lg  flex flex-col p-5 gap-4">
+      <div className="flex items-center justify-between">
+        <CardTitle className="text-2xl font-bold">{title}</CardTitle>
+      </div>
+      {tab1Label && (
         <div className="flex items-center justify-between">
-          <CardTitle>Campaign Estimate</CardTitle>
-          <div className="flex items-center gap-2">
-            {/* <BsCalendar className="h-5 w-5 text-muted-foreground" />
-            <LuSettings className="h-5 w-5 text-muted-foreground" /> */}
-          </div>
+          <h3 className="text-xl text-blue-900 font-semibold dark:text-white">{tab1Label}</h3>
+          <p className="text-blue-900 font-semibold dark:text-white text-sm mt-2">₹{tab1Content}</p>
         </div>
-      </CardHeader>
-      <CardContent>
-        <Tabs defaultValue="weekly" className="border-b">
-          <TabsList>
-            <TabsTrigger value="weekly">Weekly</TabsTrigger>
-            <TabsTrigger value="daily">Daily</TabsTrigger>
-          </TabsList>
-          <TabsContent value="weekly">
-            <p className="text-muted-foreground">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-              euismod, nisl vel tincidunt lacinia, nisl nisl aliquam nisl, eget
-              aliquam nisl nisl sit amet nisl.
-            </p>
-          </TabsContent>
-          <TabsContent value="daily">
-            <p className="text-muted-foreground">
-              Donec auctor, nisl vel tincidunt lacinia, nisl nisl aliquam nisl,
-              eget aliquam nisl nisl sit amet nisl. Sed euismod, nisl vel
-              tincidunt lacinia.
-            </p>
-          </TabsContent>
-        </Tabs>
-        <div className="mt-4">
-          <h3 className="text-lg font-medium">Impressions</h3>
-          <p className="text-muted-foreground">
-            Budget range: ${new Intl.NumberFormat().format(24400)} -$
-            {new Intl.NumberFormat().format(56500)}
-          </p>
+      )}
+
+      {tab2Label && (
+        <div className="flex items-center justify-center text-center">
+          <h3 className="text-lg text-blue-900 font-semibold dark:text-white">{tab2Label}</h3>
         </div>
-      </CardContent>
+      )}
+       {startTime && (
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg text-blue-900 font-semibold dark:text-white">Start Time :</h3>
+          <p className="text-blue-900 font-semibold dark:text-white text-sm mt-2">{startTime}</p>
+        </div>
+      )}
+       {endTime && (
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg text-blue-900 font-semibold dark:text-white">End Time :</h3>
+          <p className="text-blue-900 font-semibold dark:text-white text-sm mt-2">{endTime}</p>
+        </div>
+      )}
+
+      {campaignBudget && (
+        <div className="mt-6 text-center flex items-center gap-4 justify-center">
+          <h3 className="text-xl font-medium">Payable :</h3>
+          <p className="text-blue-900 font-semibold dark:text-white text-sm mt-1">{campaignBudget}</p>
+        </div>
+      )}
     </Card>
   );
 }
