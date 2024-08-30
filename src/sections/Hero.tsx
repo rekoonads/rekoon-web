@@ -44,7 +44,7 @@ export const Hero = () => {
             <motion.img
               src={cogImage}
               alt="Cog Image"
-              className="md:absolute md:h-full md:w-auto md:max-w-none md:-left-6 lg:left-0"
+              className="md:absolute md:h-full md:w-auto md:max-w-none md:-left-16 lg:-left-12"
               animate={{
                 translateY: [-30, 30],
               }}
@@ -60,7 +60,7 @@ export const Hero = () => {
               width={220}
               height={220}
               alt="Cylinder image"
-              className="hidden md:block -top-8 -left-32 md:absolute"
+              className="hidden md:block -top-8 -left-40 md:absolute"
               style={{
                 translateY: translateY,
               }}
@@ -69,7 +69,7 @@ export const Hero = () => {
               src={noodleImage}
               width={220}
               alt="Noodle image"
-              className="absolute hidden lg:block top-[524px] left-[448px] rotate-[30deg]"
+              className="absolute hidden lg:block top-[524px] left-[420px] rotate-[30deg]"
               style={{
                 rotate: 30,
                 translateY: translateY,
