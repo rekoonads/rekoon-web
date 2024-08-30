@@ -119,6 +119,36 @@ const Campaigns = () => {
                 endDate: endDate?.toDateString(),
               }),
             });
+    if (advertiser > '5000') {
+      const cookievalue = Cookies.get('campaignId');
+      if(cookievalue === undefined){
+        const campaign_id = `CAM-${uuidv4()}`;
+        if (isAdd?.type_of_user === 'Agency') {
+          try {
+            const response = await fetch(`${domainName}/api/campaigns`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                userId: user?.id,
+                campaignId: campaign_id,
+                agencyId: orgId,
+                campaignName,
+                campaignGoal,
+                website: {
+                  websiteName,
+                  websiteUrl: website,
+                  websiteContact: businessContact,
+                  websiteEmail: businessEmail,
+                },
+                campaignAdvertiserBudget: advertiser,
+                campaignBudget,
+                campaignType,
+                startDate: startDate?.toDateString(),
+                endDate: endDate?.toDateString(),
+              }),
+            });
 
             const data = await response.json();
             if (response.ok) {
@@ -146,6 +176,49 @@ const Campaigns = () => {
               body: JSON.stringify({
                 userId: user?.id,
                 campaignId: `CAM-${uuidv4()}`,
+                advertiserId: addData?.advertiserId,
+                campaignName,
+                campaignGoal,
+                website: {
+                  websiteName,
+                  websiteUrl: website,
+                  websiteContact: businessContact,
+                  websiteEmail: businessEmail,
+                  advertiserId: addData?.advertiserId,
+                  createdBy: user?.id,
+                },
+                campaignAdvertiserBudget: advertiser,
+                campaignBudget,
+                campaignType,
+                startDate: startDate?.toDateString(),
+                endDate: endDate?.toDateString(),
+              }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+              Cookies.set('campaignId', campaign_id, { expires: 7 });
+              console.log('Campaign created successfully:', data);
+              setReceived(true);
+              toast({ title: 'Campaign Created Successfully' });
+              navigate('/strategy');
+            } else {
+              console.error('Failed to create campaign:', data);
+              toast({ title: 'Failed to submit campaign.' });
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            toast({ title: 'An error occurred while submitting the campaign.' });
+          }
+        } else if (isAdd?.type_of_user === 'Advertiser') {
+          try {
+            const response = await fetch(`${domainName}/api/campaigns`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                userId: user?.id,
+                campaignId: campaign_id,
                 advertiserId: addData?.advertiserId,
                 campaignName,
                 campaignGoal,
@@ -437,10 +510,10 @@ const Campaigns = () => {
             <button
                disabled={cap}
               type="submit"
-              className={`px-4 py-2 font-semibold text-white  cursor-pointer p-2 rounded-lg   w-[80%] bg-slate-400  transition relative left-[50%] translate-x-[-50%] translate-y-[50%] mb-4 ${
+              className={`px-4 py-2 font-semibold text-white  p-2 rounded-lg   w-[80%] bg-slate-400  transition relative left-[50%] translate-x-[-50%] translate-y-[50%] mb-4 ${
                 cap
                   ? 'bg-gray-400 cursor-not-allowed '
-                  : 'dark:bg-blue-500 dark:hover:bg-blue-700 active:scale-95 bg-transparent bg-purple-900 hover:bg-purple-600'
+                  : 'dark:bg-blue-500 cursor-pointer dark:hover:bg-blue-700 active:scale-95 bg-transparent bg-purple-900 hover:bg-purple-600'
               }`}
               onClick={() => {
                 if (!cap) {

@@ -14,12 +14,14 @@ interface AdvertiserProps {
   onSelect: (advertiser: string) => void;
   adBud: (advertiser: string) => void;
   campBud: (advertiser: string) => void;
+  budget: number
 }
 
 export default function Advertiser({
   onSelect,
   adBud,
   campBud,
+  budget,
 }: AdvertiserProps) {
   const [calculatedBudget, setCalculatedBudget] = useState<string>('');
   const [selectBudType, setSelectBudType] = useState<string>('');
@@ -98,6 +100,7 @@ export default function Advertiser({
   console.log(advertiserBud);
   console.log(calculatedBudget);
   console.log(selectBudType);
+  console.log(budget)
   return (
     <div className="space-y-6 p-4">
       <Card className="border-2 border-gray-300 rounded-lg w-full">
@@ -115,7 +118,7 @@ export default function Advertiser({
           <div className="flex items-center space-x-4 w-full">
             <input
               onChange={advertiserBudget}
-              value={advertiserBud}
+              value={Number(budget) || advertiserBud}
               type="number"
               min="5000"
               placeholder="Minimum ₹5000"
