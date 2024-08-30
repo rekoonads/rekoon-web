@@ -91,141 +91,154 @@ const Campaigns = () => {
   //handling Submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (advertiser > '5000') {
-      if (isAdd?.type_of_user === 'Agency') {
-        try {
-          const response = await fetch(`${domainName}/api/campaigns`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              userId: user?.id,
-              campaignId: `CAM-${uuidv4()}`,
-              agencyId: orgId,
-              campaignName,
-              campaignGoal,
-              website: {
-                websiteName,
-                websiteUrl: website,
-                websiteContact: businessContact,
-                websiteEmail: businessEmail,
+    if (campaignBudget && advertiser && startDate && endDate && campaignType) {
+      if (advertiser > '5000') {
+        if (isAdd?.type_of_user === 'Agency') {
+          try {
+            const response = await fetch(`${domainName}/api/campaigns`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
               },
-              campaignAdvertiserBudget: advertiser,
-              campaignBudget,
-              campaignType,
-              startDate: startDate?.toDateString(),
-              endDate: endDate?.toDateString(),
-            }),
-          });
+              body: JSON.stringify({
+                userId: user?.id,
+                campaignId: `CAM-${uuidv4()}`,
+                agencyId: orgId,
+                campaignName,
+                campaignGoal,
+                website: {
+                  websiteName,
+                  websiteUrl: website,
+                  websiteContact: businessContact,
+                  websiteEmail: businessEmail,
+                },
+                campaignAdvertiserBudget: advertiser,
+                campaignBudget,
+                campaignType,
+                startDate: startDate?.toDateString(),
+                endDate: endDate?.toDateString(),
+              }),
+            });
 
-          const data = await response.json();
-          if (response.ok) {
-            console.log('Campaign created successfully:', data);
-            setReceived(true);
-            toast({ title: 'Campaign Created Successfully' });
-            navigate('/strategy');
-          } else {
-            console.error('Failed to create campaign:', data);
-            toast({ title: 'Failed to submit campaign.' });
+            const data = await response.json();
+            if (response.ok) {
+              console.log('Campaign created successfully:', data);
+              setReceived(true);
+              toast({ title: 'Campaign Created Successfully' });
+              navigate('/strategy');
+            } else {
+              console.error('Failed to create campaign:', data);
+              toast({ title: 'Failed to submit campaign.' });
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            toast({
+              title: 'An error occurred while submitting the campaign.',
+            });
           }
-        } catch (error) {
-          console.error('Error:', error);
-          toast({ title: 'An error occurred while submitting the campaign.' });
-        }
-      } else if (isAdd?.type_of_user === 'Advertiser') {
-        try {
-          const response = await fetch(`${domainName}/api/campaigns`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              userId: user?.id,
-              campaignId: `CAM-${uuidv4()}`,
-              advertiserId: addData?.advertiserId,
-              campaignName,
-              campaignGoal,
-              website: {
-                websiteName,
-                websiteUrl: website,
-                websiteContact: businessContact,
-                websiteEmail: businessEmail,
+        } else if (isAdd?.type_of_user === 'Advertiser') {
+          try {
+            const response = await fetch(`${domainName}/api/campaigns`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                userId: user?.id,
+                campaignId: `CAM-${uuidv4()}`,
                 advertiserId: addData?.advertiserId,
-                createdBy: user?.id,
-              },
-              campaignAdvertiserBudget: advertiser,
-              campaignBudget,
-              campaignType,
-              startDate: startDate?.toDateString(),
-              endDate: endDate?.toDateString(),
-            }),
-          });
+                campaignName,
+                campaignGoal,
+                website: {
+                  websiteName,
+                  websiteUrl: website,
+                  websiteContact: businessContact,
+                  websiteEmail: businessEmail,
+                  advertiserId: addData?.advertiserId,
+                  createdBy: user?.id,
+                },
+                campaignAdvertiserBudget: advertiser,
+                campaignBudget,
+                campaignType,
+                startDate: startDate?.toDateString(),
+                endDate: endDate?.toDateString(),
+              }),
+            });
 
-          const data = await response.json();
-          if (response.ok) {
-            console.log('Campaign created successfully:', data);
-            setReceived(true);
-            toast.success('Campaign submitted successfully!');
-            navigate('/strategy');
-          } else {
-            console.error('Failed to create campaign:', data);
-            toast.error('Failed to submit campaign.');
+            const data = await response.json();
+            if (response.ok) {
+              console.log('Campaign created successfully:', data);
+              setReceived(true);
+              toast({ title: 'Campaign submitted successfully!' });
+              navigate('/strategy');
+            } else {
+              console.error('Failed to create campaign:', data);
+              toast({
+                title: 'An error occurred while submitting the campaign.',
+              });
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            toast({
+              title: 'An error occurred while submitting the campaign.',
+            });
           }
-        } catch (error) {
-          console.error('Error:', error);
-          toast.error('An error occurred while submitting the campaign.');
         }
+      } else {
+        alert('Please deposit ₹5000 or greater');
+        toast({ title: 'Please deposit ₹5000 or greater' });
       }
     } else {
-      alert('Please deposit ₹5000 or greater');
-      toast({ title: 'Please deposit ₹5000 or greater' });
+      toast({ title: `Please Fill up the complete Campaign form` });
+      alert(`Please Fill up the complete Campaign form`);
     }
 
-    try {
-      let postData: any;
-      if (isAdd?.type_of_user === 'Agency') {
-        postData = await axios.post(
-          `${domainName}/api/add-website`,
-          {
-            websiteName,
-            websiteUrl: website,
-            websiteContact: businessContact,
-            websiteEmail: businessEmail,
-            agencyId: orgId,
-            createdBy: user?.id,
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
+    if (campaignBudget && advertiser && startDate && endDate && campaignType) {
+      try {
+        let postData: any;
+        if (isAdd?.type_of_user === 'Agency') {
+          postData = await axios.post(
+            `${domainName}/api/add-website`,
+            {
+              websiteName,
+              websiteUrl: website,
+              websiteContact: businessContact,
+              websiteEmail: businessEmail,
+              agencyId: orgId,
+              createdBy: user?.id,
             },
-          },
-        );
-        setPostData(postData);
-      } else if (isAdd?.type_of_user === 'Advertiser') {
-        postData = await axios.post(
-          `${domainName}/api/add-website`,
-          {
-            websiteName,
-            websiteUrl: website,
-            websiteContact: businessContact,
-            websiteEmail: businessEmail,
-            advertiserId: addData?.advertiserId,
-            createdBy: user?.id,
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
             },
-          },
-        );
-        setPostData(postData);
+          );
+          setPostData(postData);
+        } else if (isAdd?.type_of_user === 'Advertiser') {
+          postData = await axios.post(
+            `${domainName}/api/add-website`,
+            {
+              websiteName,
+              websiteUrl: website,
+              websiteContact: businessContact,
+              websiteEmail: businessEmail,
+              advertiserId: addData?.advertiserId,
+              createdBy: user?.id,
+            },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            },
+          );
+          setPostData(postData);
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
-    }
-    if (postData) {
-      alert(`Data has been Submitted`);
+      if (postData) {
+        alert(`The Website Details has been Submitted`);
+      }
     }
   };
 
@@ -241,6 +254,24 @@ const Campaigns = () => {
 
   console.log(advertiser);
   console.log(campaignBudget);
+
+  //Bug Fix for daily and Weekly budget
+  const [weeklyBud, setWeeklyBud] = useState<any>();
+  useEffect(() => {
+    if (advertiser) {
+      setWeeklyBud(Number(advertiser) * 7);
+    }
+  }, [advertiser]);
+
+  //button
+  const [cap, setCap] = useState<boolean>(true);
+  useEffect(()=>{
+    if (campaignBudget && advertiser && startDate && endDate && campaignType){
+      setCap(false)
+    }
+  },[campaignBudget,advertiser,startDate,endDate,campaignBudget])
+
+
 
   return (
     <>
@@ -264,7 +295,8 @@ const Campaigns = () => {
                 <input
                   type="text"
                   placeholder="Default Input"
-                  className="mt-1 p-2 w-full border-none outline-none rounded-md text-blue-900 font-semibold dark:bg-black dark:text-yellow-100"
+                  className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
+      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   value={campaignName}
                   onChange={(e) => setCampaignName(e.target.value)}
                 />
@@ -301,7 +333,8 @@ const Campaigns = () => {
               <input
                 type="text"
                 placeholder="Enter Name"
-                className="mt-1 p-2 w-full border-none outline-none rounded-md text-blue-900 font-semibold dark:bg-black dark:text-yellow-100"
+                className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
+      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 onChange={(event) => setWebsiteName(event.target.value)}
               />
             </div>
@@ -312,7 +345,8 @@ const Campaigns = () => {
               <input
                 type="text"
                 placeholder="www.yourbrand.com"
-                className="mt-1 p-2 w-full border-none outline-none rounded-md text-blue-900 font-semibold dark:bg-black dark:text-yellow-100"
+                className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
+      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 onChange={(event) => setWebsite(event.target.value)}
               />
             </div>
@@ -323,7 +357,8 @@ const Campaigns = () => {
               <input
                 type="email"
                 placeholder="Example@test.com"
-                className="mt-1 p-2 w-full border-none outline-none rounded-md text-blue-900 font-semibold dark:bg-black dark:text-yellow-100"
+                className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
+      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 onChange={(event) => setBusinessEmail(event.target.value)}
                 required
               />
@@ -335,7 +370,8 @@ const Campaigns = () => {
               <input
                 type="text"
                 placeholder="www.yourbrand.com"
-                className="mt-1 p-2 w-full border-none outline-none rounded-md text-blue-900 font-semibold dark:bg-black dark:text-yellow-100"
+                className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
+      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 onChange={(event) => setBusinessContact(event.target.value)}
               />
             </div>
@@ -392,30 +428,47 @@ const Campaigns = () => {
             </div>
           </div>
           <form onSubmit={handleSubmit}>
-          {campaignBudget && advertiser && startDate && endDate && campaignType && (<button
+            {/* {campaignBudget && advertiser && startDate && endDate && campaignType && (<button
               type="submit"
-              className="cursor-pointer p-2 rounded-lg text-white bg-slate-400 w-[10rem] hover:bg-slate-600 transition relative left-[50%] translate-x-[-50%] translate-y-[50%] mb-4"
+              className="cursor-pointer p-2 rounded-lg text-white bg-purple-900 hover:bg-purple-600 w-[80%] dark:bg-blue-900 dark:hover:bg-blue-500 active:scale-95  transition relative left-[50%] translate-x-[-50%] translate-y-[50%] mb-4"
             >
               Submit Campaign
-            </button>) }
-           
+            </button>) } */}
+            <button
+               disabled={cap}
+              type="submit"
+              className={`px-4 py-2 font-semibold text-white  cursor-pointer p-2 rounded-lg   w-[80%] bg-slate-400  transition relative left-[50%] translate-x-[-50%] translate-y-[50%] mb-4 ${
+                cap
+                  ? 'bg-gray-400 cursor-not-allowed '
+                  : 'dark:bg-blue-500 dark:hover:bg-blue-700 active:scale-95 bg-transparent bg-purple-900 hover:bg-purple-600'
+              }`}
+              onClick={() => {
+                if (!cap) {
+                  console.log('Button clicked!');
+                }
+              }}
+          
+            >
+                {cap ? 'Fill up the Campaign From' : 'Proceed to Strategy'}
+            </button>
           </form>
         </div>
 
-        <div className="flex flex-col gap-9 md:fixed right-5 overflow-auto h-[70vh] scroll-m-3 ">
-          <div className="rounded-sm border md:mr-10 md:mt-10 border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            {campaignBudget && advertiser && startDate && endDate && campaignType && (<div className="md:mr-2">
-              <RightSideCard
-                title="Campaign Budget"
-                tab1Label=""
-                tab1Content=""
-                tab2Label={campaignType}
-                tab2Content= ''
-                campaignBudget={campaignBudget}
-                startTime={String(startDate)}
-                endTime={String(endDate)}
-              />
-            </div>)}
+        <div className="flex flex-col gap-1 md:fixed right-5  h-[70vh]  ">
+          <div className="rounded-sm border md:mr-10 md:mt-1 border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+            {campaignBudget &&
+              advertiser &&
+              startDate &&
+              endDate &&
+              campaignType && (
+                <div className="md:mr-2">
+                  <RightSideCard
+                    title="Campaign Budget"
+                    weeklyEstimate={weeklyBud}
+                    dailyBudget={advertiser}
+                  />
+                </div>
+              )}
           </div>
         </div>
       </div>
