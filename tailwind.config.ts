@@ -13,12 +13,22 @@ module.exports = {
       satoshi: ['Satoshi', 'sans-serif'],
     },
     screens: {
+      sm: '375px',
+      md: '768px',
+      lg: '1200px',
       '2xsm': '375px',
       xsm: '425px',
       '3xl': '2000px',
       ...defaultTheme.screens,
     },
     extend: {
+      container: {
+        center: true,
+        padding: {
+          DEFAULT: '20px',
+          lg: '80px',
+        },
+      },
       colors: {
         current: 'currentColor',
         transparent: 'transparent',
