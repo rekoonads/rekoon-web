@@ -32,13 +32,14 @@ import Coupons from './pages/Settings/Coupons';
 import WebTracking from './pages/Settings/WebTracking';
 import AppTracking from './pages/Settings/AppTracking';
 import CorporateAds from './pages/CorporateAds';
+import NewHome from './pages/NewHome';
 
 function App() {
   const [loading, setLoading] = useState(true);
   const { pathname } = useLocation();
   const { user, isLoaded, isSignedIn } = useUser();
   const navigate = useNavigate();
-  console.log(user)
+  console.log(user);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -63,21 +64,21 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<NewHome />} />
       <Route path="/login-options" element={<LoginWays />} />
       <Route path="/manage-advertise" element={<AdvertiseManagement />} />
       <Route path="/report" element={<ReportPage />} />
       <Route path="/auth/sign-in" element={<SignInPage />} />
       <Route path="/auth/sign-up" element={<SignUpPage />} />
       <Route
-              path="view-advertisement"
-              element={
-                <>
-                  <PageTitle title="Viewing Advertisement | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                  <CorporateAds />
-                </>
-              }
-            />
+        path="view-advertisement"
+        element={
+          <>
+            <PageTitle title="Viewing Advertisement | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+            <CorporateAds />
+          </>
+        }
+      />
       {isSignedIn ? (
         <>
           <Route path="/" element={<DefaultLayout />}>
