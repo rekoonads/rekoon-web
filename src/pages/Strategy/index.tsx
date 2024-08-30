@@ -77,6 +77,7 @@ const Strategy = () => {
   const [audienceArr, setAudienceArr] = useState<string[]>([]);
   const [strategyName, setStrategyName] = useState<string>('');
   const [strategyDailyBudget, setStrategyDailyBudget] = useState<string>('');
+  const domainName = import.meta.env.VITE_DOMAIN;
 
   const { user } = useUser();
   const handleReset = () => {
@@ -201,9 +202,9 @@ const Strategy = () => {
     };
 
     if (isAdd?.type_of_user === 'Advertiser') {
-      fetchCampaignId(`/api/campaigns/${user?.id}`);
+      fetchCampaignId(`${domainName}/api/campaigns/${user?.id}`);
     } else if (isAdd?.type_of_user === 'Agency') {
-      fetchCampaignId(`/api/campaigns-agency/${orgId}`);
+      fetchCampaignId(`${domainName}/api/campaigns-agency/${orgId}`);
     }
   }, [isAdd?.type_of_user, user?.id, orgId]);
 
@@ -224,7 +225,7 @@ const Strategy = () => {
   useEffect(() => {
     const fetchData = async (id: string) => {
       try {
-        const response = await fetch(`/api/search-user/${id}`, {
+        const response = await fetch(`${domainName}/api/search-user/${id}`, {
           method: 'GET',
           headers: {
             'Content-type': 'application/json',
@@ -254,7 +255,7 @@ const Strategy = () => {
   const handleSubmit = async () => {
     if (isAdd?.type_of_user === 'Agency') {
       try {
-        const response = await fetch(`/api/strategy`, {
+        const response = await fetch(`${domainName}/api/strategy`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -292,7 +293,7 @@ const Strategy = () => {
       }
     } else if (isAdd?.type_of_user === 'Advertiser') {
       try {
-        const response = await fetch(`/api/strategy`, {
+        const response = await fetch(`${domainName}/api/strategy`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

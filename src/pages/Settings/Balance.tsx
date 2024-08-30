@@ -11,13 +11,14 @@ interface BalanceProps {
 
 
 const Balance = ({accountBalance, spentThisMonth}:BalanceProps) => {
+  const domainName = import.meta.env.VITE_DOMAIN;
   const [isAdd, setIsAdd] = useState<UserData | undefined>(undefined);
   const { user} = useUser();
     //Searching User Type
     useEffect(() => {
       const fetchData = async (id: string) => {
         try {
-          const response = await fetch(`/api/search-user/${id}`, {
+          const response = await fetch(`${domainName}/api/search-user/${id}`, {
             method: 'GET',
             headers: {
               'Content-type': 'application/json',

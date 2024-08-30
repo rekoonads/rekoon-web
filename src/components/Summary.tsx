@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { useAuth, useUser } from '@clerk/clerk-react';
+import { v4 as uuidv4 } from 'uuid'
 
 // Extend the Window interface
 declare global {
@@ -33,6 +34,11 @@ interface RazorpayResponse {
   razorpay_payment_id: string;
   razorpay_signature: string;
 }
+const LoadingScreen = () => (
+  <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+    <div className="text-white text-lg">Loading...</div>
+  </div>
+);
 
 export default function SummaryComponent() {
   const [amount, setAmount] = useState<number>();
@@ -42,7 +48,9 @@ export default function SummaryComponent() {
   const [strategies, setStrategies] = useState([]);
   const [successPaymentId, setSuccessPaymentId] = useState<string>('');
   const { user } = useUser();
-
+  const domainName = import.meta.env.VITE_DOMAIN;
+  const [loading, setLoading] = useState(false);
+  
   console.log({
     userId: userId,
     campaignId: campaigns?.campaignId,
@@ -73,7 +81,7 @@ export default function SummaryComponent() {
   useEffect(() => {
     const fetchData = async (id: string) => {
       try {
-        const response = await fetch(`/api/search-user/${id}`, {
+        const response = await fetch(`${domainName}/api/search-user/${id}`, {
           method: 'GET',
           headers: {
             'Content-type': 'application/json',
@@ -134,9 +142,9 @@ export default function SummaryComponent() {
     };
 
     if (isAdd?.type_of_user === 'Advertiser') {
-      fetchCampaignId(`/api/campaigns/${user?.id}`);
+      fetchCampaignId(`${domainName}/api/campaigns/${user?.id}`);
     } else if (isAdd?.type_of_user === 'Agency') {
-      fetchCampaignId(`/api/campaigns-agency/${orgId}`);
+      fetchCampaignId(`${domainName}/api/campaigns-agency/${orgId}`);
     }
   }, [isAdd?.type_of_user, user?.id, orgId]);
   console.log(campaignInfo[campaignInfo.length - 1]);
@@ -161,7 +169,7 @@ export default function SummaryComponent() {
         }
       };
 
-      fetchStrategyDetails(`/api/strategy-campaign/${campaigns?.campaignId}`);
+      fetchStrategyDetails(`${domainName}/api/strategy-campaign/${campaigns?.campaignId}`);
     }
   }, [campaigns?.campaignId]);
   console.log(strategies);
@@ -178,8 +186,10 @@ export default function SummaryComponent() {
   useEffect(() => {
     if (successPaymentId) {
       const postBillData = async () => {
-        const data = await axios.post(
-          '/api/bill',
+        setLoading(true);
+        
+           const data = await axios.post(
+          `${domainName}/api/bill`,
           {
             userId: userId,
             campaignId: campaigns?.campaignId,
@@ -192,50 +202,70 @@ export default function SummaryComponent() {
             },
           },
         );
+        
+        await setLoading(false);
+       
         await console.log('xxxxxxxxxxxxxxxxxxxxxxxxxx', data);
         const invocationCode = data?.data?.invocation_code;
 
-        if (!invocationCode) {
-          throw new Error('Invocation code is missing from the response');
-        }
-        if (isAdd?.type_of_user === 'Agency') {
-          const bidding = await axios.post(
-            '/api/add-bidder',
-            {
-              agencyId: campaignInfo[campaignInfo.length - 1]?.agencyId,
-              deliveryTimeSlots: strategies?.deliveryTimeSlots,
-              campaignBudget: campaigns?.campaignBudget,
-              reviveUrl: invocationCode,
-              audiences: strategies?.audiences
-            },
-            {
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            },
+        if(invocationCode.status == "error"){
+          const errorId = uuidv4();
+            await axios.post('/api/save-error', {
+              errorId: errorId,
+              userId: userId,
+              campaignId: campaigns?.campaignId,
+              strategyId: strategies?.strategyId,
+              errorMessage: invocationCode.message,
+            });
+          toast.error(
+            `Something went wrong. Please contact support with this ID: ${errorId}`
           );
-          console.log(bidding);
-        } else if (isAdd?.type_of_user === 'Advertiser') {
-          const bidding = await axios.post(
-            '/api/add-bidder',
-            {
-              advertiserId: campaignInfo[campaignInfo.length - 1]?.advertiserId,
-              deliveryTimeSlots: strategies?.deliveryTimeSlots,
-              campaignBudget: campaigns?.campaignBudget,
-              reviveUrl: invocationCode,
-              audiences: strategies?.audiences
-            },
-            {
-              headers: {
-                'Content-Type': 'application/json',
+        }else{
+          if (!invocationCode) {
+            throw new Error('Invocation code is missing from the response');
+          }
+          if (isAdd?.type_of_user === 'Agency') {
+            const bidding = await axios.post(
+              `${domainName}/api/add-bidder`,
+              {
+                agencyId: campaignInfo[campaignInfo.length - 1]?.agencyId,
+                deliveryTimeSlots: strategies?.deliveryTimeSlots,
+                campaignBudget: campaigns?.campaignBudget,
+                reviveUrl: invocationCode.value,
+                audiences: strategies?.audiences,
+                startDate: campaigns?.startDate,
+                endDate: campaigns?.endDate,
+                status :"Active"
               },
-            },
-          );
-          console.log(bidding);
-        }
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              },
+            );
+            console.log(bidding);
+          } else if (isAdd?.type_of_user === 'Advertiser') {
+            const bidding = await axios.post(
+              `${domainName}/api/add-bidder`,
+              {
+                advertiserId: campaignInfo[campaignInfo.length - 1]?.advertiserId,
+                deliveryTimeSlots: strategies?.deliveryTimeSlots,
+                campaignBudget: campaigns?.campaignBudget,
+                reviveUrl: invocationCode.value,
+                audiences: strategies?.audiences
+              },
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              },
+            );
+            console.log(bidding);
+          }
 
-        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', data);
-        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', bidding);
+          console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', data);
+          console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', bidding);
+        }
       };
       try {
         postBillData();
@@ -249,7 +279,7 @@ export default function SummaryComponent() {
 
   useEffect(() => {
     const paymentConfirmation = async () => {
-      const payStData = await axios.get(`/api/bill/${campaigns?.campaignId}`);
+      const payStData = await axios.get(`${domainName}/api/bill/${campaigns?.campaignId}`);
       console.log(payStData?.data.paymentSuccess);
       setSuccessFullpeyment(payStData?.data.paymentSuccess);
     };
@@ -259,7 +289,7 @@ export default function SummaryComponent() {
   // handlePayment Function
   const handlePayment = async () => {
     try {
-      const res = await fetch('/api/payment/order', {
+      const res = await fetch(`${domainName}/api/payment/order`, {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -290,7 +320,7 @@ export default function SummaryComponent() {
       handler: async (response: RazorpayResponse) => {
         console.log('response', response);
         try {
-          const res = await fetch('/api/payment/verify', {
+          const res = await fetch(`${domainName}/api/payment/verify`, {
             method: 'POST',
             headers: {
               'content-type': 'application/json',
@@ -323,6 +353,8 @@ export default function SummaryComponent() {
   };
   console.log(campaigns);
   return (
+    <>
+    {loading && <LoadingScreen/>}
     <Card className="w-full max-w-lg p-4 rounded-lg border border-stroke bg-white shadow-2xl dark:border-strokedark dark:bg-boxdark">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg font-semibold text-blue-700">
@@ -396,5 +428,6 @@ export default function SummaryComponent() {
         )}
       </div>
     </Card>
+    </>
   );
 }

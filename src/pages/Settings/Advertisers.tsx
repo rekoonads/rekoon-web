@@ -69,6 +69,8 @@ export default function Advertisers() {
   const [businessEmail, setBusinessEmail] = useState<string>('');
   const [businessContact, setBusinessContact] = useState<string>('');
   const [respondedData, setRespondedData] = useState<any>();
+  const domainName = import.meta.env.VITE_DOMAIN;
+
 
   //type of user
   const [isAdd, setIsAdd] = useState<UserData | null>(null);
@@ -76,7 +78,7 @@ export default function Advertisers() {
   useEffect(() => {
     const fetchData = async (id: string) => {
       try {
-        const response = await fetch(`/api/search-user/${id}`, {
+        const response = await fetch(`${domainName}/api/search-user/${id}`, {
           method: 'GET',
           headers: {
             'Content-type': 'application/json',
@@ -108,7 +110,7 @@ export default function Advertisers() {
     if (isAdd?.type_of_user === 'Advertiser') {
       const getAdvertiserId = async () => {
         try {
-          const response = await axios.get(`/api/advertisers/${user?.id}`, {
+          const response = await axios.get(`${domainName}/api/advertisers/${user?.id}`, {
             headers: { 'Content-Type': 'application/json' },
             params: {
               _: new Date().getTime(),
@@ -135,7 +137,7 @@ export default function Advertisers() {
 
       if (isAdd?.type_of_user === 'Agency') {
         postData = await axios.post(
-          '/api/add-website',
+          `${domainName}/api/add-website`,
           {
             websiteName,
             websiteUrl: website,
@@ -152,7 +154,7 @@ export default function Advertisers() {
         );
       } else if (isAdd?.type_of_user === 'Advertiser') {
         postData = await axios.post(
-          '/api/add-website',
+          `${domainName}/api/add-website`,
           {
             websiteName,
             websiteUrl: website,

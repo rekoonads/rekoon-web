@@ -1,12 +1,15 @@
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 
+
+
+
 const CorporateAds = () => {
   const [currentDesign, setCurrentDesign] = useState(0);
   const [videoSrc, setVideoSrc] = useState('');
   const videoRef = useRef(null);
   const designs = [DesignOne, DesignTwo];
-
+  const domainName = import.meta.env.VITE_DOMAIN
   const nextDesign = () => {
     setCurrentDesign((prev) => (prev + 1) % designs.length);
   };
@@ -16,11 +19,11 @@ const CorporateAds = () => {
   };
 
   const CurrentDesign = designs[currentDesign];
-
+  
   const fetchNextVideo = async () => {
     try {
       const response = await axios.get(
-        'http://localhost:3001/api/get-video?type=Careers',
+        `${domainName}/api/get-video?type=Careers`,
       );
       const newVideoSrc = response.data;
       setVideoSrc(newVideoSrc);
@@ -73,7 +76,7 @@ const CorporateAds = () => {
         {videoSrc && <source src={videoSrc} type="video/mp4" />}
         Your browser does not support the video tag.
       </video>
-      <div className="fixed bottom-4 right-4 flex space-x-2">
+      {/* <div className="fixed bottom-4 right-4 flex space-x-2">
         <button
           onClick={prevDesign}
           className="bg-blue-500 text-white p-2 rounded-full"
@@ -86,7 +89,7 @@ const CorporateAds = () => {
         >
           &gt;
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

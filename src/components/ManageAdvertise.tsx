@@ -46,7 +46,7 @@ export default function ManageAdvertise() {
   const { orgId, userId } = useAuth();
   const { user } = useUser();
   const [ balance, setBalance] = useState<number>(0);
- 
+  const domainName = import.meta.env.VITE_DOMAIN;
 
   // handlePayment Function
   
@@ -64,7 +64,7 @@ export default function ManageAdvertise() {
     const handlePaymentSubmit = async (amount: number) => {
       try {
         setBalance(amount);
-        const res = await fetch('/api/payment/order', {
+        const res = await fetch(`${domainName}/api/payment/order`, {
           method: 'POST',
           headers: {
             'content-type': 'application/json',
@@ -88,6 +88,7 @@ export default function ManageAdvertise() {
   const [successPaymentId, setSuccessPaymentId] = useState<string>('');
   const handlePaymentVerify = async (data: PaymentData) => {
     console.log(data);
+    
     const options = {
       key: 'rzp_test_SZrvteybFNdghB', // Use your Razorpay Test Key
       amount: data.amount,
@@ -98,7 +99,7 @@ export default function ManageAdvertise() {
       handler: async (response: RazorpayResponse) => {
         console.log('response', response);
         try {
-          const res = await fetch('/api/payment/verify', {
+          const res = await fetch(`${domainName}/api/payment/verify`, {
             method: 'POST',
             headers: {
               'content-type': 'application/json',
@@ -113,7 +114,7 @@ export default function ManageAdvertise() {
           const verifyData = await res.json();
 
           if (verifyData.message) {
-            const updated_user = await fetch('/api/update-balance', {
+            const updated_user = await fetch(`${domainName}/api/update-balance`, {
               method: 'PATCH',
               headers: {
                 'content-type': 'application/json',
@@ -202,7 +203,7 @@ export default function ManageAdvertise() {
   useEffect(() => {
     const fetchData = async (id: string) => {
       try {
-        const response = await fetch(`/api/search-user/${id}`, {
+        const response = await fetch(`${domainName}/api/search-user/${id}`, {
           method: 'GET',
           headers: {
             'Content-type': 'application/json',
@@ -287,7 +288,7 @@ export default function ManageAdvertise() {
     formData.append('file', gstData);
 
     try {
-      const response = await axios.post('/api/file-cloud', formData, {
+      const response = await axios.post(`${domainName}/api/file-cloud`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -315,7 +316,7 @@ export default function ManageAdvertise() {
     formData.append('file', gstLogo);
 
     try {
-      const response = await axios.post('/api/file-cloud', formData, {
+      const response = await axios.post(`${domainName}/api/file-cloud`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -344,7 +345,7 @@ export default function ManageAdvertise() {
     if (isAdd?.type_of_user === 'Agency') {
       try {
         const postData = await axios.patch(
-          '/api/update_user',
+          `${domainName}/api/update_user`,
           {
             typeofuser: 'Agency',
             agencyName: isAdd?.data[0]?.agencyName,
@@ -370,7 +371,7 @@ export default function ManageAdvertise() {
     } else if (isAdd?.type_of_user === 'Advertiser') {
       try {
         const postData = await axios.patch(
-          '/api/update_user',
+          `${domainName}/api/update_user`,
           {
             typeofuser: 'Advertiser',
             advertiserName: isAdd?.data[0].advertiserName,

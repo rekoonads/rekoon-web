@@ -1,8 +1,8 @@
 import axios from 'axios';
-
+const domainName = import.meta.env.VITE_DOMAIN;
 export const searchUser = async (userId) => {
   try {
-    const response = await axios.get(`/api/search-user/${userId}`);
+    const response = await axios.get(`${domainName}/api/search-user/${userId}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching user data:", error);
@@ -12,7 +12,7 @@ export const searchUser = async (userId) => {
 
 export const getAgency = async(agencyId) =>{
   try {
-    const agenceyData = await axios.get(`/api/search-agency/${agencyId}`);
+    const agenceyData = await axios.get(`${domainName}/api/search-agency/${agencyId}`);
     return agenceyData.data
   } catch (error) {
     console.error("Error fetching user data:", error);

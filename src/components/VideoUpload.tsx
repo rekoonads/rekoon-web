@@ -25,6 +25,7 @@ export default function VideoUpload({ onURLSet, onVideoDuration }: VideoUploadPr
   const [isUploadComplete, setIsUploadComplete] = useState<boolean>(false);
   const [url, setUrl] = useState<string>('');
   const [videoDuration, setVideoDuration] = useState<number | null>(null);
+  const domainName = import.meta.env.VITE_DOMAIN;
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -87,7 +88,7 @@ export default function VideoUpload({ onURLSet, onVideoDuration }: VideoUploadPr
         formData.append('video', file);
 
         axios
-          .post('http://localhost:3001/upload_video', formData, {
+          .post(`${domainName}/upload_video`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
             },

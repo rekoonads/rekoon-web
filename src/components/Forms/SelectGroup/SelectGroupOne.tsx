@@ -30,17 +30,17 @@ const SelectGroupOne: React.FC<SelectGroupOneProps> = ({
   return (
     <div className={`flex flex-col w-full ${className}`}>
       {label && (
-        <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200">
+        <label className="mb-3 block text-blue-900 text-sm dark:text-white font-semibold">
           {label}
         </label>
       )}
       <select
         value={selected}
         onChange={(e) => onSelect && onSelect(e.target.value)}
-        className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+        className="w-full rounded-lg text-blue-900 border-[1.5px] border-stroke bg-transparent py-3 px-5  outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
       >
         {options.map((option) => (
-          <option key={option.value} value={option.value}>
+          <option key={option.value} value={option.value} className='px-4'>
             {option.label}
           </option>
         ))}

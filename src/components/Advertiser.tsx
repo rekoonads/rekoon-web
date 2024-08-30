@@ -6,10 +6,9 @@ import {
 } from '../components/ui/card';
 import { RiAdvertisementFill } from 'react-icons/ri';
 import { CurrencyIcon, InfoIcon } from 'lucide-react';
-import CheckboxTwo from './Checkboxes/CheckboxTwo';
-import SelectGroupOne from './Forms/SelectGroup/SelectGroupOne';
-import CheckboxOne from './Checkboxes/CheckboxOne';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useToast } from './ui/use-toast';
+
 
 interface AdvertiserProps {
   onSelect: (advertiser: string) => void;
@@ -22,50 +21,115 @@ export default function Advertiser({
   adBud,
   campBud,
 }: AdvertiserProps) {
+  const [calculatedBudget, setCalculatedBudget] = useState<string>('');
+  const [selectBudType, setSelectBudType] = useState<string>('');
+  const [advertiserBud, setAdvertiserBud] = useState<string>('');
+  const [moneyValue, setMoneyValue] = useState<any>();
+  
+
+ 
+  const calculateCampaignBudgetDaily = (budget: string) => {
+    let budDailyData = Number(budget) * 7;
+    return budDailyData;
+  };
+
   const handleSelect = (value: string) => {
     onSelect(value);
+    setMoneyValue(value);
   };
   const [selectedOption, setSelectedOption] = useState<string>('');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectBudType(event.target.value);
     setSelectedOption(event.target.value);
     onSelect(event.target.value);
   };
   const advertiserBudget = (event: React.ChangeEvent<HTMLInputElement>) => {
-    adBud(event.target.value);
+    if (advertiserBud < '5000') {
+      toast({title : 'Please deposit ₹5000 or greater'})
+    } 
+    setAdvertiserBud(event.target.value);
+    campBud(String(calculatedBudget));
+    adBud(String(event.target.value));
   };
   const campaignBudget = (event: React.ChangeEvent<HTMLInputElement>) => {
-    campBud(event.target.value);
+    setCalculatedBudget(event.target.value);
+    campBud(calculatedBudget);
   };
+//toast functionality
+ const {toast} = useToast()
 
+
+
+  //money parsing
+  useEffect(() => {
+    if (moneyValue) {
+      setAdvertiserBud(moneyValue);
+      campBud(String(calculatedBudget));
+      adBud(String(moneyValue));
+    }
+  }, [moneyValue]);
+
+  //money blocker ui
+  
+  // useEffect(() => {
+  //   if (advertiserBud < '5000') {
+  //     toast({title : 'Please deposit ₹5000 or greater'})
+  //   } 
+  // }, [advertiserBud]);
+
+  // before last part
+  useEffect(() => {
+    if (calculatedBudget) {
+      campBud(String(calculatedBudget));
+    }
+  }, [calculatedBudget]);
+
+  // last part
+  useEffect(() => {
+    if (selectBudType === 'Weekly Budget') {
+      const weeklyData = calculateCampaignBudgetDaily(advertiserBud);
+      setCalculatedBudget('₹' +String(weeklyData));
+    } else if (selectBudType === 'Daily Budget') {
+      setCalculatedBudget('₹' + String(advertiserBud));
+    }
+  }, [advertiserBud, selectBudType]);
+
+  console.log(advertiserBud);
+  console.log(calculatedBudget);
+  console.log(selectBudType);
   return (
     <div className="space-y-6 p-4">
       <Card className="border-2 border-gray-300 rounded-lg w-full">
         <CardHeader className="flex items-center justify-between p-4">
-          <div className="flex items-center space-x-2">
-            <RiAdvertisementFill className="w-5 h-5 text-primary" />
-            <CardTitle className="text-sm font-medium text-primary">
-              Advertiser
+          <div className="flex items-center space-x-1">
+            <RiAdvertisementFill className="text-blue-900 font-semibold  dark:text-white" />
+            <CardTitle className="text-blue-900 font-semibold text-lg dark:text-white">
+              Advertiser Budget
             </CardTitle>
             <InfoIcon className="w-4 h-4 text-muted-foreground" />
           </div>
         </CardHeader>
         <CardContent className="flex items-center justify-between p-4">
+          {/* <Toast/> */}
           <div className="flex items-center space-x-4 w-full">
-            <h1>Advertiser Budget</h1>
             <input
               onChange={advertiserBudget}
-              type="text"
-              placeholder="Default Input"
-              className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+              value={advertiserBud}
+              type="number"
+              min="5000"
+              placeholder="Minimum ₹5000"
+              className="block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
+      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
             {/* <SelectGroupOne
-              className="w-full" // Ensuring the dropdown takes the full width
+              className="block w-full px-3 py-2 rounded-md  text-blue-900 font-semibold dark:bg-inherit dark:text-white  outline-none
+      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" // Ensuring the dropdown takes the full width
               label="Budget"
               options={[
-                { value: '100', label: '100' },
-                { value: '200', label: '200' },
-                { value: '300', label: '300' },
+                { value: '100', label: '₹100' },
+                { value: '200', label: '₹200' },
+                { value: '300', label: '₹300' },
               ]}
               onSelect={handleSelect}
             /> */}
@@ -75,18 +139,20 @@ export default function Advertiser({
 
       <Card className="border-2 border-gray-300 rounded-lg">
         <CardHeader className="flex items-center justify-between p-4">
-          <div className="flex items-center space-x-2">
-            <CurrencyIcon className="w-5 h-5 text-primary" />
-            <CardTitle className="text-sm font-medium text-primary">
+          <div className="flex items-center space-x-1">
+            <CurrencyIcon className="text-blue-900 font-sm  dark:text-white" />
+            <CardTitle className="text-blue-900 font-semibold text-lg dark:text-white">
               Campaign Budget
             </CardTitle>
             <InfoIcon className="w-4 h-4 text-muted-foreground" />
           </div>
         </CardHeader>
-        <CardContent className="p-4 space-y-4">
+        <CardContent className="p-4 space-y-4 ">
           <div className="flex items-center gap-1 justify-between">
-            <div className="flex gap-2 items-center border rounded-xl px-2 py-4 relative left-1">
-              <span>Weekly Budget</span>
+            <div className="flex gap-2 items-center border rounded-xl text-sm px-3 py-5 relative left-1">
+              <span className="text-blue-900 font-semibold dark:text-white">
+                Weekly Budget
+              </span>
               <input
                 type="radio"
                 name="budget"
@@ -97,8 +163,10 @@ export default function Advertiser({
                 onChange={handleChange}
               />
             </div>
-            <div className="flex gap-2 items-center border rounded-xl px-2 py-4 relative right-5">
-              <span>Daily Budget</span>
+            <div className="flex gap-2 items-center border rounded-xl text-sm px-4 py-5 relative right-5">
+              <span className="text-blue-900 font-semibold dark:text-white">
+                Daily Budget
+              </span>
               <input
                 type="radio"
                 name="budget"
@@ -109,22 +177,18 @@ export default function Advertiser({
                 onChange={handleChange}
               />
             </div>
-            {/* <CheckboxOne text="Daily Budget" className="font-semibold" />
-            <CheckboxOne text="Weekly Budget" className="font-semibold" /> */}
           </div>
 
-          <div className="flex flex-col gap-5.5">
-            <div>
-              <label className="mb-3 block text-black dark:text-white font-semibold">
-                Campaign Budget
-              </label>
-              <input
-                onChange={campaignBudget}
-                type="text"
-                placeholder="Default Input"
-                className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-              />
-            </div>
+          <div className="flex flex-col gap-1">
+            <label className="mt-1 p-2 w-full text-center border-none outline-none rounded-md text-blue-900 font-semibold  dark:text-yellow-100 transition ">
+              {advertiserBud === '' && selectBudType === ''
+                ? 'Please Enter Advertisement Budget and Select The Budget Type'
+                : advertiserBud && selectBudType === ''
+                ? 'Please Select The Budget Type'
+                : calculatedBudget === '₹0' && selectBudType
+                ? 'Please Enter Advertisement Budget'
+                :  calculatedBudget}
+            </label>
           </div>
         </CardContent>
       </Card>
