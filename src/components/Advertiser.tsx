@@ -6,11 +6,9 @@ import {
 } from '../components/ui/card';
 import { RiAdvertisementFill } from 'react-icons/ri';
 import { CurrencyIcon, InfoIcon } from 'lucide-react';
-import CheckboxTwo from './Checkboxes/CheckboxTwo';
-import SelectGroupOne from './Forms/SelectGroup/SelectGroupOne';
-import CheckboxOne from './Checkboxes/CheckboxOne';
-import { useEffect, useState, useRef } from 'react';
-import { Toast } from '@radix-ui/react-toast';
+import { useEffect, useState } from 'react';
+import { useToast } from './ui/use-toast';
+
 
 interface AdvertiserProps {
   onSelect: (advertiser: string) => void;
@@ -27,13 +25,9 @@ export default function Advertiser({
   const [selectBudType, setSelectBudType] = useState<string>('');
   const [advertiserBud, setAdvertiserBud] = useState<string>('');
   const [moneyValue, setMoneyValue] = useState<any>();
-  const paymentBlocker = useRef();
+  
 
-  const calculateCampaignBudgetWeekly = (budget: string) => {
-    let budData = Number(budget) / 7;
-    return budData;
-  };
-
+ 
   const calculateCampaignBudgetDaily = (budget: string) => {
     let budDailyData = Number(budget) * 7;
     return budDailyData;
@@ -51,6 +45,9 @@ export default function Advertiser({
     onSelect(event.target.value);
   };
   const advertiserBudget = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (advertiserBud < '5000') {
+      toast({title : 'Please deposit ₹5000 or greater'})
+    } 
     setAdvertiserBud(event.target.value);
     campBud(String(calculatedBudget));
     adBud(String(event.target.value));
@@ -59,6 +56,10 @@ export default function Advertiser({
     setCalculatedBudget(event.target.value);
     campBud(calculatedBudget);
   };
+//toast functionality
+ const {toast} = useToast()
+
+
 
   //money parsing
   useEffect(() => {
@@ -70,14 +71,12 @@ export default function Advertiser({
   }, [moneyValue]);
 
   //money blocker ui
-  const [poper, setPoper] = useState<boolean>(true);
-  useEffect(() => {
-    if (advertiserBud < '5000') {
-      setPoper(true);
-    } else {
-      setPoper(false);
-    }
-  }, [advertiserBud]);
+  
+  // useEffect(() => {
+  //   if (advertiserBud < '5000') {
+  //     toast({title : 'Please deposit ₹5000 or greater'})
+  //   } 
+  // }, [advertiserBud]);
 
   // before last part
   useEffect(() => {
