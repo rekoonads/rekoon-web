@@ -232,7 +232,10 @@ export default function SummaryComponent() {
                 deliveryTimeSlots: strategies?.deliveryTimeSlots,
                 campaignBudget: campaigns?.campaignBudget,
                 reviveUrl: invocationCode.value,
-                audiences: strategies?.audiences
+                audiences: strategies?.audiences,
+                startDate: campaigns?.startDate,
+                endDate: campaigns?.endDate,
+                status :"Active"
               },
               {
                 headers: {

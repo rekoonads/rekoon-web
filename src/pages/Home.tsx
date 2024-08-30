@@ -13,7 +13,7 @@ import Workflow from '../components/Workflow';
 const App = () => {
   return (
     <>
-      {/* <NavbarNew /> */}
+      <NavbarNew />
       <Hero />
       <Introduction />
       <Tools />
