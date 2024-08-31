@@ -1,7 +1,7 @@
 'use client';
 
 import { ArrowRight } from 'lucide-react';
-import cogImage from '../assets/cog.png';
+import ipadImage from '../assets/ipad.png';
 import cylinderImage from '../assets/cylinder.png';
 import noodleImage from '../assets/noodle.png';
 
@@ -42,7 +42,7 @@ export const Hero = () => {
           </div>
           <div className="mt-20 md:mt-0 md:h-[648px] md:flex-1 relative">
             <motion.img
-              src={cogImage}
+              src={ipadImage}
               alt="Cog Image"
               className="md:absolute md:h-full md:w-auto md:max-w-none md:-left-16 lg:-left-12"
               animate={{
@@ -55,7 +55,7 @@ export const Hero = () => {
                 ease: 'easeInOut',
               }}
             />
-            <motion.img
+            {/* <motion.img
               src={cylinderImage}
               width={220}
               height={220}
@@ -74,7 +74,7 @@ export const Hero = () => {
                 rotate: 30,
                 translateY: translateY,
               }}
-            />
+            /> */}
           </div>
         </div>
       </div>
