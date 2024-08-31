@@ -14,7 +14,8 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { useAuth, useUser } from '@clerk/clerk-react';
-import { v4 as uuidv4 } from 'uuid'
+import { v4 as uuidv4 } from 'uuid';
+import { BarChart, Signal } from 'lucide-react';
 
 // Extend the Window interface
 declare global {
@@ -34,11 +35,47 @@ interface RazorpayResponse {
   razorpay_payment_id: string;
   razorpay_signature: string;
 }
-const LoadingScreen = () => (
-  <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-    <div className="text-white text-lg">Loading...</div>
-  </div>
-);
+
+const LoadingScreen = () => {
+  const [mounted, setMounted] = useState(false);
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    setMounted(true);
+    const timer = setInterval(() => {
+      setProgress((oldProgress) => {
+        const newProgress = oldProgress + 1;
+        if (newProgress === 100) {
+          clearInterval(timer);
+        }
+        return newProgress > 100 ? 100 : newProgress;
+      });
+    }, 20);
+    return () => clearInterval(timer);
+  }, []);
+
+  if (!mounted) return null;
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-blue-800 text-white">
+      <div className="mb-8">
+        <Signal className="w-20 h-20 text-blue-400 animate-pulse" />
+      </div>
+      <h1 className="text-4xl font-bold mb-4">AdTech Analytics</h1>
+      <p className="text-xl mb-8">Optimizing your ad performance</p>
+      <div className="relative w-64 h-3 bg-blue-900 rounded-full overflow-hidden mb-4">
+        <div
+          className="absolute top-0 left-0 h-full bg-blue-400 transition-all duration-300 ease-out"
+          style={{ width: `${progress}%` }}
+        ></div>
+      </div>
+      <div className="flex items-center space-x-2 text-blue-300">
+        <BarChart className="w-5 h-5 animate-bounce" />
+        <span>Processing data</span>
+        <span className="w-6 text-right">{progress}%</span>
+      </div>
+    </div>
+  );
+};
 
 export default function SummaryComponent() {
   const [amount, setAmount] = useState<number>();
@@ -50,7 +87,7 @@ export default function SummaryComponent() {
   const { user } = useUser();
   const domainName = import.meta.env.VITE_DOMAIN;
   const [loading, setLoading] = useState(false);
-  
+
   console.log({
     userId: userId,
     campaignId: campaigns?.campaignId,
@@ -169,7 +206,9 @@ export default function SummaryComponent() {
         }
       };
 
-      fetchStrategyDetails(`${domainName}/api/strategy-campaign/${campaigns?.campaignId}`);
+      fetchStrategyDetails(
+        `${domainName}/api/strategy-campaign/${campaigns?.campaignId}`,
+      );
     }
   }, [campaigns?.campaignId]);
   console.log(strategies);
@@ -187,8 +226,8 @@ export default function SummaryComponent() {
     if (successPaymentId) {
       const postBillData = async () => {
         setLoading(true);
-        
-           const data = await axios.post(
+
+        const data = await axios.post(
           `${domainName}/api/bill`,
           {
             userId: userId,
@@ -202,25 +241,25 @@ export default function SummaryComponent() {
             },
           },
         );
-        
+
         await setLoading(false);
-       
+
         await console.log('xxxxxxxxxxxxxxxxxxxxxxxxxx', data);
         const invocationCode = data?.data?.invocation_code;
 
-        if(invocationCode.status == "error"){
+        if (invocationCode.status == 'error') {
           const errorId = uuidv4();
-            await axios.post('/api/save-error', {
-              errorId: errorId,
-              userId: userId,
-              campaignId: campaigns?.campaignId,
-              strategyId: strategies?.strategyId,
-              errorMessage: invocationCode.message,
-            });
+          await axios.post('/api/save-error', {
+            errorId: errorId,
+            userId: userId,
+            campaignId: campaigns?.campaignId,
+            strategyId: strategies?.strategyId,
+            errorMessage: invocationCode.message,
+          });
           toast.error(
-            `Something went wrong. Please contact support with this ID: ${errorId}`
+            `Something went wrong. Please contact support with this ID: ${errorId}`,
           );
-        }else{
+        } else {
           if (!invocationCode) {
             throw new Error('Invocation code is missing from the response');
           }
@@ -235,7 +274,7 @@ export default function SummaryComponent() {
                 audiences: strategies?.audiences,
                 startDate: campaigns?.startDate,
                 endDate: campaigns?.endDate,
-                status :"Active"
+                status: 'Active',
               },
               {
                 headers: {
@@ -248,11 +287,12 @@ export default function SummaryComponent() {
             const bidding = await axios.post(
               `${domainName}/api/add-bidder`,
               {
-                advertiserId: campaignInfo[campaignInfo.length - 1]?.advertiserId,
+                advertiserId:
+                  campaignInfo[campaignInfo.length - 1]?.advertiserId,
                 deliveryTimeSlots: strategies?.deliveryTimeSlots,
                 campaignBudget: campaigns?.campaignBudget,
                 reviveUrl: invocationCode.value,
-                audiences: strategies?.audiences
+                audiences: strategies?.audiences,
               },
               {
                 headers: {
@@ -279,7 +319,9 @@ export default function SummaryComponent() {
 
   useEffect(() => {
     const paymentConfirmation = async () => {
-      const payStData = await axios.get(`${domainName}/api/bill/${campaigns?.campaignId}`);
+      const payStData = await axios.get(
+        `${domainName}/api/bill/${campaigns?.campaignId}`,
+      );
       console.log(payStData?.data.paymentSuccess);
       setSuccessFullpeyment(payStData?.data.paymentSuccess);
     };
@@ -354,80 +396,80 @@ export default function SummaryComponent() {
   console.log(campaigns);
   return (
     <>
-    {loading && <LoadingScreen/>}
-    <Card className="w-full max-w-lg p-4 rounded-lg border border-stroke bg-white shadow-2xl dark:border-strokedark dark:bg-boxdark">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-semibold text-blue-700">
-          <PresentationIcon className="inline-block w-5 h-5 mr-2" />
-          Campaign summary
-        </CardTitle>
-        <CardDescription>
-          Review carefully your campaign details
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="font-semibold">
-              Campaign Name: {campaigns?.campaignName}
-            </p>
-            <Link to={'/campaign'}>
-              <Button variant="ghost" className="p-0 text-sm text-blue-700">
-                <ClipboardPenIcon className="inline-block w-4 h-4 mr-1" />
-                Edit
-              </Button>
-            </Link>
-          </div>
-          <div className="text-right">
-            <p className="font-semibold">
-              Campaign budget ₹{campaigns?.campaignBudget}
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center">
-          <CalendarIcon className="w-5 h-5 mr-2" />
-          <p>
-            Start Date: {campaigns?.startDate} and End Date:{' '}
-            {campaigns?.endDate}
-          </p>
-        </div>
-        <div className="space-y-2">
-          <p className="font-semibold">
-            Strategy Name : {strategies?.strategyName}
-          </p>
+      {loading && <LoadingScreen />}
+      <Card className="w-full max-w-lg p-4 rounded-lg border border-stroke bg-white shadow-2xl dark:border-strokedark dark:bg-boxdark">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg font-semibold text-blue-700">
+            <PresentationIcon className="inline-block w-5 h-5 mr-2" />
+            Campaign summary
+          </CardTitle>
+          <CardDescription>
+            Review carefully your campaign details
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
-            <p>Selected Channels goes here</p>
-            <Link to={'/strategy'}>
-              <Button variant="ghost" className="p-0 text-sm text-blue-700">
-                <ClipboardPenIcon className="inline-block w-4 h-4 mr-1" />
-                Edit
+            <div>
+              <p className="font-semibold">
+                Campaign Name: {campaigns?.campaignName}
+              </p>
+              <Link to={'/campaign'}>
+                <Button variant="ghost" className="p-0 text-sm text-blue-700">
+                  <ClipboardPenIcon className="inline-block w-4 h-4 mr-1" />
+                  Edit
+                </Button>
+              </Link>
+            </div>
+            <div className="text-right">
+              <p className="font-semibold">
+                Campaign budget ₹{campaigns?.campaignBudget}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center">
+            <CalendarIcon className="w-5 h-5 mr-2" />
+            <p>
+              Start Date: {campaigns?.startDate} and End Date:{' '}
+              {campaigns?.endDate}
+            </p>
+          </div>
+          <div className="space-y-2">
+            <p className="font-semibold">
+              Strategy Name : {strategies?.strategyName}
+            </p>
+            <div className="flex items-center justify-between">
+              <p>Selected Channels goes here</p>
+              <Link to={'/strategy'}>
+                <Button variant="ghost" className="p-0 text-sm text-blue-700">
+                  <ClipboardPenIcon className="inline-block w-4 h-4 mr-1" />
+                  Edit
+                </Button>
+              </Link>
+            </div>
+            <div className="flex items-center justify-between">
+              <p>Deliverability forecast</p>
+              <Badge variant="secondary" className="text-green-700">
+                Excellent
+              </Badge>
+            </div>
+          </div>
+        </CardContent>
+        <CardFooter className="flex justify-between pt-4 border-t">
+          <p className="text-muted-foreground">Total campaign budget</p>
+          <p className="text-lg font-semibold">₹{campaigns?.campaignBudget}</p>
+        </CardFooter>
+        <div className="justify-end">
+          {successFullpayment ? (
+            <>Paid</>
+          ) : (
+            <>
+              <Button className="text-white" onClick={handlePayment}>
+                Pay Now
               </Button>
-            </Link>
-          </div>
-          <div className="flex items-center justify-between">
-            <p>Deliverability forecast</p>
-            <Badge variant="secondary" className="text-green-700">
-              Excellent
-            </Badge>
-          </div>
+            </>
+          )}
         </div>
-      </CardContent>
-      <CardFooter className="flex justify-between pt-4 border-t">
-        <p className="text-muted-foreground">Total campaign budget</p>
-        <p className="text-lg font-semibold">₹{campaigns?.campaignBudget}</p>
-      </CardFooter>
-      <div className="justify-end">
-        {successFullpayment ? (
-          <>Paid</>
-        ) : (
-          <>
-            <Button className="text-white" onClick={handlePayment}>
-              Pay Now
-            </Button>
-          </>
-        )}
-      </div>
-    </Card>
+      </Card>
     </>
   );
 }
