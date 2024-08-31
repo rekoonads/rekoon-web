@@ -19,6 +19,7 @@ import { getAdvertiser } from '../../asyncCall/asyncCall';
 import axios from 'axios';
 import { useToast } from '../../components/ui/use-toast';
 import Cookies from 'js-cookie'
+import CryptoJS from 'crypto-js';
 
 
 const Campaigns = () => {
@@ -26,8 +27,8 @@ const Campaigns = () => {
   const [campaignGoal, setCampaignGoal] = useState<string | null>(null);
   const [campaignType, setCampaignType] = useState('');
   const [advertiser, setAdvertiser] = useState<string | null>(null);
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [startDate, setStartDate] = useState<String | null>(null);
+  const [endDate, setEndDate] = useState<String | null>(null);
   const [selectInput, setSelectInput] = useState<string>('');
   const [campaignBudget, setCampaignBudget] = useState('');
   const { user } = useUser();
@@ -44,6 +45,8 @@ const Campaigns = () => {
   const isIdAdvertOrAgent = orgId || userId;
   console.log(isIdAdvertOrAgent);
   const { toast } = useToast();
+  const secretKey = import.meta.env.VITE_ENCRYPT_SECRET_KEY;
+ 
   // searches for the type of user
   const [isAdd, setIsAdd] = useState<string>('');
   useEffect(() => {
@@ -73,6 +76,49 @@ const Campaigns = () => {
   }, [user?.id]);
   console.log(isAdd?.type_of_user);
 
+  const [campaigndata, setcampaigndata] = useState<any>(null);
+  useEffect(() => {
+    const cookies_data = Cookies.get('campaignId');
+    const decrypt_id = CryptoJS.AES.decrypt(cookies_data, secretKey);
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`${domainName}/api/get-campaign?campaignId=${decrypt_id}`);
+        console.log("campaign find from cookies :- ",response.data)
+        setcampaigndata(response.data);
+      } catch (error) {
+        console.error('Error fetching campaign data:', error);
+      }
+    };
+    if(decrypt_id){
+      fetchUserData();
+    }
+  }, []);
+  const convertToYMD = (dateString: string): string => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+  useEffect(() => {
+   if(campaigndata){
+    setCampaignName(campaigndata.campaignName);
+    setCampaignGoal(campaigndata.campaignGoal);
+    setCampaignType(campaigndata.campaignType);
+    setAdvertiser(campaigndata.advertiserId);
+    const convertedstart = convertToYMD(campaigndata.startDate);
+    const convertedend = convertToYMD(campaigndata.endDate);
+    setStartDate(convertedstart);
+    setEndDate(convertedend);
+    setCampaignBudget(campaigndata.campaignBudget);
+    setWebsiteName(campaigndata.website.websiteName);
+    setWebsite(campaigndata.website.websiteUrl);
+    setBusinessEmail(campaigndata.website.websiteEmail);
+    setBusinessContact(campaigndata.website.websiteContact);
+   }
+  }, [campaigndata])
+  
+  
   //getting The advertiser's Data
   const [addData, setAddData] = useState<string>('');
   useEffect(() => {
@@ -251,8 +297,11 @@ const Campaigns = () => {
 //handling Submission
 const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
   event.preventDefault();
+
   if (campaignBudget && advertiser && startDate && endDate && campaignType) {
     if (advertiser >= '5000') {
+       const campignid = `CAM-${uuidv4()}`;
+       const encrypt_id = CryptoJS.AES.encrypt(campignid, secretKey).toString();
       if (isAdd?.type_of_user === 'Agency') {
         try {
           const response = await fetch(`${domainName}/api/campaigns`, {
@@ -262,7 +311,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
             },
             body: JSON.stringify({
               userId: user?.id,
-              campaignId: `CAM-${uuidv4()}`,
+              campaignId: campignid,
               agencyId: orgId,
               campaignName,
               campaignGoal,
@@ -282,6 +331,8 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 
           const data = await response.json();
           if (response.ok) {
+            
+            Cookies.set('campaignId', encrypt_id, { expires: 7 });
             console.log('Campaign created successfully:', data);
             setReceived(true);
             toast({ title: 'Campaign Created Successfully' });
@@ -305,7 +356,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
             },
             body: JSON.stringify({
               userId: user?.id,
-              campaignId: `CAM-${uuidv4()}`,
+              campaignId: campignid,
               advertiserId: addData?.advertiserId,
               campaignName,
               campaignGoal,
@@ -327,6 +378,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 
           const data = await response.json();
           if (response.ok) {
+            Cookies.set('campaignId', encrypt_id, { expires: 7 });
             console.log('Campaign created successfully:', data);
             setReceived(true);
             toast({ title: 'Campaign submitted successfully!' });
