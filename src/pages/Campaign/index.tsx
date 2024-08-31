@@ -27,8 +27,8 @@ const Campaigns = () => {
   const [campaignGoal, setCampaignGoal] = useState<String | null>(null);
   const [campaignType, setCampaignType] = useState('');
   const [advertiser, setAdvertiser] = useState<string | null>(null);
-  const [startDate, setStartDate] = useState<String | null>(null);
-  const [endDate, setEndDate] = useState<String | null>(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const [selectInput, setSelectInput] = useState<string>('');
   const [campaignBudget, setCampaignBudget] = useState('');
   const { user } = useUser();
@@ -462,12 +462,12 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 
 
   const handleStartDate = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const dateValue = event.target.value ? new Date(event.target.value) : null;
+    const dateValue = event.target.value ;
     setStartDate(dateValue);
   };
 
   const handleEndDate = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const dateValue = event.target.value ? new Date(event.target.value) : null;
+    const dateValue = event.target.value ;
     setEndDate(dateValue);
   };
 
