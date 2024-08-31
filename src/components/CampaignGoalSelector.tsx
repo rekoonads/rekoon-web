@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaInfoCircle, FaPlay } from 'react-icons/fa';
 import { HiOutlineComputerDesktop } from 'react-icons/hi2';
 import { IoMdRefreshCircle } from 'react-icons/io';
@@ -42,17 +42,24 @@ const goals: Goal[] = [
 
 interface CampaignGoalSelectorProps {
   onSelect: (goalId: string) => void;
+  Goal: String | null;
 }
 
 export default function CampaignGoalSelector({
   onSelect,
+  Goal,
 }: CampaignGoalSelectorProps) {
-  const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
+  const [selectedGoal, setSelectedGoal] = useState<String | null>(null);
 
   const handleSelect = (goalId: string) => {
     setSelectedGoal(goalId);
     onSelect(goalId); // Notify parent component
   };
+  
+  useEffect(() => {
+    setSelectedGoal(Goal);
+  }, [Goal])
+  
 
   return (
     <div className="p-4 space-y-4">
