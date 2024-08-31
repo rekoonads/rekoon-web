@@ -422,7 +422,7 @@ export default function SummaryComponent() {
             </div>
             <div className="text-right">
               <p className="font-semibold">
-                Campaign budget ₹{campaigns?.campaignBudget}
+                Campaign budget {campaigns?.campaignBudget}
               </p>
             </div>
           </div>
@@ -456,7 +456,7 @@ export default function SummaryComponent() {
         </CardContent>
         <CardFooter className="flex justify-between pt-4 border-t">
           <p className="text-muted-foreground">Total campaign budget</p>
-          <p className="text-lg font-semibold">₹{campaigns?.campaignBudget}</p>
+          <p className="text-lg font-semibold">{campaigns?.campaignBudget}</p>
         </CardFooter>
         <div className="justify-end">
           {successFullpayment ? (

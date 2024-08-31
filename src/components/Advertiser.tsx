@@ -14,7 +14,8 @@ interface AdvertiserProps {
   onSelect: (advertiser: string) => void;
   adBud: (advertiser: string) => void;
   campBud: (advertiser: string) => void;
-  budget: number
+  budget: string,
+  campaignType : string;
 }
 
 export default function Advertiser({
@@ -22,18 +23,21 @@ export default function Advertiser({
   adBud,
   campBud,
   budget,
+  campaignType,
 }: AdvertiserProps) {
   const [calculatedBudget, setCalculatedBudget] = useState<string>('');
   const [selectBudType, setSelectBudType] = useState<string>('');
   const [advertiserBud, setAdvertiserBud] = useState<string>('');
   const [moneyValue, setMoneyValue] = useState<any>();
   
+  console.log("advrt cmp typ :-",campaignType)
 
  
   const calculateCampaignBudgetDaily = (budget: string) => {
     let budDailyData = Number(budget) * 7;
     return budDailyData;
   };
+ 
 
   const handleSelect = (value: string) => {
     onSelect(value);
@@ -41,6 +45,12 @@ export default function Advertiser({
   };
   const [selectedOption, setSelectedOption] = useState<string>('');
 
+  useEffect(() => {
+    setAdvertiserBud(budget);
+    setSelectBudType(campaignType);
+    setSelectedOption(campaignType);
+  }, [campaignType])
+  console.log("first sltd:- ",selectedOption)
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectBudType(event.target.value);
     setSelectedOption(event.target.value);

@@ -24,7 +24,7 @@ import CryptoJS from 'crypto-js';
 
 const Campaigns = () => {
   const [campaignName, setCampaignName] = useState('');
-  const [campaignGoal, setCampaignGoal] = useState<string | null>(null);
+  const [campaignGoal, setCampaignGoal] = useState<String | null>(null);
   const [campaignType, setCampaignType] = useState('');
   const [advertiser, setAdvertiser] = useState<string | null>(null);
   const [startDate, setStartDate] = useState<String | null>(null);
@@ -36,6 +36,7 @@ const Campaigns = () => {
   const [website, setWebsite] = useState<string>('');
   const [businessEmail, setBusinessEmail] = useState<string>('');
   const [businessContact, setBusinessContact] = useState<string>('');
+  const [update,setUpdate] = useState(false);
   const [received, setReceived] = useState(false);
   const navigate = useNavigate();
   const [postData, setPostData] = useState<any>();
@@ -76,21 +77,25 @@ const Campaigns = () => {
   }, [user?.id]);
   console.log(isAdd?.type_of_user);
 
+  
+
   const [campaigndata, setcampaigndata] = useState<any>(null);
   useEffect(() => {
     const cookies_data = Cookies.get('campaignId');
-    const decrypt_id = CryptoJS.AES.decrypt(cookies_data, secretKey);
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`${domainName}/api/get-campaign?campaignId=${decrypt_id}`);
-        console.log("campaign find from cookies :- ",response.data)
+        const response = await axios.get(`${domainName}/api/get-campaign?campaignId=${cookies_data}`);
+        console.log("previous campaign data:- ",response.data)
         setcampaigndata(response.data);
       } catch (error) {
         console.error('Error fetching campaign data:', error);
       }
     };
-    if(decrypt_id){
+    if(cookies_data){
+      setUpdate(true);
       fetchUserData();
+    }else{
+      setUpdate(false);
     }
   }, []);
   const convertToYMD = (dateString: string): string => {
@@ -110,7 +115,7 @@ const Campaigns = () => {
     const convertedend = convertToYMD(campaigndata.endDate);
     setStartDate(convertedstart);
     setEndDate(convertedend);
-    setCampaignBudget(campaigndata.campaignBudget);
+    setCampaignBudget(campaigndata.campaignAdvertiserBudget);
     setWebsiteName(campaigndata.website.websiteName);
     setWebsite(campaigndata.website.websiteUrl);
     setBusinessEmail(campaigndata.website.websiteEmail);
@@ -332,7 +337,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
           const data = await response.json();
           if (response.ok) {
             
-            Cookies.set('campaignId', encrypt_id, { expires: 7 });
+            Cookies.set('campaignId', campignid, { expires: 7 });
             console.log('Campaign created successfully:', data);
             setReceived(true);
             toast({ title: 'Campaign Created Successfully' });
@@ -378,7 +383,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 
           const data = await response.json();
           if (response.ok) {
-            Cookies.set('campaignId', encrypt_id, { expires: 7 });
+            Cookies.set('campaignId',campignid, { expires: 7 });
             console.log('Campaign created successfully:', data);
             setReceived(true);
             toast({ title: 'Campaign submitted successfully!' });
@@ -529,6 +534,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
             <div className="flex flex-col gap-5.5 p-6.5 ">
               <CampaignGoalSelector
                 onSelect={(goal) => setCampaignGoal(goal)}
+                Goal={campaignGoal}
               />
             </div>
           </div>
@@ -545,7 +551,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                 Name
               </label>
               <input
-                type="text"
+                type="text" value={websiteName}
                 placeholder="Enter Name"
                 className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -557,7 +563,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                 Website
               </label>
               <input
-                type="text"
+                type="text" value={website}
                 placeholder="www.yourbrand.com"
                 className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -569,7 +575,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                 Business Email
               </label>
               <input
-                type="email"
+                type="email" value={businessEmail}
                 placeholder="Example@test.com"
                 className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -582,7 +588,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                 Business Contact
               </label>
               <input
-                type="text"
+                type="text" value={businessContact}
                 placeholder="www.yourbrand.com"
                 className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -604,6 +610,8 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                 onSelect={(adv) => setCampaignType(adv)}
                 adBud={setAdvertiser}
                 campBud={setCampaignBudget}
+                budget={campaignBudget}
+                campaignType ={campaignType}
               />
             </div>
           </div>
@@ -623,7 +631,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                 </span>
                 <input
                   type="date"
-                  name="start-date"
+                  name="start-date" value={startDate}
                   className="mt-1 p-2 w-full border-none outline-none rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white"
                   onChange={handleStartDate}
                 />
@@ -634,7 +642,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                 </span>
                 <input
                   type="date"
-                  name="end-date"
+                  name="end-date" value={endDate}
                   className="mt-1 p-2 w-full border-none outline-none rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white"
                   onChange={handleEndDate}
                 />
@@ -663,7 +671,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
               }}
           
             >
-                {cap ? 'Fill up the Campaign From' : 'Proceed to Strategy'}
+               {update?"Update and ":""} {cap ? 'Fill up the Campaign From' : 'Proceed to Strategy'}
             </button>
           </form>
         </div>
