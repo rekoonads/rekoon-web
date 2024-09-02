@@ -33,8 +33,9 @@ export default function Advertiser({
   console.log("advrt cmp typ :-",campaignType)
 
  
-  const calculateCampaignBudgetDaily = (budget: string) => {
-    let budDailyData = Number(budget) * 7;
+  const calculateCampaignBudgetDaily = (budget_val: string) => {
+    console.log("calculate val :-",budget_val)
+    let budDailyData = Number(budget_val) * 7;
     return budDailyData;
   };
  
