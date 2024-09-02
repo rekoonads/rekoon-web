@@ -14,7 +14,7 @@ export const Header = () => {
               <a href="#">About</a>
               <a href="#features">Features</a>
               <a href="#updates">Updates</a>
-              <a href="#">Help</a>
+              <a href="#contact">Help</a>
               <button className="bg-black text-white px-4 py-2 rounded-lg font-medium inline-flex items-center justify-center tracking-tight">
                 <Link to={'/auth/sign-up'}>Sign Up For Free</Link>
               </button>
