@@ -1,8 +1,8 @@
 'use client';
 
 // import ArrowRight from '../assets/arrow-right.svg';
-import starImage from '../assets/star.png';
-import springImage from '../assets/spring.png';
+import starImage from '../assets/iphone.png';
+import springImage from '../assets/ipadPro.png';
 
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
@@ -41,15 +41,17 @@ export const CallToAction = () => {
           <motion.img
             src={springImage}
             alt="Spring Image"
-            width={360}
-            className="absolute -right-[331px] -top-[19px]"
+            width={600}
+            className="absolute -right-[520px] -top-[19px]"
             style={{
               translateY,
             }}
           />
         </div>
         <div className="flex gap-2 mt-10 justify-center">
-          <button className="btn btn-primary">Get for free</button>
+          <button className="btn btn-primary">
+            <a href="/auth/sign-up">Join us now</a>
+          </button>
           <button className="btn btn-text gap-1">
             <span>Learn more</span>
             <ArrowRight className="h-5 w-5" />

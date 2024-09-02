@@ -7,6 +7,7 @@ import { Pricing } from '../sections/Pricing';
 import { Testimonials } from '../sections/Testimonials';
 import { CallToAction } from '../sections/CallToAction';
 import { Footer } from '../sections/Footer';
+import UpcomingFeatures from '../sections/UpcomingFeatures';
 
 export default function NewHome() {
   return (
@@ -15,6 +16,7 @@ export default function NewHome() {
       <Hero />
       <LogoTicker />
       <ProductShowcase />
+      <UpcomingFeatures />
       {/* <Pricing /> */}
       <Testimonials />
       <CallToAction />
