@@ -319,7 +319,7 @@ console.log(getBugOfRes)
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="flex gap-2 items-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <GiBrain className="text-[20px]" />
-              <h3 className="font-medium text-black dark:text-white">
+              <h3 className="text-blue-900 font-semibold text-[20px] dark:text-white">
                 Strategy Name
               </h3>
             </div>
@@ -329,16 +329,17 @@ console.log(getBugOfRes)
                   onChange={(e) => setStrategyName(e.target.value)}
                   type="text"
                   placeholder="Default Input"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
+      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
               </div>
             </div>
           </div>
-        
+
           {/* <!-- Time and date --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="flex gap-2 item-center font-medium text-black dark:text-white">
+              <h3 className="text-blue-900 font-semibold text-[20px] dark:text-white  flex items-center gap-2">
                 <FaSearchDollar className="text-[20px]" />
                 Strategy Daily Budget
               </h3>
@@ -349,7 +350,8 @@ console.log(getBugOfRes)
                   onChange={(e) => setStrategyDailyBudget(e.target.value)}
                   type="text"
                   placeholder="$100"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
+      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
               </div>
               $0.00 left in your total campaign budget
@@ -359,7 +361,9 @@ console.log(getBugOfRes)
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className=" flex gap-2 item-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <LuHeartHandshake className="text-[20px]" />
-              <h3 className="font-medium text-black dark:text-white">Ages</h3>
+              <h3 className="text-blue-900 font-semibold text-[20px] dark:text-white  flex items-center gap-2">
+                Ages
+              </h3>
             </div>
             <div className="flex flex-col gap-5.5 p-6.5">
               <Tabs
