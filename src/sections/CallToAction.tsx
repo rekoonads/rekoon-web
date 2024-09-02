@@ -1,7 +1,7 @@
 'use client';
 
 // import ArrowRight from '../assets/arrow-right.svg';
-import starImage from '../assets/iphone.png';
+import starImage from '../assets/iPhone.png';
 import springImage from '../assets/ipadPro.png';
 
 import { motion, useScroll, useTransform } from 'framer-motion';
