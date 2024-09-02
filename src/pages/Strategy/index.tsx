@@ -25,7 +25,10 @@ import { useAuth, useUser } from '@clerk/clerk-react';
 import axios from 'axios';
 import InputSelect from '../../components/InputSelect';
 import VideoUpload from '../../components/VideoUpload';
+import Cookies from 'js-cookie';
 
+
+const domainName = import.meta.env.VITE_DOMAIN;  
 interface Goal {
   id: string;
   icon: React.ElementType[];
@@ -68,6 +71,9 @@ const defaultDaySettings = {
 };
 
 const Strategy = () => {
+
+  const [strategyData, setStrategydata] = useState<any>(null);
+  const [update,setUpdate] = useState(false);
   const [selectedTab, setSelectedTab] = useState('18-20');
   const [selectedGender, setSelectedGender] = useState('Women');
   const [selectedDevice, setSelectedDevice] = useState('TV');
@@ -77,7 +83,8 @@ const Strategy = () => {
   const [audienceArr, setAudienceArr] = useState<string[]>([]);
   const [strategyName, setStrategyName] = useState<string>('');
   const [strategyDailyBudget, setStrategyDailyBudget] = useState<string>('');
-  const domainName = import.meta.env.VITE_DOMAIN;
+  const [audience_location,setAudienceLocation] = useState<string>('');
+  const [deliveryTypeval,setDeliveryType] = useState<String>();
 
   const { user } = useUser();
   const handleReset = () => {
@@ -86,7 +93,12 @@ const Strategy = () => {
     setSelectedDevice('TV');
   };
 
+  // if(audienceArr.includes(text)){
+  //   setSelectedCheckbox(text);
+  //   setAudienceArr((prevState) => [...prevState, text]);
+  // }
   const handleCheckboxChange = (text: string, isChecked: boolean) => {
+    
     if (isChecked) {
       setSelectedCheckbox(text);
       setAudienceArr((prevState) => [...prevState, text]);
@@ -169,7 +181,6 @@ const Strategy = () => {
   console.log(isAdd?.type_of_user);
 
   useEffect(() => {
-    const domainName = import.meta.env.VITE_DOMAIN;
     const fetchCampaignId = async (url: string) => {
       try {
         const response = await fetch(url, {
@@ -209,6 +220,7 @@ const Strategy = () => {
   }, [campaignInfo]);
   console.log(info);
 
+  
   // searches for the type of user
   useEffect(() => {
     const fetchData = async (id: string) => {
@@ -236,18 +248,40 @@ const Strategy = () => {
     }
   }, [user?.id]);
 
+  useEffect(() => {
+    const cookies_data = Cookies.get('strategyId');
+    console.log("cookies_data :- ",cookies_data);
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`${domainName}/api/get-strategy?strategyId=${cookies_data}`);
+        console.log("previous strategy data:- ",response.data)
+        setStrategydata(response.data);
+      } catch (error) {
+        console.error('Error fetching strategy data:', error);
+      }
+    };
+    if(cookies_data){
+      setUpdate(true);
+      fetchUserData();
+    }else{
+      setUpdate(false);
+    }
+  }, []);
+
   console.log(isAdd?.type_of_user);
+  console.log("audiance location :- ",audience_location);
 
   //Handling Submission of data dont taper with this
   console.log(campaignInfo[campaignInfo.length - 1]?.campaignId);
   const [getBugOfRes, setGetBugOfRes] = useState<any>()
 
   const handleSubmit = async () => {
+    const strategy_id_data = strategyData?strategyData.strategyId:`ST-${uuidv4()}`;
     try {
       console.log(campaignInfo[campaignInfo.length - 1]?.campaignId)
       const payload = {
         userId: userId,
-        strategyId: `ST-${uuidv4()}`,
+        strategyId: strategy_id_data,
         ageRange: selectedTab,
         gender: selectedGender,
         screens: selectedDevice,
@@ -257,7 +291,9 @@ const Strategy = () => {
         selectedGoal: selectedGoal,
         selectedOption: selectedOption,
         selectedChannels: selectedChannels,
+        audienceLocation:audience_location,
         deliveryTimeSlots: daySettings,
+        deliveryType:deliveryTypeval,
         creatives: uploadedFileName,
         duration: videoDuration,
         campaignId: campaignInfo[campaignInfo.length - 1]?.campaignId,
@@ -270,7 +306,7 @@ const Strategy = () => {
         payload.advertiserId = user?.id;
       }
   
-      const response = await fetch(`https://backend-ndv7.onrender.com/api/strategy`, {
+      const response = await fetch(`${domainName}/api/strategy`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -284,6 +320,8 @@ const Strategy = () => {
   
       alert('Channels Created');
       const updatedCampaign = await response.json();
+      
+      Cookies.set('strategyId', strategy_id_data, { expires: 7 });
       console.log('Campaign updated successfully:', updatedCampaign);
       setGetBugOfRes(updatedCampaign);
   
@@ -307,8 +345,25 @@ console.log(getBugOfRes)
     selectedOption: selectedOption,
     selectedChannels: selectedChannels,
     deliveryTimeSlots: daySettings,
+    deliveryType:deliveryTypeval,
     campaignId: campaignInfo[campaignInfo.length - 1]?.campaignId,
   });
+  useEffect(() => {
+    if (strategyData) {
+      setSelectedTab(strategyData.ageRange || '18-20');
+      setSelectedGender(strategyData.gender || 'Women');
+      setSelectedDevice(strategyData.screens || 'TV');
+      setAudienceArr(strategyData.audiences || []);
+      setStrategyName(strategyData.strategyName || '');
+      setStrategyDailyBudget(strategyData.strategyDailyBudget || '');
+      setAudienceLocation(strategyData.audienceLocation||'');
+      setUploadedFileName(strategyData.creatives);
+      setVideoDuration(strategyData.duration);
+    }
+  
+  }, [strategyData]);
+  console.log("delivery type :- ",deliveryTypeval);
+
   return (
     <>
       <Breadcrumb pageName="Strategy" />
@@ -327,7 +382,7 @@ console.log(getBugOfRes)
               <div>
                 <input
                   onChange={(e) => setStrategyName(e.target.value)}
-                  type="text"
+                  type="text" value={strategyName}
                   placeholder="Default Input"
                   className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -348,13 +403,13 @@ console.log(getBugOfRes)
               <div>
                 <input
                   onChange={(e) => setStrategyDailyBudget(e.target.value)}
-                  type="text"
-                  placeholder="$100"
+                  type="text" value={strategyDailyBudget}
+                  placeholder="5000"
                   className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
               </div>
-              $0.00 left in your total campaign budget
+              0.00 left in your total campaign budget
             </div>
           </div>
           {/* <!-- File upload --> */}
@@ -502,6 +557,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Arts & Entertainment')}
                 />
                 {/* {selectedCheckbox === 'Arts & Entertainment' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -521,6 +577,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Automotive')}
                 />
                 {/* {selectedCheckbox === 'Automotive' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -555,6 +612,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Business')}
                 />
                 {/* {selectedCheckbox === 'Business' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -578,6 +636,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Careers')}
                 />
                 {/* {selectedCheckbox === 'Careers' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -599,6 +658,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Education')}
                 />
                 {/* {selectedCheckbox === 'Education' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -625,6 +685,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Family & Parenting')}
                 />
                 {/* {selectedCheckbox === 'Family & Parenting' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -645,6 +706,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Health & Fitness')}
                 />
                 {/* {selectedCheckbox === 'Health & Fitness' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -701,6 +763,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Hobbies & Interests')}
                 />
                 {/* {selectedCheckbox === 'Hobbies & Interests' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -744,6 +807,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Home & Garden')}
                 />
                 {/* {selectedCheckbox === 'Home & Garden' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -764,6 +828,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Law, Government, & Politics')}
                 />
                 {/* {selectedCheckbox === 'Law, Government, & Politics' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -780,6 +845,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('News')}
                 />
                 {/* {selectedCheckbox === 'News' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -794,6 +860,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Personal Finance')}
                 />
                 {/* {selectedCheckbox === 'Personal Finance' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -817,6 +884,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Society')}
                 />
                 {/* {selectedCheckbox === 'Society' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -836,6 +904,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Science')}
                 />
                 {/* {selectedCheckbox === 'Science' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -857,6 +926,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Pets')}
                 />
                 {/* {selectedCheckbox === 'Pets' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -875,6 +945,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Sports')}
                 />
                 {/* {selectedCheckbox === 'Sports' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -929,6 +1000,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Style & Fashion')}
                 />
                 {/* {selectedCheckbox === 'Style & Fashion' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -946,6 +1018,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Technology & Computing')}
                 />
                 {/* {selectedCheckbox === 'Technology & Computing' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -992,6 +1065,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Travel')}
                 />
                 {/* {selectedCheckbox === 'Travel' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -1030,6 +1104,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Real Estate')}
                 />
                 {/* {selectedCheckbox === 'Real Estate' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -1044,6 +1119,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Shopping')}
                 />
                 {/* {selectedCheckbox === 'Shopping' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -1059,6 +1135,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Religion & Spirituality')}
                 />
                 {/* {selectedCheckbox === 'Religion & Spirituality' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -1080,6 +1157,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Uncategorized')}
                 />
                 <CheckboxOne
                   text="Non-Standard Conten"
@@ -1087,6 +1165,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Arts & EntertainmentNon-Standard Conten')}
                 />
                 {/* {selectedCheckbox === 'Non-Standard Content' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -1105,6 +1184,7 @@ console.log(getBugOfRes)
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
+                  ischeck={audienceArr.includes('Illegal Content')}
                 />
                 {/* {selectedCheckbox === 'Illegal Content' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -1123,7 +1203,7 @@ console.log(getBugOfRes)
                   </button>
                 </div>
                 <div className="mt-4 mb-4">
-                  <InputSelect />
+                  <InputSelect onchange={setAudienceLocation} value={audience_location} />
                 </div>
               </div>
               <div className="flex justify-end">
@@ -1188,6 +1268,7 @@ console.log(getBugOfRes)
           </div>
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <DateSection
+              deliveryType={setDeliveryType}
               daySettings={daySettings}
               onDaySettingsChange={handleDaySettingsChange}
             />

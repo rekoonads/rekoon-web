@@ -102,13 +102,15 @@ export default function Advertiser({
   }, [calculatedBudget]);
 
   // last part
+
+
   useEffect(() => {
     console.log("advertiser budget is ..   ",advertiserBud)
     if (selectBudType === 'Weekly Budget') {
       const weeklyData = calculateCampaignBudgetDaily(advertiserBud);
-      setCalculatedBudget('₹' +String(weeklyData));
+      setCalculatedBudget(String(weeklyData));
     } else if (selectBudType === 'Daily Budget') {
-      setCalculatedBudget('₹' + String(advertiserBud));
+      setCalculatedBudget(String(advertiserBud));
     }
   }, [advertiserBud, selectBudType]);
 
