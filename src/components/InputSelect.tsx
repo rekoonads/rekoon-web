@@ -5,9 +5,13 @@ interface Option {
   value: string;
   label: string;
 }
-
-const InputSelect: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+interface InputSelectProps {
+  value: string;
+  onchange: (input_val:String)=>void;
+  
+}
+const InputSelect: React.FC<InputSelectProps> = ({ value,onchange }) => {
+  const [searchQuery, setSearchQuery] = useState(value);
   const [suggestions, setSuggestions] = useState<Option[]>([]);
   const [selectedValue, setSelectedValue] = useState<string>('');
   const [loading, setLoading] = useState(false);
@@ -62,12 +66,15 @@ const InputSelect: React.FC = () => {
     const query = e.target.value;
     setSearchQuery(query);
     fetchSuggestions(query);
+    onchange(query)
+
   };
 
   const handleSelect = (value: string, label: string) => {
     setSelectedValue(label);
     setSearchQuery(label);
     setSuggestions([]);
+    onchange(label)
   };
 
   return (

@@ -77,20 +77,28 @@ const resetAllDays = (): DaySettingsState => {
 interface DateSectionProps {
   daySettings: DaySettingsState;
   onDaySettingsChange: (newDaySettings: DaySettingsState) => void;
+  deliveryType:(type_val:any)=>void;
 }
 
 export default function DateSection({
   daySettings: initialDaySettings,
   onDaySettingsChange,
+  deliveryType,
 }: DateSectionProps) {
   const [daySettings, setDaySettings] =
     useState<DaySettingsState>(initialDaySettings);
-  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<string>('');
 
   useEffect(() => {
     setDaySettings(initialDaySettings);
   }, [initialDaySettings]);
 
+  useEffect(() => {
+    if(selectedSlot)
+    deliveryType(selectedSlot);
+
+  }, [selectedSlot])
+  
   useEffect(() => {
     onDaySettingsChange(daySettings);
   }, [daySettings, onDaySettingsChange]);

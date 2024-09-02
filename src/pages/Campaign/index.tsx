@@ -46,7 +46,7 @@ const Campaigns = () => {
   const isIdAdvertOrAgent = orgId || userId;
   console.log(isIdAdvertOrAgent);
   const { toast } = useToast();
-  const secretKey = import.meta.env.VITE_ENCRYPT_SECRET_KEY;
+  // const secretKey = import.meta.env.VITE_ENCRYPT_SECRET_KEY;
  
   // searches for the type of user
   const [isAdd, setIsAdd] = useState<string>('');

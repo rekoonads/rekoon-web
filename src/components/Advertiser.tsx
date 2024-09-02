@@ -85,6 +85,8 @@ export default function Advertiser({
   }, [calculatedBudget]);
 
   // last part
+
+
   useEffect(() => {
     if (selectBudType === 'Weekly Budget') {
       const weeklyData = calculateCampaignBudgetDaily(advertiserBud);

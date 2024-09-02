@@ -1,15 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface CheckboxOneProps {
   text?: string;
   onChange?: (text: string, isChecked: boolean) => void;
   className?: string; // Add className to the props
+  ischeck:boolean;
 }
 
 const CheckboxOne: React.FC<CheckboxOneProps> = ({
   text,
   onChange,
   className,
+  ischeck,
 }) => {
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
@@ -18,6 +20,10 @@ const CheckboxOne: React.FC<CheckboxOneProps> = ({
     setIsChecked(newCheckedState);
     if (onChange) onChange(text || '', newCheckedState); // Notify parent about the change
   };
+  useEffect(() => {
+    setIsChecked(ischeck);
+  }, [ischeck])
+  
 
   return (
     <div className={`flex items-center ${className}`}>

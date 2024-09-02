@@ -1,6 +1,6 @@
 'use client';
 
-import productImage from '../assets/product-image.png';
+import productImage from '../assets/sweven.png';
 import pyramidImage from '../assets/pyramid.png';
 import tubeImage from '../assets/tube.png';
 
@@ -18,18 +18,19 @@ export const ProductShowcase = () => {
     <section
       ref={sectionRef}
       className="bg-gradient-to-b from-[#FFFFFF] to-[#D2DCFF] py-24 overflow-x-clip"
+      id="features"
     >
       <div className="container">
         <div className="section-heading">
           <div className="flex justify-center">
-            <div className="tag">Boost your productivity</div>
+            <div className="tag font-bold">Boost your advertisement</div>
           </div>
-          <h2 className="section-title mt-5">
-            A more effective way to track progress
+          <h2 className="section-title mt-5 text-5xl">
+            A More Effective Way to publish advertisement
           </h2>
           <p className="section-description mt-5">
             Effortlessly turn your ideas into a fully functional, responsive,
-            SasS website in just minutes with this template.
+            Adtech website in just minutes with our dashboard.
           </p>
         </div>
         <div className="relative">
