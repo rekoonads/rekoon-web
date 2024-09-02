@@ -249,13 +249,13 @@ export default function SummaryComponent() {
 
         if (invocationCode.status == 'error') {
           const errorId = uuidv4();
-          await axios.post('/api/save-error', {
-            errorId: errorId,
-            userId: userId,
-            campaignId: campaigns?.campaignId,
-            strategyId: strategies?.strategyId,
-            errorMessage: invocationCode.message,
-          });
+            await axios.post(`${domainName}/api/save-error`, {
+              errorId: errorId,
+              userId: userId,
+              campaignId: campaigns?.campaignId,
+              strategyId: strategies?.strategyId,
+              errorMessage: invocationCode.message,
+            });
           toast.error(
             `Something went wrong. Please contact support with this ID: ${errorId}`,
           );
@@ -394,82 +394,83 @@ export default function SummaryComponent() {
     rzp1.open();
   };
   console.log(campaigns);
+  
   return (
     <>
-      {loading && <LoadingScreen />}
-      <Card className="w-full max-w-lg p-4 rounded-lg border border-stroke bg-white shadow-2xl dark:border-strokedark dark:bg-boxdark">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg font-semibold text-blue-700">
-            <PresentationIcon className="inline-block w-5 h-5 mr-2" />
-            Campaign summary
-          </CardTitle>
-          <CardDescription>
-            Review carefully your campaign details
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-semibold">
-                Campaign Name: {campaigns?.campaignName}
-              </p>
-              <Link to={'/campaign'}>
-                <Button variant="ghost" className="p-0 text-sm text-blue-700">
-                  <ClipboardPenIcon className="inline-block w-4 h-4 mr-1" />
-                  Edit
-                </Button>
-              </Link>
-            </div>
-            <div className="text-right">
-              <p className="font-semibold">
-                Campaign budget {campaigns?.campaignBudget}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center">
-            <CalendarIcon className="w-5 h-5 mr-2" />
-            <p>
-              Start Date: {campaigns?.startDate} and End Date:{' '}
-              {campaigns?.endDate}
-            </p>
-          </div>
-          <div className="space-y-2">
+    {loading && <LoadingScreen/>}
+    <Card className="w-full max-w-lg p-4 rounded-lg border border-stroke bg-white shadow-2xl dark:border-strokedark dark:bg-boxdark">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-lg font-semibold text-blue-700">
+          <PresentationIcon className="inline-block w-5 h-5 mr-2" />
+          Campaign summary
+        </CardTitle>
+        <CardDescription>
+          Review carefully your campaign details
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
             <p className="font-semibold">
-              Strategy Name : {strategies?.strategyName}
+              Campaign Name: {campaigns?.campaignName}
             </p>
-            <div className="flex items-center justify-between">
-              <p>Selected Channels goes here</p>
-              <Link to={'/strategy'}>
-                <Button variant="ghost" className="p-0 text-sm text-blue-700">
-                  <ClipboardPenIcon className="inline-block w-4 h-4 mr-1" />
-                  Edit
-                </Button>
-              </Link>
-            </div>
-            <div className="flex items-center justify-between">
-              <p>Deliverability forecast</p>
-              <Badge variant="secondary" className="text-green-700">
-                Excellent
-              </Badge>
-            </div>
-          </div>
-        </CardContent>
-        <CardFooter className="flex justify-between pt-4 border-t">
-          <p className="text-muted-foreground">Total campaign budget</p>
-          <p className="text-lg font-semibold">{campaigns?.campaignBudget}</p>
-        </CardFooter>
-        <div className="justify-end">
-          {successFullpayment ? (
-            <>Paid</>
-          ) : (
-            <>
-              <Button className="text-white" onClick={handlePayment}>
-                Pay Now
+            <Link to={'/campaign'}>
+              <Button variant="ghost" className="p-0 text-sm text-blue-700">
+                <ClipboardPenIcon className="inline-block w-4 h-4 mr-1" />
+                Edit
               </Button>
-            </>
-          )}
+            </Link>
+          </div>
+          <div className="text-right">
+            <p className="font-semibold">
+              Campaign budget ₹{campaigns?.campaignBudget}
+            </p>
+          </div>
         </div>
-      </Card>
+        <div className="flex items-center">
+          <CalendarIcon className="w-5 h-5 mr-2" />
+          <p>
+            Start Date: {campaigns?.startDate} and End Date:{' '}
+            {campaigns?.endDate}
+          </p>
+        </div>
+        <div className="space-y-2">
+          <p className="font-semibold">
+            Strategy Name : {strategies?.strategyName}
+          </p>
+          <div className="flex items-center justify-between">
+            <p>Selected Channels goes here</p>
+            <Link to={'/strategy'}>
+              <Button variant="ghost" className="p-0 text-sm text-blue-700">
+                <ClipboardPenIcon className="inline-block w-4 h-4 mr-1" />
+                Edit
+              </Button>
+            </Link>
+          </div>
+          <div className="flex items-center justify-between">
+            <p>Deliverability forecast</p>
+            <Badge variant="secondary" className="text-green-700">
+              Excellent
+            </Badge>
+          </div>
+        </div>
+      </CardContent>
+      <CardFooter className="flex justify-between pt-4 border-t">
+        <p className="text-muted-foreground">Total campaign budget</p>
+        <p className="text-lg font-semibold">₹{campaigns?.campaignBudget}</p>
+      </CardFooter>
+      <div className="justify-end">
+        {successFullpayment ? (
+          <>Paid</>
+        ) : (
+          <>
+            <Button className="text-white" onClick={handlePayment}>
+              Pay Now
+            </Button>
+          </>
+        )}
+      </div>
+    </Card>
     </>
   );
 }

@@ -27,14 +27,15 @@ export default function Advertiser({
 }: AdvertiserProps) {
   const [calculatedBudget, setCalculatedBudget] = useState<string>('');
   const [selectBudType, setSelectBudType] = useState<string>('');
-  const [advertiserBud, setAdvertiserBud] = useState<string>('');
+  const [advertiserBud, setAdvertiserBud] = useState<string>(budget);
   const [moneyValue, setMoneyValue] = useState<any>();
   
   console.log("advrt cmp typ :-",campaignType)
 
  
-  const calculateCampaignBudgetDaily = (budget: string) => {
-    let budDailyData = Number(budget) * 7;
+  const calculateCampaignBudgetDaily = (budget_val: string) => {
+    console.log("calculate val :-",budget_val)
+    let budDailyData = Number(budget_val) * 7;
     return budDailyData;
   };
  
@@ -48,6 +49,9 @@ export default function Advertiser({
   useEffect(() => {
     setAdvertiserBud(budget);
     setSelectBudType(campaignType);
+  }, [])
+  
+  useEffect(() => {
     setSelectedOption(campaignType);
   }, [campaignType])
   console.log("first sltd:- ",selectedOption)
@@ -99,6 +103,7 @@ export default function Advertiser({
 
   // last part
   useEffect(() => {
+    console.log("advertiser budget is ..   ",advertiserBud)
     if (selectBudType === 'Weekly Budget') {
       const weeklyData = calculateCampaignBudgetDaily(advertiserBud);
       setCalculatedBudget('₹' +String(weeklyData));

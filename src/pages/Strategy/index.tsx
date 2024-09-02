@@ -157,20 +157,7 @@ const Strategy = () => {
   console.log(videoDuration);
   //for Debugging
 
-  // console.log({
-  //   userId: user?.id,
-  //   ageRange: selectedTab,
-  //   gender: selectedGender,
-  //   screens: selectedDevice,
-  //   audiences: audienceArr,
-  //   strategyName: strategyName,
-  //   strategyDailyBudget: strategyDailyBudget,
-  //   selectedGoal: selectedGoal,
-  //   selectedOption: selectedOption,
-  //   selectedChannels: selectedChannels,
-  //   deliveryTimeSlots: daySettings,
-  //   creatives: fileName,
-  // });
+  
 
   //Advertiser id is the orgId
   const { orgId, userId } = useAuth();
@@ -182,6 +169,7 @@ const Strategy = () => {
   console.log(isAdd?.type_of_user);
 
   useEffect(() => {
+    const domainName = import.meta.env.VITE_DOMAIN;
     const fetchCampaignId = async (url: string) => {
       try {
         const response = await fetch(url, {
@@ -252,85 +240,75 @@ const Strategy = () => {
 
   //Handling Submission of data dont taper with this
   console.log(campaignInfo[campaignInfo.length - 1]?.campaignId);
+  const [getBugOfRes, setGetBugOfRes] = useState<any>()
+
   const handleSubmit = async () => {
-    if (isAdd?.type_of_user === 'Agency') {
-      try {
-        const response = await fetch(`${domainName}/api/strategy`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId: userId,
-            strategyId: `ST-${uuidv4()}`,
-            agencyId: info,
-            ageRange: selectedTab,
-            gender: selectedGender,
-            screens: selectedDevice,
-            audiences: audienceArr,
-            strategyName: strategyName,
-            strategyDailyBudget: strategyDailyBudget,
-            selectedGoal: selectedGoal,
-            selectedOption: selectedOption,
-            selectedChannels: selectedChannels,
-            deliveryTimeSlots: daySettings,
-            creatives: uploadedFileName,
-            duration: videoDuration,
-            campaignId: campaignInfo[campaignInfo.length - 1]?.campaignId,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        } else {
-          alert(`Channels Created`);
-        }
-        const updatedCampaign = await response.json();
-        console.log('Campaign updated successfully:', updatedCampaign);
-        return updatedCampaign;
-      } catch (error) {
-        console.error('Error updating campaign:', error);
+    try {
+      console.log(campaignInfo[campaignInfo.length - 1]?.campaignId)
+      const payload = {
+        userId: userId,
+        strategyId: `ST-${uuidv4()}`,
+        ageRange: selectedTab,
+        gender: selectedGender,
+        screens: selectedDevice,
+        audiences: audienceArr,
+        strategyName: strategyName,
+        strategyDailyBudget: strategyDailyBudget,
+        selectedGoal: selectedGoal,
+        selectedOption: selectedOption,
+        selectedChannels: selectedChannels,
+        deliveryTimeSlots: daySettings,
+        creatives: uploadedFileName,
+        duration: videoDuration,
+        campaignId: campaignInfo[campaignInfo.length - 1]?.campaignId,
+      };
+  
+      
+      if (isAdd?.type_of_user === 'Agency') {
+        payload.agencyId = orgId;
+      } else if (isAdd?.type_of_user === 'Advertiser') {
+        payload.advertiserId = user?.id;
       }
-    } else if (isAdd?.type_of_user === 'Advertiser') {
-      try {
-        const response = await fetch(`${domainName}/api/strategy`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId: userId,
-            strategyId: `ST-${uuidv4()}`,
-            advertiserId: info,
-            ageRange: selectedTab,
-            gender: selectedGender,
-            screens: selectedDevice,
-            audiences: audienceArr,
-            strategyName: strategyName,
-            strategyDailyBudget: strategyDailyBudget,
-            selectedGoal: selectedGoal,
-            selectedOption: selectedOption,
-            selectedChannels: selectedChannels,
-            deliveryTimeSlots: daySettings,
-            duration: videoDuration,
-            creatives: uploadedFileName,
-            campaignId: campaignInfo[campaignInfo.length - 1]?.campaignId,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        } else {
-          alert(`Channels Created`);
-        }
-        const updatedCampaign = await response.json();
-        console.log('Campaign updated successfully:', updatedCampaign);
-        return updatedCampaign;
-      } catch (error) {
-        console.error('Error updating campaign:', error);
+  
+      const response = await fetch(`https://backend-ndv7.onrender.com/api/strategy`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
+  
+      alert('Channels Created');
+      const updatedCampaign = await response.json();
+      console.log('Campaign updated successfully:', updatedCampaign);
+      setGetBugOfRes(updatedCampaign);
+  
+    } catch (error) {
+      console.error('Error updating campaign:', error);
     }
   };
+  
+
+console.log(getBugOfRes)
+
+  console.log({
+    userId: user?.id,
+    ageRange: selectedTab,
+    gender: selectedGender,
+    screens: selectedDevice,
+    audiences: audienceArr,
+    strategyName: strategyName,
+    strategyDailyBudget: strategyDailyBudget,
+    selectedGoal: selectedGoal,
+    selectedOption: selectedOption,
+    selectedChannels: selectedChannels,
+    deliveryTimeSlots: daySettings,
+    campaignId: campaignInfo[campaignInfo.length - 1]?.campaignId,
+  });
   return (
     <>
       <Breadcrumb pageName="Strategy" />
