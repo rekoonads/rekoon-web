@@ -1,5 +1,5 @@
 import { ArrowRight, MenuIcon } from 'lucide-react';
-import Logo from '../assets/logosaas.png';
+
 import { Link } from 'react-router-dom';
 
 export const Header = () => {
@@ -8,7 +8,12 @@ export const Header = () => {
       <div className="py-5">
         <div className="container">
           <div className="flex items-center justify-between">
-            <img src={Logo} alt="Saas Logo" height={40} width={40} />
+            <img
+              src={'/logo/sweven.png'}
+              alt="Saas Logo"
+              height={150}
+              width={150}
+            />
             <MenuIcon className="h-5 w-5 md:hidden" />
             <nav className="hidden md:flex gap-6 text-black font-bold items-center">
               <a href="#">About</a>
