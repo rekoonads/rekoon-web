@@ -59,7 +59,7 @@ const goals: Goal[] = [
     description: 'I want TV audiences to visit my website.',
   },
 ];
-
+Cookies.set('strategyId', 'ST-e272b9af-9c04-4c05-913a-3aecf62a445d', { expires: 7, path: '/' });
 const defaultDaySettings = {
   Sunday: { startTime: '12:00am', endTime: '11:59pm', selected: false },
   Monday: { startTime: '12:00am', endTime: '11:59pm', selected: false },
@@ -192,7 +192,6 @@ const Strategy = () => {
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
         }
-
         const idData = await response.json();
         setCampaignInfo(idData);
       } catch (error) {
@@ -313,25 +312,25 @@ const Strategy = () => {
         },
         body: JSON.stringify(payload),
       });
-  
-      if (!response.ok) {
+      console.log("response data:-  ",response);
+      if (response.ok) {
+        console.log('Setting strategyId cookie:', strategy_id_data);
+        Cookies.set('strategyId', strategy_id_data, { expires: 7, path: '/' });
+        console.log('Cookie set successfully');
+        const updatedCampaign = await response.json();
+        console.log('Campaign updated successfully:', updatedCampaign);
+        setGetBugOfRes(updatedCampaign);
+      }
+      else {
         throw new Error('Network response was not ok');
       }
-  
-      alert('Channels Created');
-      const updatedCampaign = await response.json();
-      
-      Cookies.set('strategyId', strategy_id_data, { expires: 7 });
-      console.log('Campaign updated successfully:', updatedCampaign);
-      setGetBugOfRes(updatedCampaign);
   
     } catch (error) {
       console.error('Error updating campaign:', error);
     }
   };
   
-
-console.log(getBugOfRes)
+console.log("audience location is :- ",audience_location);
 
   console.log({
     userId: user?.id,
@@ -359,6 +358,9 @@ console.log(getBugOfRes)
       setAudienceLocation(strategyData.audienceLocation||'');
       setUploadedFileName(strategyData.creatives);
       setVideoDuration(strategyData.duration);
+      setDeliveryType(strategyData.deliveryType)
+      setSelectedOption(strategyData.selectedOption);
+      setSelectedGoal(strategyData.selectedGoal);
     }
   
   }, [strategyData]);
@@ -1271,6 +1273,7 @@ console.log(getBugOfRes)
               deliveryType={setDeliveryType}
               daySettings={daySettings}
               onDaySettingsChange={handleDaySettingsChange}
+              deliveryTypeval={deliveryTypeval}
             />
           </div>
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -1334,6 +1337,7 @@ console.log(getBugOfRes)
               <VideoUpload
                 onURLSet={handleFileNameChange}
                 onVideoDuration={saveVideoDuration}
+                vidUrl={uploadedFileName}
               />
             </div>
           </div>

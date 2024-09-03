@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 
 interface Option {
@@ -61,6 +61,10 @@ const InputSelect: React.FC<InputSelectProps> = ({ value,onchange }) => {
     },
     [apiKey],
   );
+  useEffect(() => {
+    setSearchQuery(value);
+  }, [value])
+  
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
