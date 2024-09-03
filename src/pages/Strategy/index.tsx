@@ -28,7 +28,7 @@ import VideoUpload from '../../components/VideoUpload';
 import Cookies from 'js-cookie';
 import RightSidedStrategyCard from '../../components/RightSidedStrategyCard';
 
-const domainName = import.meta.env.VITE_DOMAIN;  
+const domainName = import.meta.env.VITE_DOMAIN;
 interface Goal {
   id: string;
   icon: React.ElementType[];
@@ -71,9 +71,8 @@ const defaultDaySettings = {
 };
 
 const Strategy = () => {
-
   const [strategyData, setStrategydata] = useState<any>(null);
-  const [update,setUpdate] = useState(false);
+  const [update, setUpdate] = useState(false);
   const [selectedTab, setSelectedTab] = useState('18-20');
   const [selectedGender, setSelectedGender] = useState('Women');
   const [selectedDevice, setSelectedDevice] = useState('TV');
@@ -83,8 +82,8 @@ const Strategy = () => {
   const [audienceArr, setAudienceArr] = useState<string[]>([]);
   const [strategyName, setStrategyName] = useState<string>('');
   const [strategyDailyBudget, setStrategyDailyBudget] = useState<string>('');
-  const [audience_location,setAudienceLocation] = useState<string>('');
-  const [deliveryTypeval,setDeliveryType] = useState<String>();
+  const [audience_location, setAudienceLocation] = useState<string>('');
+  const [deliveryTypeval, setDeliveryType] = useState<String>();
 
   const { user } = useUser();
   const handleReset = () => {
@@ -98,7 +97,6 @@ const Strategy = () => {
   //   setAudienceArr((prevState) => [...prevState, text]);
   // }
   const handleCheckboxChange = (text: string, isChecked: boolean) => {
-    
     if (isChecked) {
       setSelectedCheckbox(text);
       setAudienceArr((prevState) => [...prevState, text]);
@@ -169,8 +167,6 @@ const Strategy = () => {
   console.log(videoDuration);
   //for Debugging
 
-  
-
   //Advertiser id is the orgId
   const { orgId, userId } = useAuth();
   console.log(orgId, userId);
@@ -219,7 +215,6 @@ const Strategy = () => {
   }, [campaignInfo]);
   console.log(info);
 
-  
   // searches for the type of user
   useEffect(() => {
     const fetchData = async (id: string) => {
@@ -249,36 +244,40 @@ const Strategy = () => {
 
   useEffect(() => {
     const cookies_data = Cookies.get('strategyId');
-    console.log("cookies_data :- ",cookies_data);
+    console.log('cookies_data :- ', cookies_data);
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`${domainName}/api/get-strategy?strategyId=${cookies_data}`);
-        console.log("previous strategy data:- ",response.data)
+        const response = await axios.get(
+          `${domainName}/api/get-strategy?strategyId=${cookies_data}`,
+        );
+        console.log('previous strategy data:- ', response.data);
         setStrategydata(response.data);
       } catch (error) {
         console.error('Error fetching strategy data:', error);
       }
     };
-    if(cookies_data){
+    if (cookies_data) {
       setUpdate(true);
       fetchUserData();
-    }else{
+    } else {
       setUpdate(false);
     }
   }, []);
 
   console.log(isAdd?.type_of_user);
-  console.log("audiance location :- ",audience_location);
+  console.log('audiance location :- ', audience_location);
 
   //Handling Submission of data dont taper with this
   console.log(campaignInfo[campaignInfo.length - 1]?.campaignId);
-  const [getBugOfRes, setGetBugOfRes] = useState<any>()
+  const [getBugOfRes, setGetBugOfRes] = useState<any>();
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    const strategy_id_data = strategyData?strategyData.strategyId:`ST-${uuidv4()}`;
+    e.preventDefault();
+    const strategy_id_data = strategyData
+      ? strategyData.strategyId
+      : `ST-${uuidv4()}`;
     try {
-      console.log(campaignInfo[campaignInfo.length - 1]?.campaignId)
+      console.log(campaignInfo[campaignInfo.length - 1]?.campaignId);
       const payload = {
         userId: userId,
         strategyId: strategy_id_data,
@@ -291,21 +290,20 @@ const Strategy = () => {
         selectedGoal: selectedGoal,
         selectedOption: selectedOption,
         selectedChannels: selectedChannels,
-        audienceLocation:audience_location,
+        audienceLocation: audience_location,
         deliveryTimeSlots: daySettings,
-        deliveryType:deliveryTypeval,
+        deliveryType: deliveryTypeval,
         creatives: uploadedFileName,
         duration: videoDuration,
         campaignId: campaignInfo[campaignInfo.length - 1]?.campaignId,
       };
-  
-      
+
       if (isAdd?.type_of_user === 'Agency') {
         payload.agencyId = orgId;
       } else if (isAdd?.type_of_user === 'Advertiser') {
         payload.advertiserId = user?.id;
       }
-  
+
       const response = await fetch(`${domainName}/api/strategy`, {
         method: 'POST',
         headers: {
@@ -313,7 +311,7 @@ const Strategy = () => {
         },
         body: JSON.stringify(payload),
       });
-      console.log("response data:-  ",response);
+      console.log('response data:-  ', response);
       if (response.ok) {
         console.log('Setting strategyId cookie:', strategy_id_data);
         Cookies.set('strategyId', strategy_id_data, { expires: 7, path: '/' });
@@ -322,17 +320,15 @@ const Strategy = () => {
         console.log('Campaign updated successfully:', updatedCampaign);
         setGetBugOfRes(updatedCampaign);
         location.reload();
-      }
-      else {
+      } else {
         throw new Error('Network response was not ok');
       }
-  
     } catch (error) {
       console.error('Error updating campaign:', error);
     }
   };
-  
-console.log("audience location is :- ",audience_location);
+
+  console.log('audience location is :- ', audience_location);
 
   console.log({
     userId: user?.id,
@@ -346,7 +342,7 @@ console.log("audience location is :- ",audience_location);
     selectedOption: selectedOption,
     selectedChannels: selectedChannels,
     deliveryTimeSlots: daySettings,
-    deliveryType:deliveryTypeval,
+    deliveryType: deliveryTypeval,
     campaignId: campaignInfo[campaignInfo.length - 1]?.campaignId,
   });
   useEffect(() => {
@@ -357,16 +353,15 @@ console.log("audience location is :- ",audience_location);
       setAudienceArr(strategyData.audiences || []);
       setStrategyName(strategyData.strategyName || '');
       setStrategyDailyBudget(strategyData.strategyDailyBudget || '');
-      setAudienceLocation(strategyData.audienceLocation||'');
+      setAudienceLocation(strategyData.audienceLocation || '');
       setUploadedFileName(strategyData.creatives);
       setVideoDuration(strategyData.duration);
-      setDeliveryType(strategyData.deliveryType)
+      setDeliveryType(strategyData.deliveryType);
       setSelectedOption(strategyData.selectedOption);
       setSelectedGoal(strategyData.selectedGoal);
     }
-  
   }, [strategyData]);
-  console.log("delivery type :- ",deliveryTypeval);
+  console.log('delivery type :- ', deliveryTypeval);
 
   return (
     <>
@@ -386,7 +381,8 @@ console.log("audience location is :- ",audience_location);
               <div>
                 <input
                   onChange={(e) => setStrategyName(e.target.value)}
-                  type="text" value={strategyName}
+                  type="text"
+                  value={strategyName}
                   placeholder="Default Input"
                   className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -407,7 +403,8 @@ console.log("audience location is :- ",audience_location);
               <div>
                 <input
                   onChange={(e) => setStrategyDailyBudget(e.target.value)}
-                  type="text" value={strategyDailyBudget}
+                  type="text"
+                  value={strategyDailyBudget}
                   placeholder="5000"
                   className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -1169,7 +1166,9 @@ console.log("audience location is :- ",audience_location);
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
-                  ischeck={audienceArr.includes('Arts & EntertainmentNon-Standard Conten')}
+                  ischeck={audienceArr.includes(
+                    'Arts & EntertainmentNon-Standard Conten',
+                  )}
                 />
                 {/* {selectedCheckbox === 'Non-Standard Content' && (
                 <div className='ml-2 flex flex-col gap-2'>
@@ -1207,7 +1206,10 @@ console.log("audience location is :- ",audience_location);
                   </button>
                 </div>
                 <div className="mt-4 mb-4">
-                  <InputSelect onchange={setAudienceLocation} value={audience_location} />
+                  <InputSelect
+                    onchange={setAudienceLocation}
+                    value={audience_location}
+                  />
                 </div>
               </div>
               <div className="flex justify-end">
@@ -1353,12 +1355,21 @@ console.log("audience location is :- ",audience_location);
           </form>
         </div>
 
-        <div className="flex flex-col gap-9 md:fixed right-5 mb-4">
+        <div className="flex flex-col gap-9 md:absolute right-5 mb-4">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="flex flex-col gap-5.5 p-6.5">
-             {/* <RightSidedStrategyCard /> */}
-            </div>
-      
+            {/* <div className="flex flex-col gap-5.5 p-6.5 ">
+              <RightSidedStrategyCard
+                userId={String(userId)}
+                ageRange={selectedTab}
+                campaignId={campaignInfo[campaignInfo.length - 1]?.campaignId}
+                gender={selectedGender}
+                screens={selectedDevice}
+                strategyName={strategyName}
+                selectedGoal={selectedGoal}
+                selectedOption={selectedOption}
+                audiences={audienceArr}
+              />
+            </div> */}
           </div>
         </div>
       </div>

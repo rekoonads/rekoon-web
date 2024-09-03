@@ -12,7 +12,7 @@ import { CalendarIcon, ClipboardPenIcon, PresentationIcon } from 'lucide-react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import { v4 as uuidv4 } from 'uuid';
 import { BarChart, Signal } from 'lucide-react';
@@ -87,8 +87,9 @@ export default function SummaryComponent() {
   const { user } = useUser();
   const domainName = import.meta.env.VITE_DOMAIN;
   const [loading, setLoading] = useState(false);
-
-  console.log({
+ const navigate = useNavigate()
+ 
+ console.log({
     userId: userId,
     campaignId: campaigns?.campaignId,
     strategyId: strategies?.strategyId,
@@ -222,6 +223,7 @@ export default function SummaryComponent() {
 
   //4> then send the latest Campaign and Strategy details accordingly to the bill endpoint using handle submission
   const [successFullpayment, setSuccessFullpeyment] = useState<boolean>(false);
+  const [reviveUrl, setReviveUrl] = useState<any>();
   useEffect(() => {
     if (successPaymentId) {
       const postBillData = async () => {
@@ -246,7 +248,7 @@ export default function SummaryComponent() {
 
         await console.log('xxxxxxxxxxxxxxxxxxxxxxxxxx', data);
         const invocationCode = data?.data?.invocation_code;
-
+        setReviveUrl(invocationCode?.value);
         if (invocationCode.status == 'error') {
           const errorId = uuidv4();
             await axios.post(`${domainName}/api/save-error`, {
@@ -315,6 +317,9 @@ export default function SummaryComponent() {
       }
     }
   }, [successPaymentId, isAdd?.type_of_user]);
+
+
+
   //if payment is successful then the confirmation to payment success is received here
 
   useEffect(() => {
@@ -395,6 +400,14 @@ export default function SummaryComponent() {
   };
   console.log(campaigns);
   
+  //navigate to billing page once the revive link is gotten
+  useEffect(()=>{
+    if(reviveUrl){
+      navigate(`/settings/balance-transaction`)
+    }
+  },[reviveUrl])
+
+
   return (
     <>
     {loading && <LoadingScreen/>}
