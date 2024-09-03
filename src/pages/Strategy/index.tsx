@@ -330,8 +330,7 @@ const Strategy = () => {
     }
   };
   
-
-console.log(getBugOfRes)
+console.log("audience location is :- ",audience_location);
 
   console.log({
     userId: user?.id,
@@ -359,6 +358,9 @@ console.log(getBugOfRes)
       setAudienceLocation(strategyData.audienceLocation||'');
       setUploadedFileName(strategyData.creatives);
       setVideoDuration(strategyData.duration);
+      setDeliveryType(strategyData.deliveryType)
+      setSelectedOption(strategyData.selectedOption);
+      setSelectedGoal(strategyData.selectedGoal);
     }
   
   }, [strategyData]);
@@ -1271,6 +1273,7 @@ console.log(getBugOfRes)
               deliveryType={setDeliveryType}
               daySettings={daySettings}
               onDaySettingsChange={handleDaySettingsChange}
+              deliveryTypeval={deliveryTypeval}
             />
           </div>
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -1334,6 +1337,7 @@ console.log(getBugOfRes)
               <VideoUpload
                 onURLSet={handleFileNameChange}
                 onVideoDuration={saveVideoDuration}
+                vidUrl={uploadedFileName}
               />
             </div>
           </div>

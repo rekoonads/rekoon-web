@@ -78,12 +78,14 @@ interface DateSectionProps {
   daySettings: DaySettingsState;
   onDaySettingsChange: (newDaySettings: DaySettingsState) => void;
   deliveryType:(type_val:any)=>void;
+  deliveryTypeval :string;
 }
 
 export default function DateSection({
   daySettings: initialDaySettings,
   onDaySettingsChange,
   deliveryType,
+  deliveryTypeval,
 }: DateSectionProps) {
   const [daySettings, setDaySettings] =
     useState<DaySettingsState>(initialDaySettings);
@@ -102,6 +104,11 @@ export default function DateSection({
   useEffect(() => {
     onDaySettingsChange(daySettings);
   }, [daySettings, onDaySettingsChange]);
+
+  useEffect(() => {
+   deliveryTypeval=="Any time, Any day"?handleSelectAnyTimeAnyDay():(deliveryTypeval=="Primetime"?handleSelectPrimetime():deliveryTypeval=="After work"?handleSelectAfterWork():deliveryTypeval=="Work hours"?handleSelectWorkHours():deliveryTypeval=="Sleeping time"?handleSelectSleepingTime():deliveryTypeval=="Weekend"?handleSelectWeekend():deliveryTypeval=="Work days"?handleSelectWorkDays():handleSelectCustomTime())
+  }, [deliveryTypeval])
+  
 
   const handleReset = () => {
     const resetSettings = resetAllDays();
