@@ -341,7 +341,7 @@ console.log(modifiedAdvertiserBudget)
         // const encrypt_id = CryptoJS.AES.encrypt(campignid, secretKey).toString();
         if (isAdd?.type_of_user === 'Agency') {
           try {
-            const response = await fetch(`http://localhost:3001/api/campaigns`, {
+            const response = await fetch(`${domainName}/api/campaigns`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -385,7 +385,7 @@ console.log(modifiedAdvertiserBudget)
           }
         } else if (isAdd?.type_of_user === 'Advertiser') {
           try {
-            const response = await fetch(`http://localhost:3001/api/campaigns`, {
+            const response = await fetch(`${domainName}/api/campaigns`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
