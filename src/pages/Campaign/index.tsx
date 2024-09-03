@@ -18,9 +18,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { getAdvertiser } from '../../asyncCall/asyncCall';
 import axios from 'axios';
 import { useToast } from '../../components/ui/use-toast';
-import Cookies from 'js-cookie'
+import Cookies from 'js-cookie';
 import CryptoJS from 'crypto-js';
-
 
 const Campaigns = () => {
   const [campaignName, setCampaignName] = useState('');
@@ -36,7 +35,7 @@ const Campaigns = () => {
   const [website, setWebsite] = useState<string>('');
   const [businessEmail, setBusinessEmail] = useState<string>('');
   const [businessContact, setBusinessContact] = useState<string>('');
-  const [update,setUpdate] = useState(false);
+  const [update, setUpdate] = useState(false);
   const [received, setReceived] = useState(false);
   const navigate = useNavigate();
   const [postData, setPostData] = useState<any>();
@@ -46,8 +45,9 @@ const Campaigns = () => {
   const isIdAdvertOrAgent = orgId || userId;
   console.log(isIdAdvertOrAgent);
   const { toast } = useToast();
+  const [modifiedCampaignBud, setModifiedCampaignBud] = useState<any>();
   // const secretKey = import.meta.env.VITE_ENCRYPT_SECRET_KEY;
- 
+
   // searches for the type of user
   const [isAdd, setIsAdd] = useState<string>('');
   useEffect(() => {
@@ -77,54 +77,53 @@ const Campaigns = () => {
   }, [user?.id]);
   console.log(isAdd?.type_of_user);
 
-  
-
   const [campaigndata, setcampaigndata] = useState<any>(null);
   useEffect(() => {
     const cookies_data = Cookies.get('campaignId');
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`${domainName}/api/get-campaign?campaignId=${cookies_data}`);
-        console.log("previous campaign data:- ",response.data)
+        const response = await axios.get(
+          `${domainName}/api/get-campaign?campaignId=${cookies_data}`,
+        );
+        console.log('previous campaign data:- ', response.data);
         setcampaigndata(response.data);
       } catch (error) {
         console.error('Error fetching campaign data:', error);
       }
     };
-    if(cookies_data){
+    if (cookies_data) {
       setUpdate(true);
       fetchUserData();
-    }else{
+    } else {
       setUpdate(false);
     }
   }, []);
   const convertToYMD = (dateString: string): string => {
     const date = new Date(dateString);
     const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
   useEffect(() => {
-   if(campaigndata){
-    setCampaignName(campaigndata.campaignName);
-    setCampaignGoal(campaigndata.campaignGoal);
-    setCampaignType(campaigndata.campaignType);
-    setAdvertiser(campaigndata.advertiserId);
-    const convertedstart = convertToYMD(campaigndata.startDate);
-    const convertedend = convertToYMD(campaigndata.endDate);
-    setStartDate(convertedstart);
-    setEndDate(convertedend);
-    setCampaignBudget(campaigndata.campaignAdvertiserBudget);
-    setWebsiteName(campaigndata.website.websiteName);
-    setWebsite(campaigndata.website.websiteUrl);
-    setBusinessEmail(campaigndata.website.websiteEmail);
-    setBusinessContact(campaigndata.website.websiteContact);
-    setCap(false);
-   }
-  }, [campaigndata])
-  
-  
+    if (campaigndata) {
+      setCampaignName(campaigndata.campaignName);
+      setCampaignGoal(campaigndata.campaignGoal);
+      setCampaignType(campaigndata.campaignType);
+      setAdvertiser(campaigndata.advertiserId);
+      const convertedstart = convertToYMD(campaigndata.startDate);
+      const convertedend = convertToYMD(campaigndata.endDate);
+      setStartDate(convertedstart);
+      setEndDate(convertedend);
+      setCampaignBudget(campaigndata.campaignAdvertiserBudget);
+      setWebsiteName(campaigndata.website.websiteName);
+      setWebsite(campaigndata.website.websiteUrl);
+      setBusinessEmail(campaigndata.website.websiteEmail);
+      setBusinessContact(campaigndata.website.websiteContact);
+      setCap(false);
+    }
+  }, [campaigndata]);
+
   //getting The advertiser's Data
   const [addData, setAddData] = useState<string>('');
   useEffect(() => {
@@ -143,177 +142,206 @@ const Campaigns = () => {
   }, [isAdd, user?.id]);
   console.log(addData?.advertiserId);
 
+//for debugging 
+console.log(campaignName); 
+console.log(campaignGoal);
+console.log(websiteName);
+console.log(campaignBudget || advertiser); 
+console.log(campaignType);
+console.log(startDate);
+console.log(endDate);
+console.log(website);
+console.log(businessContact);
+console.log(businessEmail)
+
+//Advertiser problem Solution 
+const [modifiedAdvertiserBudget, setModifiedAdvertiserBudget] = useState<string>('')
+useEffect(() => {
+  if(campaignBudget != ''){
+    setModifiedAdvertiserBudget(String(campaignBudget))
+  } else if (advertiser !== ''){
+    setModifiedAdvertiserBudget(String(advertiser))
+  }
+}, [campaignBudget, advertiser])
+
+console.log(modifiedAdvertiserBudget)
+
+
   //handling Submission
-//   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-//     event.preventDefault();
-//     console.log(`Normal Click`)
-//     if (campaignBudget && advertiser && startDate && endDate && campaignType) {
-//       console.log('Clicked after fully form submission')
-//     if (advertiser > '5000') {
-//       const cookievalue = Cookies.get('campaignId');
-//       if(cookievalue === undefined){
-//         const campaign_id = `CAM-${uuidv4()}`;
-//         if (isAdd?.type_of_user === 'Agency') {
-//           try {
-//             const response = await fetch(`${domainName}/api/campaigns`, {
-//               method: 'POST',
-//               headers: {
-//                 'Content-Type': 'application/json',
-//               },
-//               body: JSON.stringify({
-//                 userId: user?.id,
-//                 campaignId: campaign_id,
-//                 agencyId: orgId,
-//                 campaignName,
-//                 campaignGoal,
-//                 website: {
-//                   websiteName,
-//                   websiteUrl: website,
-//                   websiteContact: businessContact,
-//                   websiteEmail: businessEmail,
-//                 },
-//                 campaignAdvertiserBudget: advertiser,
-//                 campaignBudget,
-//                 campaignType,
-//                 startDate: startDate?.toDateString(),
-//                 endDate: endDate?.toDateString(),
-//               }),
-//             });
+  //   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  //     event.preventDefault();
+  //     console.log(`Normal Click`)
+  //     if (campaignBudget && advertiser && startDate && endDate && campaignType) {
+  //       console.log('Clicked after fully form submission')
+  //     if (advertiser > '5000') {
+  //       const cookievalue = Cookies.get('campaignId');
+  //       if(cookievalue === undefined){
+  //         const campaign_id = `CAM-${uuidv4()}`;
+  //         if (isAdd?.type_of_user === 'Agency') {
+  //           try {
+  //             const response = await fetch(`${domainName}/api/campaigns`, {
+  //               method: 'POST',
+  //               headers: {
+  //                 'Content-Type': 'application/json',
+  //               },
+  //               body: JSON.stringify({
+  //                 userId: user?.id,
+  //                 campaignId: campaign_id,
+  //                 agencyId: orgId,
+  //                 campaignName,
+  //                 campaignGoal,
+  //                 website: {
+  //                   websiteName,
+  //                   websiteUrl: website,
+  //                   websiteContact: businessContact,
+  //                   websiteEmail: businessEmail,
+  //                 },
+  //                 campaignAdvertiserBudget: advertiser,
+  //                 campaignBudget,
+  //                 campaignType,
+  //                 startDate: startDate?.toDateString(),
+  //                 endDate: endDate?.toDateString(),
+  //               }),
+  //             });
 
-//             const data = await response.json();
-//             if (response.ok) {
-//               console.log('Campaign created successfully:', data);
-//               setReceived(true);
-//               toast({ title: 'Campaign Created Successfully' });
-//               navigate('/strategy');
-//             } else {
-//               console.error('Failed to create campaign:', data);
-//               toast({ title: 'Failed to submit campaign.' });
-//             }
-//           } catch (error) {
-//             console.error('Error:', error);
-//             toast({
-//               title: 'An error occurred while submitting the campaign.',
-//             });
-//           }
-//         } else if (isAdd?.type_of_user === 'Advertiser') {
-//           try {
-//             const response = await fetch(`${domainName}/api/campaigns`, {
-//               method: 'POST',
-//               headers: {
-//                 'Content-Type': 'application/json',
-//               },
-//               body: JSON.stringify({
-//                 userId: user?.id,
-//                 campaignId: `CAM-${uuidv4()}`,
-//                 advertiserId: addData?.advertiserId,
-//                 campaignName,
-//                 campaignGoal,
-//                 website: {
-//                   websiteName,
-//                   websiteUrl: website,
-//                   websiteContact: businessContact,
-//                   websiteEmail: businessEmail,
-//                   advertiserId: addData?.advertiserId,
-//                   createdBy: user?.id,
-//                 },
-//                 campaignAdvertiserBudget: advertiser,
-//                 campaignBudget,
-//                 campaignType,
-//                 startDate: startDate?.toDateString(),
-//                 endDate: endDate?.toDateString(),
-//               }),
-//             });
-//             const data = await response.json();
-//             if (response.ok) {
-//               Cookies.set('campaignId', campaign_id, { expires: 7 });
-//               console.log('Campaign created successfully:', data);
-//               setReceived(true);
-//               toast({ title: 'Campaign Created Successfully' });
-//               navigate('/strategy');
-//             } else {
-//               console.error('Failed to create campaign:', data);
-//               toast({ title: 'Failed to submit campaign.' });
-//             }
-//           } catch (error) {
-//             console.error('Error:', error);
-//             toast({ title: 'An error occurred while submitting the campaign.' });
-//           }
-//         } 
-//       } else {
-//         alert('Please deposit ₹5000 or greater');
-//         toast({ title: 'Please deposit ₹5000 or greater' });
-//       }
-//     } else {
-//       toast({ title: `Please Fill up the complete Campaign form` });
-//       alert(`Please Fill up the complete Campaign form`);
-//     }
+  //             const data = await response.json();
+  //             if (response.ok) {
+  //               console.log('Campaign created successfully:', data);
+  //               setReceived(true);
+  //               toast({ title: 'Campaign Created Successfully' });
+  //               navigate('/strategy');
+  //             } else {
+  //               console.error('Failed to create campaign:', data);
+  //               toast({ title: 'Failed to submit campaign.' });
+  //             }
+  //           } catch (error) {
+  //             console.error('Error:', error);
+  //             toast({
+  //               title: 'An error occurred while submitting the campaign.',
+  //             });
+  //           }
+  //         } else if (isAdd?.type_of_user === 'Advertiser') {
+  //           try {
+  //             const response = await fetch(`${domainName}/api/campaigns`, {
+  //               method: 'POST',
+  //               headers: {
+  //                 'Content-Type': 'application/json',
+  //               },
+  //               body: JSON.stringify({
+  //                 userId: user?.id,
+  //                 campaignId: `CAM-${uuidv4()}`,
+  //                 advertiserId: addData?.advertiserId,
+  //                 campaignName,
+  //                 campaignGoal,
+  //                 website: {
+  //                   websiteName,
+  //                   websiteUrl: website,
+  //                   websiteContact: businessContact,
+  //                   websiteEmail: businessEmail,
+  //                   advertiserId: addData?.advertiserId,
+  //                   createdBy: user?.id,
+  //                 },
+  //                 campaignAdvertiserBudget: advertiser,
+  //                 campaignBudget,
+  //                 campaignType,
+  //                 startDate: startDate?.toDateString(),
+  //                 endDate: endDate?.toDateString(),
+  //               }),
+  //             });
+  //             const data = await response.json();
+  //             if (response.ok) {
+  //               Cookies.set('campaignId', campaign_id, { expires: 7 });
+  //               console.log('Campaign created successfully:', data);
+  //               setReceived(true);
+  //               toast({ title: 'Campaign Created Successfully' });
+  //               navigate('/strategy');
+  //             } else {
+  //               console.error('Failed to create campaign:', data);
+  //               toast({ title: 'Failed to submit campaign.' });
+  //             }
+  //           } catch (error) {
+  //             console.error('Error:', error);
+  //             toast({ title: 'An error occurred while submitting the campaign.' });
+  //           }
+  //         }
+  //       } else {
+  //         alert('Please deposit ₹5000 or greater');
+  //         toast({ title: 'Please deposit ₹5000 or greater' });
+  //       }
+  //     } else {
+  //       toast({ title: `Please Fill up the complete Campaign form` });
+  //       alert(`Please Fill up the complete Campaign form`);
+  //     }
 
-//     if (campaignBudget && advertiser && startDate && endDate && campaignType) {
-//       try {
-//         let postData: any;
-//         if (isAdd?.type_of_user === 'Agency') {
-//           postData = await axios.post(
-//             `${domainName}/api/add-website`,
-//             {
-//               websiteName,
-//               websiteUrl: website,
-//               websiteContact: businessContact,
-//               websiteEmail: businessEmail,
-//               agencyId: orgId,
-//               createdBy: user?.id,
-//             },
-//             {
-//               headers: {
-//                 'Content-Type': 'application/json',
-//               },
-//             },
-//           );
-//           setPostData(postData);
-//         } else if (isAdd?.type_of_user === 'Advertiser') {
-//           postData = await axios.post(
-//             `${domainName}/api/add-website`,
-//             {
-//               websiteName,
-//               websiteUrl: website,
-//               websiteContact: businessContact,
-//               websiteEmail: businessEmail,
-//               advertiserId: addData?.advertiserId,
-//               createdBy: user?.id,
-//             },
-//             {
-//               headers: {
-//                 'Content-Type': 'application/json',
-//               },
-//             },
-//           );
-//           setPostData(postData);
-//         }
-//       } catch (error) {
-//         console.log(error);
-//       }
-//       if (postData) {
-//         alert(`The Website Details has been Submitted`);
-//       }
-//     }
-//   }
-//   console.log(`Click without submission`)
-// };
- 
-//handling Submission
-const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-  event.preventDefault();
-  if (campaignBudget && campaignBudget && startDate && endDate && campaignType) {
-    if (campaignBudget >= '5000') {
-      let previous_campaignId;
+  //     if (campaignBudget && advertiser && startDate && endDate && campaignType) {
+  //       try {
+  //         let postData: any;
+  //         if (isAdd?.type_of_user === 'Agency') {
+  //           postData = await axios.post(
+  //             `${domainName}/api/add-website`,
+  //             {
+  //               websiteName,
+  //               websiteUrl: website,
+  //               websiteContact: businessContact,
+  //               websiteEmail: businessEmail,
+  //               agencyId: orgId,
+  //               createdBy: user?.id,
+  //             },
+  //             {
+  //               headers: {
+  //                 'Content-Type': 'application/json',
+  //               },
+  //             },
+  //           );
+  //           setPostData(postData);
+  //         } else if (isAdd?.type_of_user === 'Advertiser') {
+  //           postData = await axios.post(
+  //             `${domainName}/api/add-website`,
+  //             {
+  //               websiteName,
+  //               websiteUrl: website,
+  //               websiteContact: businessContact,
+  //               websiteEmail: businessEmail,
+  //               advertiserId: addData?.advertiserId,
+  //               createdBy: user?.id,
+  //             },
+  //             {
+  //               headers: {
+  //                 'Content-Type': 'application/json',
+  //               },
+  //             },
+  //           );
+  //           setPostData(postData);
+  //         }
+  //       } catch (error) {
+  //         console.log(error);
+  //       }
+  //       if (postData) {
+  //         alert(`The Website Details has been Submitted`);
+  //       }
+  //     }
+  //   }
+  //   console.log(`Click without submission`)
+  // };
+
+  //handling Submission
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (
+      startDate &&
+      endDate &&
+      campaignType
+    ) {
+      if ( Number(modifiedAdvertiserBudget) >= 5000) {
+        let previous_campaignId;
         if (update) {
-            previous_campaignId = campaigndata.campaignId;
+          previous_campaignId = campaigndata.campaignId;
         }
         const campignid = previous_campaignId || `CAM-${uuidv4()}`;
         // const encrypt_id = CryptoJS.AES.encrypt(campignid, secretKey).toString();
         if (isAdd?.type_of_user === 'Agency') {
           try {
-            const response = await fetch(`${domainName}/api/campaigns`, {
+            const response = await fetch(`http://localhost:3001/api/campaigns`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -330,8 +358,8 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                   websiteContact: businessContact,
                   websiteEmail: businessEmail,
                 },
-                campaignAdvertiserBudget: advertiser,
-                campaignBudget,
+                campaignAdvertiserBudget:  modifiedAdvertiserBudget,
+                campaignBudget : modifiedCampaignBud,
                 campaignType,
                 startDate: startDate,
                 endDate: endDate,
@@ -340,7 +368,6 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 
             const data = await response.json();
             if (response.ok) {
-              
               Cookies.set('campaignId', campignid, { expires: 7 });
               console.log('Campaign created successfully:', data);
               setReceived(true);
@@ -358,7 +385,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
           }
         } else if (isAdd?.type_of_user === 'Advertiser') {
           try {
-            const response = await fetch(`${domainName}/api/campaigns`, {
+            const response = await fetch(`http://localhost:3001/api/campaigns`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -377,8 +404,8 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                   advertiserId: addData?.advertiserId,
                   createdBy: user?.id,
                 },
-                campaignAdvertiserBudget: advertiser,
-                campaignBudget,
+                campaignAdvertiserBudget:  modifiedAdvertiserBudget,
+                campaignBudget : modifiedCampaignBud,
                 campaignType,
                 startDate: startDate,
                 endDate: endDate,
@@ -387,7 +414,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 
             const data = await response.json();
             if (response.ok) {
-              Cookies.set('campaignId',campignid, { expires: 7 });
+              Cookies.set('campaignId', campignid, { expires: 7 });
               console.log('Campaign created successfully:', data);
               setReceived(true);
               toast({ title: 'Campaign submitted successfully!' });
@@ -404,97 +431,132 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
               title: 'An error occurred while submitting the campaign.',
             });
           }
-      }
-
-    } else {
-      alert('Please deposit ₹5000 or greater');
-      toast({ title: 'Please deposit ₹5000 or greater' });
-    }
-    if (campaignBudget && advertiser && startDate && endDate && campaignType) {
-      try {
-        let postData: any;
-        if (isAdd?.type_of_user === 'Agency') {
-          postData = await axios.post(
-            `${domainName}/api/add-website`,
-            {
-              websiteName,
-              websiteUrl: website,
-              websiteContact: businessContact,
-              websiteEmail: businessEmail,
-              agencyId: orgId,
-              createdBy: user?.id,
-            },
-            {
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            },
-          );
-          setPostData(postData);
-        } else if (isAdd?.type_of_user === 'Advertiser') {
-          postData = await axios.post(
-            `${domainName}/api/add-website`,
-            {
-              websiteName,
-              websiteUrl: website,
-              websiteContact: businessContact,
-              websiteEmail: businessEmail,
-              advertiserId: addData?.advertiserId,
-              createdBy: user?.id,
-            },
-            {
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            },
-          );
-          setPostData(postData);
         }
-      } catch (error) {
-        console.log(error);
+      } else {
+        alert('Please deposit ₹5000 or greater');
+        toast({ title: 'Please deposit ₹5000 or greater' });
       }
-      if (postData) {
-        alert(`The Website Details has been Submitted`);
+      if (
+        modifiedCampaignBud &&
+        startDate &&
+        endDate &&
+        campaignType
+      ) {
+        try {
+          let postData: any;
+          if (isAdd?.type_of_user === 'Agency') {
+            postData = await axios.post(
+              `${domainName}/api/add-website`,
+              {
+                websiteName,
+                websiteUrl: website,
+                websiteContact: businessContact,
+                websiteEmail: businessEmail,
+                agencyId: orgId,
+                createdBy: user?.id,
+              },
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              },
+            );
+            setPostData(postData);
+          } else if (isAdd?.type_of_user === 'Advertiser') {
+            postData = await axios.post(
+              `${domainName}/api/add-website`,
+              {
+                websiteName,
+                websiteUrl: website,
+                websiteContact: businessContact,
+                websiteEmail: businessEmail,
+                advertiserId: addData?.advertiserId,
+                createdBy: user?.id,
+              },
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              },
+            );
+            setPostData(postData);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+        if (postData) {
+          alert(`The Website Details has been Submitted`);
+        }
       }
+    } else {
+      toast({ title: `Please Fill up the complete Campaign form` });
+      alert(`Please Fill up the complete Campaign form`);
     }
-  } else {
-    toast({ title: `Please Fill up the complete Campaign form` });
-    alert(`Please Fill up the complete Campaign form`);
-  }
-
-  
-};
-
+  };
 
   const handleStartDate = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const dateValue = event.target.value ;
+    const dateValue = event.target.value;
     setStartDate(dateValue);
   };
 
   const handleEndDate = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const dateValue = event.target.value ;
+    const dateValue = event.target.value;
     setEndDate(dateValue);
   };
 
   console.log(advertiser);
   console.log(campaignBudget);
-
+  console.log(campaignType);
+ console.log(typeof advertiser)
   //Bug Fix for daily and Weekly budget
-  const [weeklyBud, setWeeklyBud] = useState<any>();
+  
+  console.log(modifiedCampaignBud);
   useEffect(() => {
-    if (advertiser) {
-      setWeeklyBud(Number(advertiser) * 7);
+    if (campaignBudget) {
+      if (campaignType === 'Daily Budget') {
+        setModifiedCampaignBud(campaignBudget);
+      } else if (campaignType === 'Weekly Budget') {
+        const weekly = Number(campaignBudget) * 7;
+        setModifiedCampaignBud(String(weekly));
+      }
+    } else if (campaignBudget === '' && advertiser !== '' ){
+      if (campaignType === 'Daily Budget') {
+        setModifiedCampaignBud(advertiser);
+      } else if (campaignType === 'Weekly Budget') {
+        const weekly = Number(advertiser) * 7;
+        setModifiedCampaignBud(String(weekly));
+      }
     }
-  }, [advertiser]);
+  }, [advertiser, campaignBudget]);
 
   //button
   const [cap, setCap] = useState<boolean>(true);
-  useEffect(()=>{
-    if (campaignBudget && advertiser && startDate && endDate && campaignType){
-      setCap(false)
+  useEffect(() => {
+    if (campaignBudget && advertiser && startDate && endDate && campaignType) {
+      setCap(false);
     }
-  },[campaignBudget,advertiser,startDate,endDate,campaignBudget])
+  }, [campaignBudget, advertiser, startDate, endDate, campaignBudget]);
+//For the Card Component 
+const [cardWeeklyEstimate, setCardWeeklyEstimate] = useState<any>();
+const [cardDailyEstimate, setCardDailyEstimate] = useState<any>(); 
 
+useEffect(()=> {
+  if (campaignBudget) {
+      setCardDailyEstimate(campaignBudget);
+      const weekly = Number(campaignBudget) * 7
+      setCardWeeklyEstimate(String(weekly))
+  } else if (campaignBudget === '' && advertiser !== '' ){
+      setCardDailyEstimate(String(advertiser))
+      const weekly = Number(advertiser) * 7;
+      setCardWeeklyEstimate(String(weekly));
+
+    }
+  
+}, [ campaignBudget, advertiser])
+
+
+console.log(cardDailyEstimate);
+console.log(cardWeeklyEstimate)
 
 
   return (
@@ -556,7 +618,8 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                 Name
               </label>
               <input
-                type="text" value={websiteName}
+                type="text"
+                value={websiteName}
                 placeholder="Enter Name"
                 className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -568,7 +631,8 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                 Website
               </label>
               <input
-                type="text" value={website}
+                type="text"
+                value={website}
                 placeholder="www.yourbrand.com"
                 className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -580,7 +644,8 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                 Business Email
               </label>
               <input
-                type="email" value={businessEmail}
+                type="email"
+                value={businessEmail}
                 placeholder="Example@test.com"
                 className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -593,7 +658,8 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                 Business Contact
               </label>
               <input
-                type="text" value={businessContact}
+                type="text"
+                value={businessContact}
                 placeholder="www.yourbrand.com"
                 className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -616,7 +682,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                 adBud={setAdvertiser}
                 campBud={setCampaignBudget}
                 budget={campaignBudget}
-                campaignType ={campaignType}
+                campaignType={campaignType}
               />
             </div>
           </div>
@@ -636,7 +702,8 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                 </span>
                 <input
                   type="date"
-                  name="start-date" value={startDate}
+                  name="start-date"
+                  value={startDate}
                   className="mt-1 p-2 w-full border-none outline-none rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white"
                   onChange={handleStartDate}
                 />
@@ -647,7 +714,8 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                 </span>
                 <input
                   type="date"
-                  name="end-date" value={endDate}
+                  name="end-date"
+                  value={endDate}
                   className="mt-1 p-2 w-full border-none outline-none rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white"
                   onChange={handleEndDate}
                 />
@@ -662,7 +730,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
               Submit Campaign
             </button>) } */}
             <button
-               disabled={cap}
+              disabled={cap}
               type="submit"
               className={`px-4 py-2 font-semibold text-white  p-2 rounded-lg   w-[80%] bg-slate-400  transition relative left-[50%] translate-x-[-50%] translate-y-[50%] mb-4 ${
                 cap
@@ -674,35 +742,28 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                   console.log('Button clicked!');
                 }
               }}
-          
             >
-               {update?"Update and ":""} {cap ? 'Fill up the Campaign From' : 'Proceed to Strategy'}
+              {update ? 'Update and ' : ''}{' '}
+              {cap ? 'Fill up the Campaign From' : 'Proceed to Strategy'}
             </button>
           </form>
         </div>
 
         <div className="flex flex-col gap-1 md:fixed right-5  h-[70vh]  ">
           <div className="rounded-sm border md:mr-10 md:mt-1 border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            {campaignBudget &&
-              advertiser &&
-              startDate &&
-              endDate &&
-              campaignType && (
-                <div className="md:mr-2">
-                  <RightSideCard
-                    title="Campaign Budget"
-                    weeklyEstimate={weeklyBud}
-                    dailyBudget={advertiser}
-                  />
-                </div>
-              )}
+            {startDate && endDate && campaignType && (
+              <div className="md:mr-2">
+                <RightSideCard
+                  title="Campaign Budget"
+                  dailyBudget={cardDailyEstimate}
+                  weeklyEstimate={ cardWeeklyEstimate}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
     </>
   );
-
-      }
-    ;
-
+};
 export default Campaigns;

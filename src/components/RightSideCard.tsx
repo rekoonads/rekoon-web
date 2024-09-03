@@ -19,7 +19,7 @@ interface RightSideCardProps {
   weeklyEstimate: string;
   impressionsRange: string;
   householdsRange: string;
-  dailyBudget: string;
+  dailyBudget: number;
 }
 
 export default function RightSideCard({

@@ -16,6 +16,7 @@ interface AdvertiserProps {
   onSelect: (advertiser: string) => void;
   adBud: (advertiser: string) => void;
   campBud: (advertiser: string) => void;
+  campaignType: string;
   budget: any;
 }
 
@@ -24,6 +25,7 @@ export default function Advertiser({
   adBud,
   campBud,
   budget,
+  campaignType
 }: AdvertiserProps) {
   const [calculatedBudget, setCalculatedBudget] = useState<string>('');
   const [selectBudType, setSelectBudType] = useState<string>('');
@@ -31,6 +33,9 @@ export default function Advertiser({
   const [moneyValue, setMoneyValue] = useState<any>();
 
   console.log(budget);
+  console.log(campaignType)
+
+
 
   const calculateCampaignBudgetDaily = (budget: string) => {
     let budDailyData = Number(budget) * 7;
@@ -58,12 +63,18 @@ export default function Advertiser({
     campBud(calculatedBudget);
   };
 
+  useEffect(()=> {
+    setSelectedOption(campaignType)
+  }, [campaignType])
+
+
   //money parsing
   useEffect(() => {
     if (moneyValue) {
       setAdvertiserBud(moneyValue);
       campBud(String(calculatedBudget));
       adBud(String(moneyValue));
+      onSelect(selectBudType)
     }
   }, [moneyValue]);
 
@@ -85,16 +96,25 @@ export default function Advertiser({
   }, [calculatedBudget]);
 
   // last part
+  // useEffect(() => {
+  //   if (selectBudType === 'Weekly Budget') {
+  //     const weeklyData = calculateCampaignBudgetDaily(advertiserBud);
+  //     setCalculatedBudget(String(weeklyData));
+  //   } else if (selectBudType === 'Daily Budget') {
+  //     setCalculatedBudget(String(advertiserBud));
+  //   }
+  // }, [advertiserBud, selectBudType]);
 
-
-  useEffect(() => {
-    if (selectBudType === 'Weekly Budget') {
-      const weeklyData = calculateCampaignBudgetDaily(advertiserBud);
-      setCalculatedBudget(String(weeklyData));
-    } else if (selectBudType === 'Daily Budget') {
-      setCalculatedBudget(String(advertiserBud));
-    }
-  }, [advertiserBud, selectBudType]);
+  // useEffect(()=>{
+  //   if(budget !== '' && typeof budget === 'number'){
+  //     if(selectBudType === 'Weekly Budget'){
+  //       const weekData = Number(budget) * 7;
+  //       setCalculatedBudget(String(weekData))
+  //     } else if ( selectBudType === 'Daily Budget'){
+  //       setCalculatedBudget(String(budget))
+  //     }
+  //   }
+  // }, [selectBudType, budget])
 
   useEffect(() => {
     if (budget !== '0') {
@@ -120,31 +140,15 @@ export default function Advertiser({
         <CardContent className="flex items-center justify-between p-4">
           {/* <Toast/> */}
           <div className="flex items-center space-x-4 w-full">
-            {advertiserBud !== '0' ? (
-              <>
-                <input
-                  onChange={advertiserBudget}
-                  value={budget || advertiserBud}
-                  type="number"
-                  min="5000"
-                  placeholder="Minimum ₹5000"
-                  className="block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
+            <input
+              onChange={advertiserBudget}
+              value={budget || advertiserBud}
+              type="number"
+              min="5000"
+              placeholder="Minimum ₹5000"
+              className="block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                />
-              </>
-            ) : budget !== '' ? (
-              <>
-                <input
-                  onChange={advertiserBudget}
-                  value={budget || advertiserBud}
-                  type="number"
-                  min="5000"
-                  placeholder="Minimum ₹5000"
-                  className="block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
-      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                />
-              </>
-            ) : null}
+            />
           </div>
         </CardContent>
       </Card>
@@ -170,7 +174,7 @@ export default function Advertiser({
                 name="budget"
                 id="weekly-budget"
                 className="w-[16px] h-[16px] checked:from-amber-600"
-                value="Weekly Budget"
+                value={'Weekly Budget'}
                 checked={selectedOption === 'Weekly Budget'}
                 onChange={handleChange}
               />
@@ -193,8 +197,18 @@ export default function Advertiser({
 
           <div className="flex flex-col gap-1">
             <label className="mt-1 p-2 w-full text-center border-none outline-none rounded-md text-blue-900 font-semibold  dark:text-yellow-100 transition ">
-              {budget !== ''
-                ? '₹' + budget
+              {budget !== '' && campaignType === 'Weekly Budget'
+                ? '₹' + Number(budget) * 7
+                : budget !== '' && campaignType === 'Daily Budget'
+                ? '₹' + Number(budget)
+                : 
+                  advertiserBud !== '' &&
+                  selectBudType === 'Weekly Budget'
+                ? '₹' + Number(advertiserBud) * 7
+                : 
+                  advertiserBud !== '' &&
+                  selectBudType === 'Daily Budget'
+                ? '₹' + Number(advertiserBud)
                 : advertiserBud === '' && selectBudType === ''
                 ? 'Please Enter Advertisement Budget and Select The Budget Type'
                 : advertiserBud && selectBudType === ''
