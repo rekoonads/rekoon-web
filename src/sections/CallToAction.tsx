@@ -65,7 +65,7 @@ export const CallToAction = () => {
       </section>
       <section
         id="contact"
-        className="py-20 bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 text-white"
+        className="py-20 bg-gradient-to-br from-blue-900 via-blue-800 to-cyan-950 text-white"
       >
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
