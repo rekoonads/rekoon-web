@@ -142,30 +142,30 @@ const Campaigns = () => {
   }, [isAdd, user?.id]);
   console.log(addData?.advertiserId);
 
-//for debugging 
-console.log(campaignName); 
-console.log(campaignGoal);
-console.log(websiteName);
-console.log(campaignBudget || advertiser); 
-console.log(campaignType);
-console.log(startDate);
-console.log(endDate);
-console.log(website);
-console.log(businessContact);
-console.log(businessEmail)
+  //for debugging
+  console.log(campaignName);
+  console.log(campaignGoal);
+  console.log(websiteName);
+  console.log(campaignBudget || advertiser);
+  console.log(campaignType);
+  console.log(startDate);
+  console.log(endDate);
+  console.log(website);
+  console.log(businessContact);
+  console.log(businessEmail);
 
-//Advertiser problem Solution 
-const [modifiedAdvertiserBudget, setModifiedAdvertiserBudget] = useState<string>('')
-useEffect(() => {
-  if(campaignBudget != ''){
-    setModifiedAdvertiserBudget(String(campaignBudget))
-  } else if (advertiser !== ''){
-    setModifiedAdvertiserBudget(String(advertiser))
-  }
-}, [campaignBudget, advertiser])
+  //Advertiser problem Solution
+  const [modifiedAdvertiserBudget, setModifiedAdvertiserBudget] =
+    useState<string>('');
+  useEffect(() => {
+    if (campaignBudget != '') {
+      setModifiedAdvertiserBudget(String(campaignBudget));
+    } else if (advertiser !== '') {
+      setModifiedAdvertiserBudget(String(advertiser));
+    }
+  }, [campaignBudget, advertiser]);
 
-console.log(modifiedAdvertiserBudget)
-
+  console.log(modifiedAdvertiserBudget);
 
   //handling Submission
   //   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -327,12 +327,8 @@ console.log(modifiedAdvertiserBudget)
   //handling Submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (
-      startDate &&
-      endDate &&
-      campaignType
-    ) {
-      if ( Number(modifiedAdvertiserBudget) >= 5000) {
+    if (startDate && endDate && campaignType) {
+      if (Number(modifiedAdvertiserBudget) >= 5000) {
         let previous_campaignId;
         if (update) {
           previous_campaignId = campaigndata.campaignId;
@@ -347,7 +343,7 @@ console.log(modifiedAdvertiserBudget)
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                userId: user?.id,     
+                userId: user?.id,
                 campaignId: campignid,
                 agencyId: orgId,
                 campaignName,
@@ -358,8 +354,8 @@ console.log(modifiedAdvertiserBudget)
                   websiteContact: businessContact,
                   websiteEmail: businessEmail,
                 },
-                campaignAdvertiserBudget:  modifiedAdvertiserBudget,
-                campaignBudget : modifiedCampaignBud,
+                campaignAdvertiserBudget: modifiedAdvertiserBudget,
+                campaignBudget: modifiedCampaignBud,
                 campaignType,
                 startDate: startDate,
                 endDate: endDate,
@@ -404,8 +400,8 @@ console.log(modifiedAdvertiserBudget)
                   advertiserId: addData?.advertiserId,
                   createdBy: user?.id,
                 },
-                campaignAdvertiserBudget:  modifiedAdvertiserBudget,
-                campaignBudget : modifiedCampaignBud,
+                campaignAdvertiserBudget: modifiedAdvertiserBudget,
+                campaignBudget: modifiedCampaignBud,
                 campaignType,
                 startDate: startDate,
                 endDate: endDate,
@@ -436,12 +432,7 @@ console.log(modifiedAdvertiserBudget)
         alert('Please deposit ₹5000 or greater');
         toast({ title: 'Please deposit ₹5000 or greater' });
       }
-      if (
-        modifiedCampaignBud &&
-        startDate &&
-        endDate &&
-        campaignType
-      ) {
+      if (modifiedCampaignBud && startDate && endDate && campaignType) {
         try {
           let postData: any;
           if (isAdd?.type_of_user === 'Agency') {
@@ -507,9 +498,9 @@ console.log(modifiedAdvertiserBudget)
   console.log(advertiser);
   console.log(campaignBudget);
   console.log(campaignType);
- console.log(typeof advertiser)
+  console.log(typeof advertiser);
   //Bug Fix for daily and Weekly budget
-  
+
   console.log(modifiedCampaignBud);
   useEffect(() => {
     if (campaignBudget) {
@@ -519,7 +510,7 @@ console.log(modifiedAdvertiserBudget)
         const weekly = Number(campaignBudget) * 7;
         setModifiedCampaignBud(String(weekly));
       }
-    } else if ( advertiser !== '' ){
+    } else if (advertiser !== '') {
       if (campaignType === 'Daily Budget') {
         setModifiedCampaignBud(advertiser);
       } else if (campaignType === 'Weekly Budget') {
@@ -536,28 +527,24 @@ console.log(modifiedAdvertiserBudget)
       setCap(false);
     }
   }, [campaignBudget, advertiser, startDate, endDate, campaignBudget]);
-//For the Card Component 
-const [cardWeeklyEstimate, setCardWeeklyEstimate] = useState<any>();
-const [cardDailyEstimate, setCardDailyEstimate] = useState<any>(); 
+  //For the Card Component
+  const [cardWeeklyEstimate, setCardWeeklyEstimate] = useState<any>();
+  const [cardDailyEstimate, setCardDailyEstimate] = useState<any>();
 
-useEffect(()=> {
-  if (campaignBudget) {
+  useEffect(() => {
+    if (campaignBudget) {
       setCardDailyEstimate(campaignBudget);
-      const weekly = Number(campaignBudget) * 7
-      setCardWeeklyEstimate(String(weekly))
-  } else if (advertiser !== '' ){
-      setCardDailyEstimate(String(advertiser))
+      const weekly = Number(campaignBudget) * 7;
+      setCardWeeklyEstimate(String(weekly));
+    } else if (advertiser !== '') {
+      setCardDailyEstimate(String(advertiser));
       const weekly = Number(advertiser) * 7;
       setCardWeeklyEstimate(String(weekly));
-
     }
-  
-}, [ campaignBudget, advertiser])
+  }, [campaignBudget, advertiser]);
 
-
-console.log(cardDailyEstimate);
-console.log(cardWeeklyEstimate)
-
+  console.log(cardDailyEstimate);
+  console.log(cardWeeklyEstimate);
 
   return (
     <>
@@ -756,7 +743,7 @@ console.log(cardWeeklyEstimate)
                 <RightSideCard
                   title="Campaign Budget"
                   dailyBudget={cardDailyEstimate}
-                  weeklyEstimate={ cardWeeklyEstimate}
+                  weeklyEstimate={cardWeeklyEstimate}
                 />
               </div>
             )}

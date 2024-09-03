@@ -65,10 +65,10 @@ export const CallToAction = () => {
       </section>
       <section
         id="contact"
-        className="py-20 bg-gradient-to-br from-blue-900 via-blue-800 to-cyan-950 text-white"
+        className="py-20 bg-gradient-to-b from-white to-[#d2dcff] text-gray-800 [mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)] max-h-[738px] overflow-hidden"
       >
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-zinc-900">
             Get In Touch
           </h2>
           <div className="max-w-2xl mx-auto">
@@ -77,27 +77,27 @@ export const CallToAction = () => {
                 <Input
                   type="text"
                   placeholder="Your Name"
-                  className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                  className="bg-gray-100 border-gray-300 text-gray-900 placeholder:text-gray-500"
                 />
                 <Input
                   type="email"
                   placeholder="Your Email"
-                  className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                  className="bg-gray-100 border-gray-300 text-gray-900 placeholder:text-gray-500"
                 />
               </div>
               <Input
                 type="text"
                 placeholder="Subject"
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                className="bg-gray-100 border-gray-300 text-gray-900 placeholder:text-gray-500"
               />
               <Textarea
                 placeholder="Your Message"
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                className="bg-gray-100 border-gray-300 text-gray-900 placeholder:text-gray-500"
                 rows={6}
               />
               <Button
                 size="lg"
-                className="w-full bg-white text-emerald-600 hover:bg-emerald-50"
+                className="w-full bg-black text-white hover:bg-gray-700"
               >
                 Send Message
               </Button>
