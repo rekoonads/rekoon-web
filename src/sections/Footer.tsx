@@ -28,8 +28,8 @@ export const Footer = () => {
         <div className="flex justify-center gap-6 mt-6">Delhi India 110055</div>
       </div>
       <p className="mt-6">
-        &copy; 2024 Lemonade Digital Media Technology Solutions Pvt Ltd, Inc.
-        All rights reserved.
+        &copy; 2024 Lemonade Digital Media Technology Pvt Ltd. All rights
+        reserved.
       </p>
     </footer>
   );
