@@ -16,6 +16,7 @@ import { Link } from 'react-router-dom';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import { v4 as uuidv4 } from 'uuid';
 import { BarChart, Signal } from 'lucide-react';
+import Cookies from 'js-cookie';
 
 // Extend the Window interface
 declare global {
@@ -114,7 +115,39 @@ export default function SummaryComponent() {
 */
 
   // 0> get the type of user
+
   const [isAdd, setIsAdd] = useState<string>('');
+  useEffect(() => {
+    const campaign_id = Cookies.get('campaignId');
+    const strategy_id = Cookies.get('strategyId');
+    const fetchcampaignData = async () => {
+      try {
+        const response = await axios.get(
+          `${domainName}/api/get-campaign?campaignId=${campaign_id}`,
+        );
+        console.log('previous campaign data:- ', response.data);
+        setCampaigns(response.data);
+      } catch (error) {
+        console.error('Error fetching campaign data:', error);
+      }
+    };
+    const fetcstrategyData = async () => {
+      try {
+        const response = await axios.get(`${domainName}/api/get-strategy?strategyId=${strategy_id}`);
+        console.log("previous strategy data:- ",response.data)
+        setStrategies(response.data);
+      } catch (error) {
+        console.error('Error fetching strategy data:', error);
+      }
+    };
+    fetchcampaignData();
+    fetcstrategyData();
+    console.log(campaigns);
+
+  }, [])
+  
+  
+  
   useEffect(() => {
     const fetchData = async (id: string) => {
       try {
@@ -141,7 +174,7 @@ export default function SummaryComponent() {
     }
   }, [user?.id]);
 
-  console.log(isAdd?.type_of_user);
+  // console.log(isAdd?.type_of_user);
 
   /*
 1> if Agency [
@@ -155,63 +188,64 @@ export default function SummaryComponent() {
         3> get the strategy details for that campaign id 
     ] 
 */
-  const [campaignInfo, setCampaignInfo] = useState<string>('');
-  console.log(isAdd?.type_of_user);
+  // const [campaignInfo, setCampaignInfo] = useState<string>('');
+
+  // console.log(isAdd?.type_of_user);
   //getting the latest campign details
-  useEffect(() => {
-    const fetchCampaignId = async (url: string) => {
-      try {
-        const response = await fetch(url, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+  // useEffect(() => {
+  //   const fetchCampaignId = async (url: string) => {
+  //     try {
+  //       const response = await fetch(url, {
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //       });
 
-        if (!response.ok) {
-          throw new Error(`Error: ${response.statusText}`);
-        }
+  //       if (!response.ok) {
+  //         throw new Error(`Error: ${response.statusText}`);
+  //       }
 
-        const idData = await response.json();
-        setCampaignInfo(idData);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  //       const idData = await response.json();
+  //       setCampaignInfo(idData);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
 
-    if (isAdd?.type_of_user === 'Advertiser') {
-      fetchCampaignId(`${domainName}/api/campaigns/${user?.id}`);
-    } else if (isAdd?.type_of_user === 'Agency') {
-      fetchCampaignId(`${domainName}/api/campaigns-agency/${orgId}`);
-    }
-  }, [isAdd?.type_of_user, user?.id, orgId]);
-  console.log(campaignInfo[campaignInfo.length - 1]);
+  //   if (isAdd?.type_of_user === 'Advertiser') {
+  //     fetchCampaignId(`${domainName}/api/campaigns/${user?.id}`);
+  //   } else if (isAdd?.type_of_user === 'Agency') {
+  //     fetchCampaignId(`${domainName}/api/campaigns-agency/${orgId}`);
+  //   }
+  // }, [isAdd?.type_of_user, user?.id, orgId]);
+  // console.log(campaignInfo[campaignInfo.length - 1]);
 
-  useEffect(() => {
-    if (campaignInfo) {
-      setCampaigns(campaignInfo[campaignInfo.length - 1]);
-    }
-  }, [campaignInfo]);
-  console.log(campaigns?.campaignId);
+  // useEffect(() => {
+  //   if (campaignInfo) {
+  //     setCampaigns(campaignInfo[campaignInfo.length - 1]);
+  //   }
+  // }, [campaignInfo]);
+  // console.log(campaigns?.campaignId);
 
   //getting the latest strategy details
-  useEffect(() => {
-    if (campaignInfo) {
-      const fetchStrategyDetails = async (url: string) => {
-        try {
-          const { data } = await axios.get(url);
-          setStrategies(data);
-          console.log(data);
-        } catch (error) {
-          console.log(error);
-        }
-      };
+  // useEffect(() => {
+  //   if (campaignInfo) {
+  //     const fetchStrategyDetails = async (url: string) => {
+  //       try {
+  //         const { data } = await axios.get(url);
+  //         setStrategies(data);
+  //         console.log(data);
+  //       } catch (error) {
+  //         console.log(error);
+  //       }
+  //     };
 
-      fetchStrategyDetails(
-        `${domainName}/api/strategy-campaign/${campaigns?.campaignId}`,
-      );
-    }
-  }, [campaigns?.campaignId]);
-  console.log(strategies);
+  //     fetchStrategyDetails(
+  //       `${domainName}/api/strategy-campaign/${campaigns?.campaignId}`,
+  //     );
+  //   }
+  // }, [campaigns?.campaignId]);
+  // console.log(strategies);
 
   //3> make changes to the Summery.tsx accordingly
   useEffect(() => {
@@ -267,7 +301,7 @@ export default function SummaryComponent() {
             const bidding = await axios.post(
               `${domainName}/api/add-bidder`,
               {
-                agencyId: campaignInfo[campaignInfo.length - 1]?.agencyId,
+                agencyId: campaigns?.agencyId,
                 deliveryTimeSlots: strategies?.deliveryTimeSlots,
                 campaignBudget: campaigns?.campaignBudget,
                 reviveUrl: invocationCode.value,
@@ -287,8 +321,7 @@ export default function SummaryComponent() {
             const bidding = await axios.post(
               `${domainName}/api/add-bidder`,
               {
-                advertiserId:
-                  campaignInfo[campaignInfo.length - 1]?.advertiserId,
+                advertiserId:campaigns?.advertiserId,
                 deliveryTimeSlots: strategies?.deliveryTimeSlots,
                 campaignBudget: campaigns?.campaignBudget,
                 reviveUrl: invocationCode.value,
@@ -377,6 +410,8 @@ export default function SummaryComponent() {
           const verifyData = await res.json();
 
           if (verifyData.message) {
+            Cookies.remove('campaignId', { path: '/' });
+            Cookies.remove('strategyId', { path: '/' });
             toast.success(verifyData.message);
             setSuccessPaymentId(response.razorpay_payment_id);
             console.log('Payment ID:', response.razorpay_payment_id);
