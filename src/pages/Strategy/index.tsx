@@ -59,7 +59,7 @@ const goals: Goal[] = [
     description: 'I want TV audiences to visit my website.',
   },
 ];
-Cookies.set('strategyId', 'ST-e272b9af-9c04-4c05-913a-3aecf62a445d', { expires: 7, path: '/' });
+// Cookies.set('strategyId', 'ST-e272b9af-9c04-4c05-913a-3aecf62a445d', { expires: 7, path: '/' });
 const defaultDaySettings = {
   Sunday: { startTime: '12:00am', endTime: '11:59pm', selected: false },
   Monday: { startTime: '12:00am', endTime: '11:59pm', selected: false },
@@ -274,7 +274,8 @@ const Strategy = () => {
   console.log(campaignInfo[campaignInfo.length - 1]?.campaignId);
   const [getBugOfRes, setGetBugOfRes] = useState<any>()
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault()
     const strategy_id_data = strategyData?strategyData.strategyId:`ST-${uuidv4()}`;
     try {
       console.log(campaignInfo[campaignInfo.length - 1]?.campaignId)
@@ -320,6 +321,7 @@ const Strategy = () => {
         const updatedCampaign = await response.json();
         console.log('Campaign updated successfully:', updatedCampaign);
         setGetBugOfRes(updatedCampaign);
+        location.reload();
       }
       else {
         throw new Error('Network response was not ok');
