@@ -29,8 +29,8 @@ export const Hero = () => {
               Precision Ads, Proven Growth
             </h1>
             <p className="text-lg text-[#010d3e] tracking-tight mt-6">
-              Sweven is an innovative AdTech company at the forefront of digital
-              advertising solutions.
+              Sweven is an innovative AdTech company at the forefront <br /> of
+              digital advertising solutions.
             </p>
             <div className="flex gap-1 items-center mt-[30px]">
               <button className="btn btn-primary">
