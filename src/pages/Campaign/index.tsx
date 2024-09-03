@@ -347,7 +347,7 @@ console.log(modifiedAdvertiserBudget)
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                userId: user?.id,
+                userId: user?.id,     
                 campaignId: campignid,
                 agencyId: orgId,
                 campaignName,
@@ -532,7 +532,7 @@ console.log(modifiedAdvertiserBudget)
   //button
   const [cap, setCap] = useState<boolean>(true);
   useEffect(() => {
-    if (campaignBudget && advertiser && startDate && endDate && campaignType) {
+    if (startDate && endDate && campaignType) {
       setCap(false);
     }
   }, [campaignBudget, advertiser, startDate, endDate, campaignBudget]);

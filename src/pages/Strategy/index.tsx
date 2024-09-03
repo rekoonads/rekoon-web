@@ -26,7 +26,7 @@ import axios from 'axios';
 import InputSelect from '../../components/InputSelect';
 import VideoUpload from '../../components/VideoUpload';
 import Cookies from 'js-cookie';
-
+import RightSidedStrategyCard from '../../components/RightSidedStrategyCard';
 
 const domainName = import.meta.env.VITE_DOMAIN;  
 interface Goal {
@@ -1356,9 +1356,9 @@ console.log("audience location is :- ",audience_location);
         <div className="flex flex-col gap-9 md:fixed right-5 mb-4">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="flex flex-col gap-5.5 p-6.5">
-              <RightSideCard />
+              {/* <RightSidedCard/> */}
             </div>
-            <Button className="w-30 text-white ml-5 mb-2">Go to Summary</Button>
+      
           </div>
         </div>
       </div>
