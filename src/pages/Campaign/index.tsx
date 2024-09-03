@@ -519,7 +519,7 @@ console.log(modifiedAdvertiserBudget)
         const weekly = Number(campaignBudget) * 7;
         setModifiedCampaignBud(String(weekly));
       }
-    } else if (campaignBudget === '' && advertiser !== '' ){
+    } else if ( advertiser !== '' ){
       if (campaignType === 'Daily Budget') {
         setModifiedCampaignBud(advertiser);
       } else if (campaignType === 'Weekly Budget') {
@@ -545,7 +545,7 @@ useEffect(()=> {
       setCardDailyEstimate(campaignBudget);
       const weekly = Number(campaignBudget) * 7
       setCardWeeklyEstimate(String(weekly))
-  } else if (campaignBudget === '' && advertiser !== '' ){
+  } else if (advertiser !== '' ){
       setCardDailyEstimate(String(advertiser))
       const weekly = Number(advertiser) * 7;
       setCardWeeklyEstimate(String(weekly));

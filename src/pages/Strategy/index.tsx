@@ -1356,7 +1356,7 @@ console.log("audience location is :- ",audience_location);
         <div className="flex flex-col gap-9 md:fixed right-5 mb-4">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="flex flex-col gap-5.5 p-6.5">
-              {/* <RightSidedCard/> */}
+             {/* <RightSidedStrategyCard /> */}
             </div>
       
           </div>
