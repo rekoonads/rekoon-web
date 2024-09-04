@@ -16,7 +16,7 @@ interface DateSelectionCompProps {
 
 const DateSelectionComp: React.FC<DateSelectionCompProps> = ({ options, value, onChange, disabled = false }) => {
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled}>
+    <select value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled} className='accent-blue-500 bg-yellow-100 dark:bg-yellow-100 font-semibold text-black'>
       {options.map(option => (
         <option key={option.value} value={option.value}>
           {option.label}

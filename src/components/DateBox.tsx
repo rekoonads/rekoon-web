@@ -13,7 +13,7 @@ const DateBox: React.FC<DateBoxProps> = ({ id, checked, onChange, disabled = fal
     id={id}
     checked={checked}
     onChange={onChange}
-    className="form-checkbox"
+    className="form-checkbox "
     disabled={disabled}
   />
 );
