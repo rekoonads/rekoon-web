@@ -139,10 +139,11 @@ export default function Advertiser({
         </CardHeader>
         <CardContent className="flex items-center justify-between p-4">
           {/* <Toast/> */}
-          <div className="flex items-center space-x-4 w-full">
+          <div className="flex items-center  w-full">
+            <p className="text-blue-900 font-semibold text-lg dark:text-white mr-1">₹</p>
             <input
               onChange={advertiserBudget}
-              value={budget || advertiserBud}
+              value={ budget || advertiserBud}
               type="number"
               min="5000"
               placeholder="Minimum ₹5000"

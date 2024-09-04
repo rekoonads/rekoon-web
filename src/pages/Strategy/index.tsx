@@ -349,23 +349,23 @@ const Strategy = () => {
 
 // for Cookie parsing
 
-//   useEffect(() => {
-//     if (strategyData) {
-//       setSelectedTab(strategyData.ageRange || '18-20');
-//       setSelectedGender(strategyData.gender || 'Women');
-//       setSelectedDevice(strategyData.screens || 'TV');
-//       setAudienceArr(strategyData.audiences || []);
-//       setStrategyName(strategyData.strategyName || '');
-//       setStrategyDailyBudget(strategyData.strategyDailyBudget || '');
-//       setAudienceLocation(strategyData.audienceLocation || '');
-//       setUploadedFileName(strategyData.creatives);
-//       setVideoDuration(strategyData.duration);
-//       setDeliveryType(strategyData.deliveryType);
-//       setSelectedOption(strategyData.selectedOption);
-//       setSelectedGoal(strategyData.selectedGoal);
-//     }
-//   }, [strategyData]);
-//   console.log('delivery type :- ', deliveryTypeval);
+  useEffect(() => {
+    if (strategyData) {
+      setSelectedTab(strategyData.ageRange || '18-20');
+      setSelectedGender(strategyData.gender || 'Women');
+      setSelectedDevice(strategyData.screens || 'TV');
+      setAudienceArr(strategyData.audiences || []);
+      setStrategyName(strategyData.strategyName || '');
+      setStrategyDailyBudget(strategyData.strategyDailyBudget || '');
+      setAudienceLocation(strategyData.audienceLocation || '');
+      setUploadedFileName(strategyData.creatives);
+      setVideoDuration(strategyData.duration);
+      setDeliveryType(strategyData.deliveryType);
+      setSelectedOption(strategyData.selectedOption);
+      setSelectedGoal(strategyData.selectedGoal);
+    }
+  }, [strategyData]);
+  console.log('delivery type :- ', deliveryTypeval);
 
 
  const [campaigns, setCampaigns] = useState<any>();
@@ -375,7 +375,7 @@ const [dailyBudget, setDailyBudget] = useState<string>(' ')
 
   useEffect(() => {
     const campaign_id = Cookies.get('campaignId');
-    // const strategy_id = Cookies.get('strategyId');
+    const strategy_id = Cookies.get('strategyId');
     const fetchcampaignData = async () => {
       try {
         const response = await axios.get(
@@ -397,7 +397,7 @@ const [dailyBudget, setDailyBudget] = useState<string>(' ')
       }
     };
     fetchcampaignData();
-    // fetcstrategyData();
+    fetcstrategyData();
     console.log(campaigns);
     
   }, [])
@@ -454,7 +454,8 @@ console.log(dailyBudget)
               </h3>
             </div>
             <div className="flex flex-col gap-5.5 p-6.5">
-              <div>
+              <div className='flex items-center'>
+               <p className="text-blue-900 font-semibold text-lg dark:text-white mr-1">₹</p>
                 <input
                
                   type="text"

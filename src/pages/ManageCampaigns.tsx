@@ -5,6 +5,7 @@ import { MoreVertical, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { useAuth, useUser } from '@clerk/clerk-react';
 
 const domainName = import.meta.env.VITE_DOMAIN;
 
@@ -12,12 +13,16 @@ interface CampaignCardComponentProps {
   campaigns: any;
 }
 
+interface CampainAlreadyCreatedProps {
+  backendCampaignData: any;
+}
+
 const CampaignCardComponent = ({ campaigns }: CampaignCardComponentProps) => {
   return (
-    <div className="container mx-auto p-6 mt-6 bg-white shadow-xl">
+    <div className="container mx-auto p-6 mt-6 bg-white shadow-xl text-left">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold">Campaigns</h1>
+          <h1 className="text-3xl font-bold">Campaigns Draft</h1>
           <p className="text-muted-foreground">
             Create campaigns and deliver your ads across channels.
           </p>
@@ -27,19 +32,14 @@ const CampaignCardComponent = ({ campaigns }: CampaignCardComponentProps) => {
       <Card>
         <CardContent className="p-0">
           <div className="flex items-center p-4 border-b">
-            <img
-              src="/placeholder.svg?height=48&width=48"
-              alt="Campaign thumbnail"
-              width={48}
-              height={48}
-              className="rounded mr-4"
-            />
             <div className="flex-grow">
               <h2 className="text-lg font-semibold">
                 Campaign Name: {campaigns?.campaignName}
               </h2>
               <div className="flex items-center text-sm text-muted-foreground">
-                <span className="mr-2">Draft</span>
+                <span className="mr-2">
+                  <b>Draft</b>
+                </span>
                 <Clock className="w-4 h-4 mr-1" />
                 <span>
                   {' '}
@@ -49,6 +49,11 @@ const CampaignCardComponent = ({ campaigns }: CampaignCardComponentProps) => {
               </div>
             </div>
             <div className="flex items-center">
+              <Link to={'/campaign'}>
+                <Button className="bg-black text-white mr-2 hover:bg-slate-700 ml-2">
+                  Continue editing
+                </Button>
+              </Link>
               <Button variant={'outline'}>View reports</Button>
               <Button variant="ghost" size="icon">
                 <MoreVertical className="h-4 w-4" />
@@ -58,7 +63,84 @@ const CampaignCardComponent = ({ campaigns }: CampaignCardComponentProps) => {
           <div className="grid grid-cols-5 gap-4 p-4 text-sm">
             <div>
               <div className="font-medium">Daily Budget</div>
-              <div className="text-2xl font-bold">$100</div>
+              <div className="text-2xl font-bold">
+                ₹{campaigns?.campaignBudget}
+              </div>
+            </div>
+            <div>
+              <div className="font-medium">Spend</div>
+              <div className="text-2xl font-bold">-</div>
+            </div>
+            <div>
+              <div className="font-medium">Cost Per View</div>
+              <div className="text-2xl font-bold">-</div>
+            </div>
+            <div>
+              <div className="font-medium">Impressions</div>
+              <div className="text-2xl font-bold">-</div>
+            </div>
+            <div>
+              <div className="font-medium">Delivered on</div>
+              <div className="text-2xl font-bold">-</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+const CampainAlreadyCreated = ({
+  backendCampaignData,
+}: CampainAlreadyCreatedProps) => {
+  return (
+    <div className="container mx-auto p-6 mt-6 bg-white shadow-xl text-left">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-3xl font-bold">Campaigns Already Created</h1>
+          <p className="text-muted-foreground">
+            Create campaigns and deliver your ads across channels.
+          </p>
+        </div>
+      </div>
+
+      <Card>
+        <CardContent className="p-0">
+          <div className="flex items-center p-4 border-b">
+            <div className="flex-grow">
+              <h2 className="text-lg font-semibold">
+                Campaign Name: {backendCampaignData?.campaignName}
+              </h2>
+              <div className="flex items-center text-sm text-muted-foreground">
+                <span className="mr-2">
+                  <b>Draft</b>
+                </span>
+                <Clock className="w-4 h-4 mr-1" />
+                <span>
+                  {' '}
+                  <b>From:</b> {backendCampaignData?.startDate} - <b>To:</b>{' '}
+                  {backendCampaignData?.endDate}
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <Link to={'/campaign'}>
+                <Button className="bg-black text-white mr-2 hover:bg-slate-700 ml-2">
+                  Continue editing
+                </Button>
+              </Link>
+              <Button variant={'outline'}>View reports</Button>
+              <Button variant="ghost" size="icon">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+          <div className="grid grid-cols-5 gap-4 p-4 text-sm">
+            <div>
+              <div className="font-medium">Daily Budget</div>
+              <div className="text-2xl font-bold">
+                ₹{backendCampaignData?.campaignBudget}
+              </div>
             </div>
             <div>
               <div className="font-medium">Spend</div>
@@ -126,8 +208,82 @@ export default function ManageCampaign() {
     }
   }, [campaigns]);
 
+  // _____________________________________________________________________________________________________
+
+  //getting the campaign data
+  const { orgId, userId } = useAuth();
+  const { user } = useUser();
+  const [retrivedCampaignData, setRetrivedCampaignData] = useState<any>();
+  const [isAdd, setIsAdd] = useState<string>('');
+  const [user_data, setUser_data] = useState();
+  //get the type of User
+
+  useEffect(() => {
+    const fetchData = async (id: string) => {
+      try {
+        const response = await fetch(`${domainName}/api/search-user/${id}`, {
+          method: 'GET',
+          headers: {
+            'Content-type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data: UserData = await response.json();
+        setUser_data(data.user);
+        setIsAdd(data);
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (user?.id) {
+      fetchData(user.id);
+    }
+  }, [user?.id]);
+  console.log('user data', user_data);
+  console.log(isAdd);
+
+  //get the campaign data for that specific user
+  useEffect(() => {
+    if (isAdd?.type_of_user === 'Advertiser') {
+      const getCamp = async () => {
+        try {
+          const data = await axios.get(
+            `${domainName}/api/campaigns-advertiser/${user?.id}`,
+          );
+          console.log(data);
+          setRetrivedCampaignData(data);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      getCamp();
+    } else if (isAdd?.type_of_user === 'Agency') {
+      const getCamp = async () => {
+        try {
+          const data = await axios.get(
+            `${domainName}/api/campaigns-agency/${orgId}`,
+          );
+          console.log(data);
+          setRetrivedCampaignData(data);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      getCamp();
+    }
+  }, [user?.id, orgId, isAdd]);
+
+  console.log(retrivedCampaignData);
+
+  
+
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 text-center">
       <div className="flex items-end  mt-10">
         {' '}
         <Button className="bg-indigo-600 hover:bg-indigo-700 text-white ml-9 ">
@@ -136,9 +292,6 @@ export default function ManageCampaign() {
         <div className=" md:ml-[60%]">
           <Button className="bg-indigo-600 hover:bg-indigo-700 text-white ml-9 ">
             <Link to={'/campaign'}>+ Create campaign</Link>
-          </Button>
-          <Button className="bg-black text-white mr-2 hover:bg-slate-700 ml-2">
-            Continue editing
           </Button>
         </div>
       </div>
@@ -149,9 +302,18 @@ export default function ManageCampaign() {
             <CampaignCardComponent campaigns={items} key={index} />
           ))
         ) : (
-          <b>No Campaign Data Available</b>
+          <b> No Campaign is in the Draft</b>
         )}
+       
       </>
+
+      <div className="flex flex-col items-start justify-center">
+        {retrivedCampaignData
+          ? Array.from(retrivedCampaignData).map((item) => (
+              <CampainAlreadyCreated backendCampaignData={item} />
+            ))
+          : null}
+      </div>
     </div>
   );
 }
