@@ -28,6 +28,7 @@ import VideoUpload from '../../components/VideoUpload';
 import Cookies from 'js-cookie';
 import RightSidedStrategyCard from '../../components/RightSidedStrategyCard';
 
+
 const domainName = import.meta.env.VITE_DOMAIN;
 interface Goal {
   id: string;
@@ -345,23 +346,76 @@ const Strategy = () => {
     deliveryType: deliveryTypeval,
     campaignId: campaignInfo[campaignInfo.length - 1]?.campaignId,
   });
+
+// for Cookie parsing
+
+//   useEffect(() => {
+//     if (strategyData) {
+//       setSelectedTab(strategyData.ageRange || '18-20');
+//       setSelectedGender(strategyData.gender || 'Women');
+//       setSelectedDevice(strategyData.screens || 'TV');
+//       setAudienceArr(strategyData.audiences || []);
+//       setStrategyName(strategyData.strategyName || '');
+//       setStrategyDailyBudget(strategyData.strategyDailyBudget || '');
+//       setAudienceLocation(strategyData.audienceLocation || '');
+//       setUploadedFileName(strategyData.creatives);
+//       setVideoDuration(strategyData.duration);
+//       setDeliveryType(strategyData.deliveryType);
+//       setSelectedOption(strategyData.selectedOption);
+//       setSelectedGoal(strategyData.selectedGoal);
+//     }
+//   }, [strategyData]);
+//   console.log('delivery type :- ', deliveryTypeval);
+
+
+ const [campaigns, setCampaigns] = useState<any>();
+ const [strategies, setStrategies] = useState<any>();
+ //for Strategy Daily budget
+const [dailyBudget, setDailyBudget] = useState<string>(' ')
+
   useEffect(() => {
-    if (strategyData) {
-      setSelectedTab(strategyData.ageRange || '18-20');
-      setSelectedGender(strategyData.gender || 'Women');
-      setSelectedDevice(strategyData.screens || 'TV');
-      setAudienceArr(strategyData.audiences || []);
-      setStrategyName(strategyData.strategyName || '');
-      setStrategyDailyBudget(strategyData.strategyDailyBudget || '');
-      setAudienceLocation(strategyData.audienceLocation || '');
-      setUploadedFileName(strategyData.creatives);
-      setVideoDuration(strategyData.duration);
-      setDeliveryType(strategyData.deliveryType);
-      setSelectedOption(strategyData.selectedOption);
-      setSelectedGoal(strategyData.selectedGoal);
+    const campaign_id = Cookies.get('campaignId');
+    // const strategy_id = Cookies.get('strategyId');
+    const fetchcampaignData = async () => {
+      try {
+        const response = await axios.get(
+          `${domainName}/api/get-campaign?campaignId=${campaign_id}`,
+        );
+        console.log('previous campaign data:- ', response.data);
+        setCampaigns(response.data);
+      } catch (error) {
+        console.error('Error fetching campaign data:', error);
+      }
+};
+    const fetcstrategyData = async () => {
+      try {
+        const response = await axios.get(`${domainName}/api/get-strategy?strategyId=${strategy_id}`);
+        console.log("previous strategy data:- ",response.data)
+        setStrategies(response.data);
+      } catch (error) {
+        console.error('Error fetching strategy data:', error);
+      }
+    };
+    fetchcampaignData();
+    // fetcstrategyData();
+    console.log(campaigns);
+    
+  }, [])
+
+  useEffect(()=>{
+    if(campaigns){
+      setDailyBudget(campaigns?.campaignBudget)
     }
-  }, [strategyData]);
-  console.log('delivery type :- ', deliveryTypeval);
+  },[campaigns])
+
+
+
+console.log(strategies);
+console.log(campaigns); 
+console.log(campaigns?.campaignBudget)
+console.log(dailyBudget)
+
+
 
   return (
     <>
@@ -402,15 +456,16 @@ const Strategy = () => {
             <div className="flex flex-col gap-5.5 p-6.5">
               <div>
                 <input
-                  onChange={(e) => setStrategyDailyBudget(e.target.value)}
+               
                   type="text"
-                  value={strategyDailyBudget}
+                  value={dailyBudget}
                   placeholder="5000"
+                  readOnly
                   className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
               </div>
-              0.00 left in your total campaign budget
+             
             </div>
           </div>
           {/* <!-- File upload --> */}
@@ -421,13 +476,13 @@ const Strategy = () => {
                 Ages
               </h3>
             </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
+            <div className="flex flex-col gap-5 p-6.5 overflow-hidden mx-1 sm:text-[10px] text-blue-900 font-semibold md:text-[15px] dark:text-white ">
               <Tabs
                 value={selectedTab}
                 onValueChange={setSelectedTab}
-                className="flex flex-col justify-between"
+                className="flex flex-col justify-between "
               >
-                <TabsList className="space-x-4">
+                <TabsList className="space-x-4 ">
                   <TabsTrigger
                     value="18-20"
                     className="px-4 py-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
@@ -475,7 +530,7 @@ const Strategy = () => {
               <div className="flex justify-end">
                 <Button
                   variant={'ghost'}
-                  className="text-black gap-2"
+                  className="text-black gap-2 dark:text-white font-semibold"
                   onClick={handleReset}
                 >
                   <Redo2 /> Reset
@@ -483,7 +538,7 @@ const Strategy = () => {
               </div>
             </div>
           </div>
-          {isScrollingDown && (
+          {/* {isScrollingDown && (
             <div className="fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-boxdark shadow-md flex justify-center">
               <Button variant={'outline'} className="gap-2">
                 <ArrowUp /> Back to campaign settings
@@ -492,11 +547,11 @@ const Strategy = () => {
                 Continue to Summary
               </Button>
             </div>
-          )}
+          )} */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="flex gap-1 item-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <FaGenderless className="text-[22px]" />
-              <h3 className="font-medium text-black dark:text-white">
+              <h3 className="text-blue-900 font-semibold text-[20px] dark:text-white">
                 Genders
               </h3>
             </div>
@@ -509,13 +564,13 @@ const Strategy = () => {
                 <TabsList className="space-x-4">
                   <TabsTrigger
                     value="women"
-                    className="px-4 py-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
+                    className="p-9 py-2 mr-8 text-[18px] rounded-lg transition-colors font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
                   >
                     Women
                   </TabsTrigger>
                   <TabsTrigger
                     value="men"
-                    className="px-4 py-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
+                    className="px-9 py-2 ml-8 text-[18px] rounded-lg transition-colors font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
                   >
                     Men
                   </TabsTrigger>
@@ -524,7 +579,7 @@ const Strategy = () => {
               <div className="flex justify-end">
                 <Button
                   variant={'ghost'}
-                  className="text-black gap-2"
+                  className="text-black gap-2 dark:text-white font-semibold"
                   onClick={handleReset}
                 >
                   <Redo2 /> Reset
@@ -535,13 +590,13 @@ const Strategy = () => {
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className=" flex gap-2 item-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <FaPeopleArrows className="text-[20px]" />
-              <h3 className="font-medium text-black dark:text-white">
+              <h3 className="text-blue-900 font-semibold text-[20px] dark:text-white">
                 Audiences
               </h3>
             </div>
             <div className="flex flex-col gap-5.5 p-6.5 ">
               <div>
-                <label className="mb-3 block text-black dark:text-white">
+                <label className="mb-3 block  text-blue-900 font-semibold text-[15px] dark:text-white">
                   <h1 className="font-semibold">Predefined audiences</h1>
                   <p>Target audiences from their points of interest</p>
                 </label>
@@ -554,7 +609,7 @@ const Strategy = () => {
               <div className="flex flex-col gap-5.5 p-6.5 overflow-y-scroll h-[50vh] pb-2">
                 <CheckboxOne
                   text="Arts & Entertainment"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -574,7 +629,7 @@ const Strategy = () => {
 
                 <CheckboxOne
                   text="Automotive"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -609,7 +664,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="Business"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -633,7 +688,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="Careers"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -655,7 +710,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="Education"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -682,7 +737,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="Family & Parenting"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -703,7 +758,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="Health & Fitness"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -760,7 +815,7 @@ const Strategy = () => {
 
                 <CheckboxOne
                   text="Hobbies & Interests"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -804,7 +859,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="Home & Garden"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -825,7 +880,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="Law, Government, & Politics"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -842,7 +897,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="News"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -857,7 +912,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="Personal Finance"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -881,7 +936,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="Society"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -901,7 +956,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="Science"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -923,7 +978,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="Pets"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -942,7 +997,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="Sports"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -997,7 +1052,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="Style & Fashion"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -1015,7 +1070,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="Technology & Computing"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -1062,7 +1117,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="Travel"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -1101,7 +1156,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="Real Estate"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -1116,7 +1171,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="Shopping"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -1132,7 +1187,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="Religion & Spirituality"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -1154,7 +1209,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="Uncategorized"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -1162,7 +1217,7 @@ const Strategy = () => {
                 />
                 <CheckboxOne
                   text="Non-Standard Conten"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -1183,7 +1238,7 @@ const Strategy = () => {
               )} */}
                 <CheckboxOne
                   text="Illegal Content"
-                  className="font-bold"
+                  className="text-blue-900 font-semibold text-[15px] dark:text-white"
                   onChange={(text, isChecked) =>
                     handleCheckboxChange(text, isChecked)
                   }
@@ -1199,7 +1254,7 @@ const Strategy = () => {
               )} */}
               </div>
               <div className="border-t border-stroke py-4 px-6.5 dark:border-strokedark">
-                <div className="flex items-center gap-2 justify-between font-medium text-black dark:text-white">
+                <div className="flex items-center gap-2 justify-between text-blue-900 font-semibold text-[15px] dark:text-white">
                   <h2>Audience located in</h2>
                   <button className="btn btn-outline">
                     Upload ZIP codes in bulk
@@ -1215,7 +1270,7 @@ const Strategy = () => {
               <div className="flex justify-end">
                 <Button
                   variant={'ghost'}
-                  className="text-black gap-2"
+                  className="text-black gap-2 dark:text-white font-semibold"
                   onClick={handleReset}
                 >
                   <Redo2 /> Reset
@@ -1226,7 +1281,7 @@ const Strategy = () => {
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="flex gap-2 item-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <MdOutlineScreenshotMonitor className="text-[20px]" />
-              <h3 className="font-medium text-black dark:text-white">
+              <h3 className="text-blue-900 font-semibold text-[20px] dark:text-white">
                 Screens
               </h3>
             </div>
@@ -1239,19 +1294,19 @@ const Strategy = () => {
                 <TabsList className="space-x-4">
                   <TabsTrigger
                     value="tv"
-                    className="flex items-center gap-4 px-4 py-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
+                    className="flex items-center gap-4 px-4 py-2 rounded-lg text-blue-900 font-semibold text-[15px] dark:text-white transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
                   >
                     <Tv /> TV
                   </TabsTrigger>
                   <TabsTrigger
                     value="tablet"
-                    className="flex items-center gap-4 px-4 py-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
+                    className="flex items-center gap-4 px-4 py-2 rounded-lg text-blue-900 font-semibold text-[15px] dark:text-white transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
                   >
                     <Tablet /> Tablet
                   </TabsTrigger>
                   <TabsTrigger
                     value="mobile"
-                    className="flex items-center gap-4 px-4 py-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
+                    className="flex items-center gap-4 px-4 py-2 rounded-lg text-blue-900 font-semibold text-[15px] dark:text-white transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
                   >
                     <Smartphone /> Mobile
                   </TabsTrigger>
@@ -1260,7 +1315,7 @@ const Strategy = () => {
               <div className="flex justify-end">
                 <Button
                   variant={'ghost'}
-                  className="text-black gap-2"
+                  className="text-black gap-2 dark:text-white font-semibold"
                   onClick={handleReset}
                 >
                   <Redo2 /> Reset
@@ -1268,11 +1323,11 @@ const Strategy = () => {
               </div>
             </div>
           </div>
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+          <div className="rounded-sm border text-blue-900 font-semibold  dark:text-white border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             {/* <Channels /> */}
             <Channels onSelectedChannelsChange={handleSelectedChannelsChange} />
           </div>
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+          <div className="rounded-sm border border-stroke text-blue-900 font-semibold  dark:text-white bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <DateSection
               deliveryType={setDeliveryType}
               daySettings={daySettings}
@@ -1284,7 +1339,7 @@ const Strategy = () => {
             <div className="p-4 space-y-4">
               <div className="flex items-center space-x-2">
                 <BsThunderboltFill className="h-5 w-5 text-primary" />
-                <h2 className="text-lg font-semibold">Bidding</h2>
+                <h2 className="text-blue-900 font-semibold text-[20px] dark:text-white">Bidding</h2>
                 <FaInfoCircle className="h-4 w-4 text-muted-foreground" />
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -1348,9 +1403,9 @@ const Strategy = () => {
           <form onSubmit={handleSubmit}>
             <button
               type="submit"
-              className="cursor-pointer p-2 rounded-lg text-white bg-slate-400 w-[10rem] hover:bg-slate-600 transition relative left-[50%] translate-x-[-50%]  mb-8"
+              className="cursor-pointer p-2 rounded-lg text-white bg-blue-600 w-[10rem] hover:bg-slate-600 transition relative left-[50%] translate-x-[-50%]  mb-8"
             >
-              Completed Strategy
+              Complete Strategy
             </button>
           </form>
         </div>
