@@ -45,50 +45,49 @@ export default function ManageAdvertise() {
   const navigate = useNavigate();
   const { orgId, userId } = useAuth();
   const { user } = useUser();
-  const [ balance, setBalance] = useState<number>(0);
+  const [balance, setBalance] = useState<number>(0);
   const domainName = import.meta.env.VITE_DOMAIN;
 
   // handlePayment Function
-  
-    const [isPopupOpen, setPopupOpen] = useState(false);
-  
-    const handleOpenPopup = () => {
-      setPopupOpen(true);
-    };
-  
-    const handleClosePopup = () => {
-      console.log("Close button clicked");
-      setPopupOpen(false);
-    };
-   console.log(isPopupOpen)
-    const handlePaymentSubmit = async (amount: number) => {
-      try {
-        setBalance(amount);
-        const res = await fetch(`${domainName}/api/payment/order`, {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-          },
-          body: JSON.stringify({
-            amount,
-          }),
-        });
-  
-        const data = await res.json();
-        console.log(data);
-        handlePaymentVerify(data.data);
-      } catch (error) {
-        console.error('Error creating order:', error);
-        toast.error('Failed to create order. Please try again.');
-      }
-    };
 
+  const [isPopupOpen, setPopupOpen] = useState(false);
+
+  const handleOpenPopup = () => {
+    setPopupOpen(true);
+  };
+
+  const handleClosePopup = () => {
+    console.log('Close button clicked');
+    setPopupOpen(false);
+  };
+  console.log(isPopupOpen);
+  const handlePaymentSubmit = async (amount: number) => {
+    try {
+      setBalance(amount);
+      const res = await fetch(`${domainName}/api/payment/order`, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount,
+        }),
+      });
+
+      const data = await res.json();
+      console.log(data);
+      handlePaymentVerify(data.data);
+    } catch (error) {
+      console.error('Error creating order:', error);
+      toast.error('Failed to create order. Please try again.');
+    }
+  };
 
   // handlePaymentVerify Function
   const [successPaymentId, setSuccessPaymentId] = useState<string>('');
   const handlePaymentVerify = async (data: PaymentData) => {
     console.log(data);
-    
+
     const options = {
       key: 'rzp_test_SZrvteybFNdghB', // Use your Razorpay Test Key
       amount: data.amount,
@@ -114,16 +113,19 @@ export default function ManageAdvertise() {
           const verifyData = await res.json();
 
           if (verifyData.message) {
-            const updated_user = await fetch(`${domainName}/api/update-balance`, {
-              method: 'PATCH',
-              headers: {
-                'content-type': 'application/json',
+            const updated_user = await fetch(
+              `${domainName}/api/update-balance`,
+              {
+                method: 'PATCH',
+                headers: {
+                  'content-type': 'application/json',
+                },
+                body: JSON.stringify({
+                  userId: userId,
+                  addedBalance: data.amount / 100,
+                }),
               },
-              body: JSON.stringify({
-                userId : userId, 
-                addedBalance : data.amount/ 100,
-              })
-            });
+            );
             console.log(updated_user);
             toast.success(verifyData.message);
             console.log('Payment ID:', response.razorpay_payment_id);
@@ -252,7 +254,6 @@ export default function ManageAdvertise() {
 
   console.log(isAdd?.user?.walletBalance);
 
-
   const openDrawer = () => {
     setIsDrawerVisible(true);
     setTimeout(() => {
@@ -288,11 +289,15 @@ export default function ManageAdvertise() {
     formData.append('file', gstData);
 
     try {
-      const response = await axios.post(`${domainName}/api/file-cloud`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+      const response = await axios.post(
+        `${domainName}/api/file-cloud`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         },
-      });
+      );
       console.log(response.data);
       setResponseFile(response.data);
     } catch (error) {
@@ -316,11 +321,15 @@ export default function ManageAdvertise() {
     formData.append('file', gstLogo);
 
     try {
-      const response = await axios.post(`${domainName}/api/file-cloud`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+      const response = await axios.post(
+        `${domainName}/api/file-cloud`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         },
-      });
+      );
       console.log(response.data);
       setImageData(response.data);
     } catch (error) {
@@ -420,8 +429,6 @@ export default function ManageAdvertise() {
           </div>
         </div>
 
-        
-
         <div className="flex items-center gap-4">
           <div className="flex flex-col">
             <p className="flex flex-col text-sm mb-1 font-[400] text-slate-600 dark:text-white">
@@ -434,12 +441,13 @@ export default function ManageAdvertise() {
                 className="border-none"
                 onClick={handleOpenPopup}
               >
-              <PlusCircle className="text-slate-600 w-4 h-4 -ml-3" />
+                <PlusCircle className="text-slate-600 w-4 h-4 -ml-3" />
               </Button>
-              <PaymentPopup open={isPopupOpen}
-                  onClose={handleClosePopup}
-                  onSubmit={handlePaymentSubmit} />
-                
+              <PaymentPopup
+                open={isPopupOpen}
+                onClose={handleClosePopup}
+                onSubmit={handlePaymentSubmit}
+              />
             </div>
           </div>
           <DropdownMenuDemo name="Kunal" email="mkkm@gmail.com" />
@@ -464,7 +472,7 @@ export default function ManageAdvertise() {
               </p>
               <div className="flex gap-4">
                 <Button className="bg-blue-600 text-white">
-                  Manage Campaigns
+                  <Link to={'/manage-campaign'}>Manage Campaigns</Link>
                 </Button>
                 <Link to={'/campaign'}>
                   <Button variant="outline">Create Campaign</Button>

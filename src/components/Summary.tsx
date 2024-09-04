@@ -328,6 +328,9 @@ export default function SummaryComponent() {
                 campaignBudget: campaigns?.campaignBudget,
                 reviveUrl: invocationCode.value,
                 audiences: strategies?.audiences,
+                startDate: campaigns?.startDate,
+                endDate: campaigns?.endDate,
+                status: 'Active',
               },
               {
                 headers: {

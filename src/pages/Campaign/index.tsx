@@ -518,7 +518,7 @@ const Campaigns = () => {
         setModifiedCampaignBud(String(weekly));
       }
     }
-  }, [advertiser, campaignBudget,campaignType]);
+  }, [advertiser, campaignBudget, campaignType]);
 
   //button
   const [cap, setCap] = useState<boolean>(true);
