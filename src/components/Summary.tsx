@@ -82,14 +82,17 @@ export default function SummaryComponent() {
   const [amount, setAmount] = useState<number>();
   const { userId, orgId } = useAuth();
   const [campaigns, setCampaigns] = useState([]);
+  const[user_data,setUser_data] = useState();
   const [error, setError] = useState(null);
   const [strategies, setStrategies] = useState([]);
+  const [button_disabled,setbutton_disabled] = useState<false>();
   const [successPaymentId, setSuccessPaymentId] = useState<string>('');
   const { user } = useUser();
   const domainName = import.meta.env.VITE_DOMAIN;
   const [loading, setLoading] = useState(false);
  const navigate = useNavigate()
  
+ console.log("summery userid",userId);
  console.log({
     userId: userId,
     campaignId: campaigns?.campaignId,
@@ -163,6 +166,7 @@ export default function SummaryComponent() {
           throw new Error('Network response was not ok');
         }
         const data: UserData = await response.json();
+        setUser_data(data.user);
         setIsAdd(data);
         console.log(data);
       } catch (error) {
@@ -174,6 +178,7 @@ export default function SummaryComponent() {
       fetchData(user.id);
     }
   }, [user?.id]);
+  console.log("user data",user_data);
 
   // console.log(isAdd?.type_of_user);
 
@@ -371,20 +376,45 @@ export default function SummaryComponent() {
 
   // handlePayment Function
   const handlePayment = async () => {
+    setbutton_disabled(true);
     try {
-      const res = await fetch(`${domainName}/api/payment/order`, {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount,
-        }),
-      });
-
-      const data = await res.json();
-      console.log(data);
-      handlePaymentVerify(data.data);
+      if(user_data && Number(user_data.walletBalance)>=Number(campaigns.campaignBudget)){
+        const res = await fetch(`${domainName}/api/payment/wallet-pay`, {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId:user_data.userId,
+            amount,
+          }),
+        });
+        const data = await res.json();
+        if(data.message=="Payment successful"){
+          Cookies.remove('campaignId', { path: '/' });
+          Cookies.remove('strategyId', { path: '/' });
+          toast.success(data.message);
+          setSuccessPaymentId(`wallet-${uuidv4()}`);
+          setbutton_disabled(false);
+        }else{
+          toast.warning(data.message)
+        }
+      }else{
+          const res = await fetch(`${domainName}/api/payment/order`, {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            amount,
+          }),
+        });
+        const data = await res.json();
+        console.log(data);
+        await handlePaymentVerify(data.data);
+        setbutton_disabled(false);
+      }
+      
     } catch (error) {
       console.error('Error creating order:', error);
       toast.error('Failed to create order. Please try again.');
@@ -515,8 +545,8 @@ export default function SummaryComponent() {
           <>Paid</>
         ) : (
           <>
-            <Button className="text-white" onClick={handlePayment}>
-              Pay Now
+            <Button disabled={button_disabled} className="text-white" onClick={handlePayment}>
+              Pay Now {user_data?(Number(user_data.walletBalance)>=Number(campaigns?.campaignBudget)?"With Wallet":""):""}
             </Button>
           </>
         )}
