@@ -33,6 +33,7 @@ import WebTracking from './pages/Settings/WebTracking';
 import AppTracking from './pages/Settings/AppTracking';
 import CorporateAds from './pages/CorporateAds';
 import NewHome from './pages/NewHome';
+import ManageCampaign from './pages/ManageCampaigns';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -67,6 +68,7 @@ function App() {
       <Route path="/" element={<NewHome />} />
       <Route path="/login-options" element={<LoginWays />} />
       <Route path="/manage-advertise" element={<AdvertiseManagement />} />
+      <Route path="/manage-campaign" element={<ManageCampaign />} />
       <Route path="/report" element={<ReportPage />} />
       <Route path="/auth/sign-in" element={<SignInPage />} />
       <Route path="/auth/sign-up" element={<SignUpPage />} />
@@ -74,7 +76,7 @@ function App() {
         path="view-advertisement"
         element={
           <>
-            <PageTitle title="Viewing Advertisement | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+            <PageTitle title="Viewing Advertisement | Sweven" />
             <CorporateAds />
           </>
         }
@@ -86,7 +88,7 @@ function App() {
               path="dashboard"
               element={
                 <>
-                  <PageTitle title="Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <PageTitle title="Dashboard | Sweven" />
                   <ECommerce />
                 </>
               }
@@ -95,7 +97,7 @@ function App() {
               path="campaign"
               element={
                 <>
-                  <PageTitle title="Campaign | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <PageTitle title="Campaign | Sweven" />
                   <Campaigns />
                 </>
               }
@@ -104,7 +106,7 @@ function App() {
               path="strategy"
               element={
                 <>
-                  <PageTitle title="Strategy | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <PageTitle title="Strategy | Sweven" />
                   <Strategy />
                 </>
               }
@@ -113,7 +115,7 @@ function App() {
               path="summary"
               element={
                 <>
-                  <PageTitle title="Summary | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <PageTitle title="Summary | Sweven" />
                   <Summary />
                 </>
               }
@@ -122,7 +124,7 @@ function App() {
               path="forms/form-elements"
               element={
                 <>
-                  <PageTitle title="Form Elements | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <PageTitle title="Form Elements | Sweven" />
                   <FormElements />
                 </>
               }
@@ -131,7 +133,7 @@ function App() {
               path="forms/form-layout"
               element={
                 <>
-                  <PageTitle title="Form Layout | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <PageTitle title="Form Layout | Sweven" />
                   <FormLayout />
                 </>
               }
@@ -140,7 +142,7 @@ function App() {
               path="tables"
               element={
                 <>
-                  <PageTitle title="Tables | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <PageTitle title="Tables | Sweven" />
                   <Tables />
                 </>
               }
@@ -149,7 +151,7 @@ function App() {
               path="chart"
               element={
                 <>
-                  <PageTitle title="Basic Chart | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <PageTitle title="Basic Chart | Sweven" />
                   <Chart />
                 </>
               }
@@ -158,7 +160,7 @@ function App() {
               path="ui/alerts"
               element={
                 <>
-                  <PageTitle title="Alerts | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <PageTitle title="Alerts | Sweven" />
                   <Alerts />
                 </>
               }
@@ -167,7 +169,7 @@ function App() {
               path="ui/buttons"
               element={
                 <>
-                  <PageTitle title="Buttons | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                  <PageTitle title="Buttons | Sweven" />
                   <Buttons />
                 </>
               }

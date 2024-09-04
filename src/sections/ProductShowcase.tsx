@@ -29,8 +29,8 @@ export const ProductShowcase = () => {
             A More Effective Way to publish advertisement
           </h2>
           <p className="section-description mt-5">
-            Effortlessly turn your ideas into a fully functional, responsive,
-            Adtech website in just minutes with our dashboard.
+            We specialize in delivering highly targeted ads across multiple
+            devices, ensuring maximum reach and engagement.
           </p>
         </div>
         <div className="relative">

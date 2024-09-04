@@ -30,8 +30,8 @@ export const CallToAction = () => {
           <div className="section-heading relative">
             <h2 className="section-title">Sign up for free today</h2>
             <p className="section-description mt-5">
-              Celebrate the joy of accomplishment with an app designed to track
-              your progress and motivate your efforts.
+              Join our community of forward-thinking advertisers and marketers
+              by subscribing to the Sweven Adtech Newsletter
             </p>
             <motion.img
               src={starImage}
