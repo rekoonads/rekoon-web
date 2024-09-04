@@ -237,16 +237,16 @@ export default function DateSection({
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
+    <div className="p-6 bg-white rounded-lg shadow-md  border border-stroke  dark:border-strokedark dark:bg-boxdark">
       <div className="flex flex-col items-center mb-4 gap-2">
-        <div className="flex items-center relative left-1">
+        <div className="flex items-center relative left-1 dark:text-white">
           {' '}
-          <ClockIcon className="w-8 h-w-8 mr-2 text-blue-700" />
-          <h3 className="text-lg font-medium text-blue-700">Date and Time</h3>
+          <ClockIcon className="w-8 h-w-8 mr-2 text-blue-700 dark:text-white" />
+          <h3 className="text-lg font-medium text-blue-700 dark:text-white">Date and Time</h3>
         </div>
          
 
-        <p className="ml-4 text-sm text-blue-700 flex items-center">
+        <p className="ml-4 text-sm text-blue-700 flex items-center dark:text-white">
           <InfoIcon className="w-4 h-4 mr-1" />
           Ads will be delivered in the respective timezone of the locations you
           targeted.
@@ -276,7 +276,7 @@ export default function DateSection({
           Primetime
         </Button>
         <Button
-          variant="outline"
+          variant="default"
           className={`px-4 py-2 border rounded-lg ${
             selectedSlot === 'After work'
               ? 'bg-blue-700 text-white'
@@ -346,9 +346,7 @@ export default function DateSection({
         {daysOfWeek.map((day) => (
           <div
             key={day}
-            className={`flex items-center justify-between p-3 border rounded-lg ${
-              selectedSlot !== 'Custom time' ? 'bg-gray-100' : 'bg-white'
-            }`}
+            className={`flex items-center justify-between p-3 border rounded-lg accent-blue-600 dark:bg-black `}
           >
             <div className="flex items-center">
               <DateBox
@@ -361,10 +359,10 @@ export default function DateSection({
               />
               <label
                 htmlFor={day.toLowerCase()}
-                className={`ml-2 text-sm font-medium ${
+                className={`ml-2 text-black dark:text-yellow-100 font-medium  ${
                   selectedSlot !== 'Custom time'
                     ? 'text-gray-500'
-                    : 'text-gray-700'
+                    : 'dark:text-yellow-100'
                 }`}
               >
                 {day}
