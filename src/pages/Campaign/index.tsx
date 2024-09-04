@@ -510,7 +510,7 @@ const Campaigns = () => {
         const weekly = Number(campaignBudget) * 7;
         setModifiedCampaignBud(String(weekly));
       }
-    } else if (advertiser !== '') {
+    } else if (advertiser) {
       if (campaignType === 'Daily Budget') {
         setModifiedCampaignBud(advertiser);
       } else if (campaignType === 'Weekly Budget') {
@@ -518,7 +518,7 @@ const Campaigns = () => {
         setModifiedCampaignBud(String(weekly));
       }
     }
-  }, [advertiser, campaignBudget]);
+  }, [advertiser, campaignBudget,campaignType]);
 
   //button
   const [cap, setCap] = useState<boolean>(true);
