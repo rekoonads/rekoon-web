@@ -223,7 +223,7 @@ export default function VideoUpload({
   };
 
   return (
-    <Card className="w-full max-w-xl">
+    <Card className="text-blue-900 font-semibold text-[20px] dark:text-white">
       <CardHeader>
         <CardTitle>Upload Media</CardTitle>
         <CardDescription>
@@ -279,7 +279,7 @@ export default function VideoUpload({
             id="deviceType"
             value={deviceType}
             onChange={(e) => setDeviceType(e.target.value)}
-            className="p-2 border rounded"
+            className="p-2 border rounded text-blue-900 font-semibold text-[15px] dark:text-black"
           >
             <option value="mobile">Mobile</option>
             <option value="tablet">Tablet</option>

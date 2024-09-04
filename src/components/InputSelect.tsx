@@ -88,12 +88,12 @@ const InputSelect: React.FC<InputSelectProps> = ({ value,onchange }) => {
         placeholder="Type a location..."
         value={searchQuery}
         onChange={handleInputChange}
-        className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+        className="w-full rounded-lg border-[1.5px] text-blue-900 font-semibold text-[15px] dark:text-white border-stroke bg-transparent py-3 px-5  outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input  dark:focus:border-primary"
       />
       {loading && <div className="text-gray-500">Loading...</div>}
       {error && <div className="text-red-500">{error}</div>}
       {suggestions.length > 0 && (
-        <ul className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+        <ul className="absolute top-full left-0 right-0 mt-1 text-blue-900 font-semibold text-[15px] dark:text-black bg-white border border-gray-300 rounded-lg shadow-lg z-10">
           {suggestions.map((option) => (
             <li
               key={option.value}
