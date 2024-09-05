@@ -22,7 +22,7 @@ const CampaignCardComponent = ({ campaigns }: CampaignCardComponentProps) => {
     <div className="container mx-auto p-6 mt-6 bg-white shadow-xl text-left">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold">Campaigns Draft</h1>
+          <h1 className="text-3xl font-bold">Campaign</h1>
           <p className="text-muted-foreground">
             Create campaigns and deliver your ads across channels.
           </p>
@@ -97,7 +97,7 @@ const CampainAlreadyCreated = ({
     <div className="container mx-auto p-6 mt-6 bg-white shadow-xl text-left">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold">Campaigns Already Created</h1>
+          <h1 className="text-3xl font-bold">Campaign</h1>
           <p className="text-muted-foreground">
             Create campaigns and deliver your ads across channels.
           </p>
@@ -112,9 +112,6 @@ const CampainAlreadyCreated = ({
                 Campaign Name: {backendCampaignData?.campaignName}
               </h2>
               <div className="flex items-center text-sm text-muted-foreground">
-                <span className="mr-2">
-                  <b>Draft</b>
-                </span>
                 <Clock className="w-4 h-4 mr-1" />
                 <span>
                   {' '}
@@ -124,11 +121,6 @@ const CampainAlreadyCreated = ({
               </div>
             </div>
             <div className="flex items-center">
-              <Link to={'/campaign'}>
-                <Button className="bg-black text-white mr-2 hover:bg-slate-700 ml-2">
-                  Continue editing
-                </Button>
-              </Link>
               <Button variant={'outline'}>View reports</Button>
               <Button variant="ghost" size="icon">
                 <MoreVertical className="h-4 w-4" />
@@ -278,24 +270,28 @@ export default function ManageCampaign() {
     }
   }, [user?.id, orgId, isAdd]);
 
-  console.log(retrivedCampaignData);
+  console.log(retrivedCampaignData?.data);
 
   
 
   return (
     <div className="flex flex-col gap-2 text-center">
+      
       <div className="flex items-end  mt-10">
         {' '}
         <Button className="bg-indigo-600 hover:bg-indigo-700 text-white ml-9 ">
           <Link to={'/manage-advertise'}>Return to Dashboard</Link>
         </Button>
         <div className=" md:ml-[60%]">
-          <Button className="bg-indigo-600 hover:bg-indigo-700 text-white ml-9 ">
+          <Button className="bg-indigo-600 hover:bg-indigo-700 text-white ml-13 ">
             <Link to={'/campaign'}>+ Create campaign</Link>
           </Button>
         </div>
       </div>
-
+        <div className='flex flex-col items-center justify-center text-left mt-10 font-bold text-[30px] gap-3 '>
+          <h2> Campaign Draft</h2>
+          <div className='w-[30%] h-[1px] bg-slate-400'></div>
+        </div>
       <>
         {campaigns && campArr ? (
           campArr.map((items, index) => (
@@ -306,13 +302,16 @@ export default function ManageCampaign() {
         )}
        
       </>
-
-      <div className="flex flex-col items-start justify-center">
+      <div className='flex flex-col items-center justify-center text-left mt-10 font-bold text-[30px] gap-3 '>
+          <h2> Campaign Already Created ({retrivedCampaignData?.data.length})</h2>
+          <div className='w-[30%] h-[1px] bg-slate-400'></div>
+        </div>
+      <div className="flex flex-col items-start justify-center text-center">
         {retrivedCampaignData
-          ? Array.from(retrivedCampaignData).map((item) => (
-              <CampainAlreadyCreated backendCampaignData={item} />
+          ? Array.from(retrivedCampaignData?.data).map((item, index) => (
+              <CampainAlreadyCreated backendCampaignData={item} key={index}  />
             ))
-          : null}
+          : (<b> No Campaign yet created</b>)}
       </div>
     </div>
   );
