@@ -313,7 +313,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     >
                       {' '}
                       <MdOutlinePriceChange />
-                      Strategy (<Lock className="w-[19px] h-[19px] mt-1" />)
+                      Summary (<Lock className="w-[19px] h-[19px] mt-1" />)
                     </div>
                   </>
                 )}
