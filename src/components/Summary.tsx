@@ -41,6 +41,8 @@ const LoadingScreen = () => {
   const [mounted, setMounted] = useState(false);
   const [progress, setProgress] = useState(0);
   useEffect(() => {
+    localStorage.removeItem('campaign');
+    localStorage.removeItem('strategy');
     setMounted(true);
     const timer = setInterval(() => {
       setProgress((oldProgress) => {
@@ -51,6 +53,7 @@ const LoadingScreen = () => {
         return newProgress > 100 ? 100 : newProgress;
       });
     }, 20);
+    
     return () => clearInterval(timer);
   }, []);
 
@@ -267,7 +270,7 @@ export default function SummaryComponent() {
     if (successPaymentId) {
       const postBillData = async () => {
         setLoading(true);
-
+       
         const data = await axios.post(
           `${domainName}/api/bill`,
           {
@@ -471,6 +474,7 @@ export default function SummaryComponent() {
   //navigate to billing page once the revive link is gotten
   useEffect(()=>{
     if(reviveUrl){
+      location.reload();
       navigate(`/settings/balance-transaction`)
     }
   },[reviveUrl])

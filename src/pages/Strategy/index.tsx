@@ -27,6 +27,7 @@ import InputSelect from '../../components/InputSelect';
 import VideoUpload from '../../components/VideoUpload';
 import Cookies from 'js-cookie';
 import RightSidedStrategyCard from '../../components/RightSidedStrategyCard';
+import { useNavigate } from 'react-router-dom';
 
 
 const domainName = import.meta.env.VITE_DOMAIN;
@@ -271,9 +272,11 @@ const Strategy = () => {
   //Handling Submission of data dont taper with this
   console.log(campaignInfo[campaignInfo.length - 1]?.campaignId);
   const [getBugOfRes, setGetBugOfRes] = useState<any>();
+  const navigate = useNavigate()
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     const strategy_id_data = strategyData
       ? strategyData.strategyId
       : `ST-${uuidv4()}`;
@@ -319,8 +322,9 @@ const Strategy = () => {
         console.log('Cookie set successfully');
         const updatedCampaign = await response.json();
         console.log('Campaign updated successfully:', updatedCampaign);
+        localStorage.setItem('strategy', JSON.stringify(`strategy-created`))
         setGetBugOfRes(updatedCampaign);
-        location.reload();
+        location.reload()
       } else {
         throw new Error('Network response was not ok');
       }

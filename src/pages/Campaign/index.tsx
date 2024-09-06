@@ -367,8 +367,10 @@ const Campaigns = () => {
               Cookies.set('campaignId', campignid, { expires: 7 });
               console.log('Campaign created successfully:', data);
               setReceived(true);
+              localStorage.setItem(`campaign`, JSON.stringify(`campaign-created`))
               toast({ title: 'Campaign Created Successfully' });
-              navigate('/strategy');
+              location.reload()
+             
             } else {
               console.error('Failed to create campaign:', data);
               toast({ title: 'Failed to submit campaign.' });
@@ -414,7 +416,9 @@ const Campaigns = () => {
               console.log('Campaign created successfully:', data);
               setReceived(true);
               toast({ title: 'Campaign submitted successfully!' });
-              navigate('/strategy');
+              localStorage.setItem(`campaign`, JSON.stringify(`campaign-created`))
+              location.reload()
+          
             } else {
               console.error('Failed to create campaign:', data);
               toast({

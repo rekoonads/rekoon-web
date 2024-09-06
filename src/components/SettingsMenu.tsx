@@ -51,7 +51,7 @@ export function DropdownMenuDemo({name, email}:DropdownMenuDemoProps) {
       <DropdownMenu >
     <DropdownMenuTrigger asChild >
       <div className='transition duration-700'>
-      <Button variant="outline" className="text-black transition duration-700">
+      <Button variant="outline" className="text-black dark:text-white transition duration-700">
         Settings
       </Button>
       </div>

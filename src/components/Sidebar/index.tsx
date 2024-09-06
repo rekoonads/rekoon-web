@@ -1,11 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import SidebarLinkGroup from './SidebarLinkGroup';
-
+import Cookies from 'js-cookie';
 import { MdCampaign } from 'react-icons/md';
 import { SiMicrostrategy } from 'react-icons/si';
 import { MdOutlinePriceChange } from 'react-icons/md';
+import axios from 'axios';
+import { Lock } from 'lucide-react';
 
+const domainName = import.meta.env.VITE_DOMAIN;
+const getCampaignRec = JSON.parse(localStorage.getItem(`campaign`));
+const getStrategyRec = JSON.parse(localStorage.getItem(`strategy`));
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
@@ -57,6 +62,69 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       document.querySelector('body')?.classList.remove('sidebar-expanded');
     }
   }, [sidebarExpanded]);
+
+  //geting the campaign and strategy data from the cookie
+  // const [campaigns, setCampaigns] = useState<any>();
+  // const [strategies, setStrategies] = useState<any>();
+
+  // useEffect(() => {
+  //   const campaign_id = Cookies.get('campaignId');
+  //   console.log(campaign_id);
+  //   const strategy_id = Cookies.get('strategyId');
+  //   console.log(strategy_id);
+  //   const fetchcampaignData = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${domainName}/api/get-campaign?campaignId=${campaign_id}`,
+  //       );
+  //       console.log('previous campaign data:- ', response.data);
+  //       setCampaigns(response.data);
+  //     } catch (error) {
+  //       console.error('Error fetching campaign data:', error);
+  //     }
+  //   };
+  //   const fetcstrategyData = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${domainName}/api/get-strategy?strategyId=${strategy_id}`,
+  //       );
+  //       console.log('previous strategy data:- ', response.data);
+  //       setStrategies(response.data);
+  //     } catch (error) {
+  //       console.error('Error fetching strategy data:', error);
+  //     }
+  //   };
+  //   fetchcampaignData();
+  //   fetcstrategyData();
+  //   console.log(campaigns);
+  // }, []);
+
+  // console.log(campaigns);
+
+  // To openup the strategy right after campaign is gotten from the cookie
+
+  const navigate = useNavigate();
+  const [openStrategy, setOpenStrategy] = useState<boolean>(false);
+  const [openSummary, setOpenSummary] = useState<boolean>(false);
+  // useEffect(() => {
+  //   if(getCampaignRec){
+  //     setOpenStrategy(true)
+  //   }
+  // },[getCampaignRec])
+
+  useLayoutEffect(() => {
+    if (getCampaignRec) {
+      setOpenStrategy(true);
+      navigate('/strategy');
+    }
+  }, [getCampaignRec]);
+
+  useLayoutEffect(() => {
+    if (getStrategyRec) {
+      setOpenSummary(true);
+      navigate(`/summary`);
+    }
+  }, [getStrategyRec]);
 
   return (
     <aside
@@ -189,21 +257,67 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </li>
               {/* <!-- Menu Item Calendar --> */}
               <li>
-                <NavLink
-                  to="/strategy"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                    pathname.includes('strategy') &&
-                    'bg-graydark dark:bg-meta-4'
-                  }`}
-                >
-                  <SiMicrostrategy />
-                  Strategy
-                </NavLink>
+                {openStrategy ? (
+                  <>
+                    {' '}
+                    <NavLink
+                      to="/strategy"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                        pathname.includes('strategy') &&
+                        'bg-graydark dark:bg-meta-4'
+                      }`}
+                    >
+                      <SiMicrostrategy />
+                      Strategy
+                    </NavLink>
+                  </>
+                ) : (
+                  <>
+                    {' '}
+                    <div
+                      className={`group relative cursor-not-allowed text-slate-400 flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                        pathname.includes('strategy') &&
+                        'bg-graydark dark:bg-meta-4'
+                      }`}
+                    >
+                      <SiMicrostrategy />
+                      Strategy (<Lock className="w-[19px] h-[19px] mt-1" />)
+                    </div>
+                  </>
+                )}
               </li>
 
               {/* <!-- Menu Item Profile --> */}
               <li>
-                <NavLink
+                {openSummary ? (
+                  <>
+                    {' '}
+                    <NavLink
+                      to="/summary"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                        pathname.includes('summary') &&
+                        'bg-graydark dark:bg-meta-4'
+                      }`}
+                    >
+                      <MdOutlinePriceChange />
+                      Summary
+                    </NavLink>
+                  </>
+                ) : (
+                  <>
+                    <div
+                      className={`group relative cursor-not-allowed text-slate-400 flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                        pathname.includes('strategy') &&
+                        'bg-graydark dark:bg-meta-4'
+                      }`}
+                    >
+                      {' '}
+                      <MdOutlinePriceChange />
+                      Strategy (<Lock className="w-[19px] h-[19px] mt-1" />)
+                    </div>
+                  </>
+                )}
+                {/* <NavLink
                   to="/summary"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     pathname.includes('summary') && 'bg-graydark dark:bg-meta-4'
@@ -211,7 +325,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 >
                   <MdOutlinePriceChange />
                   Summary
-                </NavLink>
+                </NavLink> */}
               </li>
               {/* <!-- Menu Item Profile --> */}
 
