@@ -296,6 +296,7 @@ export default function SummaryComponent() {
               campaignId: campaigns?.campaignId,
               strategyId: strategies?.strategyId,
               errorMessage: invocationCode.message,
+              status:'Active',
             });
           toast.error(
             `Something went wrong. Please contact support with this ID: ${errorId}`,
