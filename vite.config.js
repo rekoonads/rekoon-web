@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'https://backend-ruddy-phi.vercel.app',
+      '/api': 'https://backend-ndv7.onrender.com',
     },
   },
   mimeTypes: {
