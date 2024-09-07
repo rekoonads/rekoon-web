@@ -126,6 +126,25 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     }
   }, [getStrategyRec]);
 
+  //On mouse hover effect
+  const [isMouseOver, setIsMouseOver] = useState<boolean>(false);
+
+  const handleHandleHover = () => {
+    setIsMouseOver(true);
+  };
+  const handleMouseOut = () => {
+    setIsMouseOver(false);
+  };
+
+const [isMouseOverStrategy, setIsMouseOverStrategy] = useState<boolean>(false)
+const handleHandleHoverStrategy = () => {
+  setIsMouseOverStrategy(true)
+}
+const handleMouseOutStrategy = () => {
+  setIsMouseOverStrategy(false)
+}
+
+
   return (
     <aside
       ref={sidebar}
@@ -163,7 +182,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       </div>
       {/* <!-- SIDEBAR HEADER --> */}
 
-      <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
+      <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear ">
         {/* <!-- Sidebar Menu --> */}
         <nav className="mt-5 py-4 px-4 lg:mt-9 lg:px-6">
           {/* <!-- Menu Group --> */}
@@ -172,7 +191,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               MENU
             </h3>
 
-            <ul className="mb-6 flex flex-col gap-1.5">
+            <ul className="mb-6 flex flex-col gap-2">
               {/* <!-- Menu Item Dashboard --> */}
               <SidebarLinkGroup
                 activeCondition={
@@ -279,9 +298,29 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         pathname.includes('strategy') &&
                         'bg-graydark dark:bg-meta-4'
                       }`}
+                      onMouseOver={handleHandleHover}
+                      onMouseOut={handleMouseOut}
                     >
                       <SiMicrostrategy />
                       Strategy (<Lock className="w-[19px] h-[19px] mt-1" />)
+                    </div>
+                    <div
+                      style={
+                        isMouseOver
+                          ? {
+                              display: `block`,
+                              position: 'absolute',
+                              zIndex: '10',
+                              backgroundColor: 'black',
+                              padding: '.2rem',
+                              borderRadius: '10px',
+                              textAlign: 'center',
+                              transitionDuration: '1s',
+                            }
+                          : { display: 'none' }
+                      }
+                    >
+                      <p>Please fill up the Campaign Form first </p>
                     </div>
                   </>
                 )}
@@ -310,10 +349,31 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         pathname.includes('strategy') &&
                         'bg-graydark dark:bg-meta-4'
                       }`}
+                      onMouseOver={handleHandleHoverStrategy}
+                      onMouseOut={handleMouseOutStrategy}
                     >
                       {' '}
                       <MdOutlinePriceChange />
                       Summary (<Lock className="w-[19px] h-[19px] mt-1" />)
+                      <div
+                   
+                        style={
+                          isMouseOverStrategy
+                            ? {
+                                display: `block`,
+                                position: 'absolute',
+                                zIndex: '10',
+                                backgroundColor: 'black',
+                                padding: '.2rem',
+                                borderRadius: '10px',
+                                textAlign: 'center',
+                                marginTop: '2rem'
+                              }
+                            : { display: 'none' }
+                        }
+                      >
+                        <p>Please fill up the Strategy Form first </p>
+                      </div>
                     </div>
                   </>
                 )}
