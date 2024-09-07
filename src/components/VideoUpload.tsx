@@ -89,34 +89,53 @@ export default function VideoUpload({
         setErrorMessage(null);
         setIsUploading(true);
         const formData = new FormData();
-        formData.append('video', file);
+        formData.append('file', file);
+        formData.append('upload_preset', 'cfwxrnl4'); // Replace with your preset
 
         axios
-          .post(`${domainName}/upload_video`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
+          .post('https://api.cloudinary.com/v1_1/donhrlmxp/video/upload', formData, {
             onUploadProgress: (progressEvent) => {
-              if (progressEvent.total) {
-                const progress = Math.round(
-                  (progressEvent.loaded * 100) / progressEvent.total,
-                );
-                setUploadProgress(progress);
-              }
+              const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+              setUploadProgress(progress);
             },
           })
           .then((response) => {
-            setFileName(file.name);
-            setIsUploadComplete(true);
             setIsUploading(false);
-            setUrl(response.data?.url);
-            onURLSet(response.data?.url);
+            setIsUploadComplete(true);
+            setUrl(response.data.secure_url);
+            onURLSet(response.data.secure_url);
           })
           .catch((error) => {
             setErrorMessage('Upload failed. Please try again.');
             setIsUploading(false);
           });
       };
+        // axios
+        //   .post(`${domainName}/upload_video`, formData, {
+        //     headers: {
+        //       'Content-Type': 'multipart/form-data',
+        //     },
+        //     onUploadProgress: (progressEvent) => {
+        //       if (progressEvent.total) {
+        //         const progress = Math.round(
+        //           (progressEvent.loaded * 100) / progressEvent.total,
+        //         );
+        //         setUploadProgress(progress);
+        //       }
+        //     },
+        //   })
+        //   .then((response) => {
+        //     setFileName(file.name);
+        //     setIsUploadComplete(true);
+        //     setIsUploading(false);
+        //     setUrl(response.data?.url);
+        //     onURLSet(response.data?.url);
+        //   })
+        //   .catch((error) => {
+        //     setErrorMessage('Upload failed. Please try again.');
+        //     setIsUploading(false);
+        //   });
+      // };
 
       videoElement.onloadeddata = () => {
         if (videoElement.duration) {
