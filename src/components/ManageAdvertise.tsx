@@ -144,47 +144,29 @@ export default function ManageAdvertise() {
   };
 
   //REST
-  const appId = '1pamnh';
-  const appKey = 'pmzmvrg9legon1ky2uwm';
-  const transactionId = '05szuy8uajfo-DEMO';
-
-  const url = 'https://ind-lookup.hyperverge.co/api/lookup/searchGSTIN';
 
   const [cinNumber, setCinNumber] = useState<string>('');
   const cinChange = (event: React.ChangeEvent) => {
     setCinNumber(event.target.value);
   };
 
-  const headers = {
-    appId: appId,
-    appKey: appKey,
-    transactionId: transactionId,
-    'Content-Type': 'application/json',
-  };
-  const handleGSTChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleGSTChange = async (event) => {
     const newGstNumber = event.target.value;
     setGstNumber(newGstNumber);
 
     if (newGstNumber) {
-      const data = {
-        gstin: newGstNumber,
-      };
-
       try {
-        const response = await axios.post(url, data, { headers });
-        console.log('Response:', response.data);
+        // Send request to your backend API instead of Hyperverge API directly
+        const response = await axios.post(
+          `${domainName}/api/hyperverge/gstin-lookup`,
+          { gstin: newGstNumber },
+        );
 
         if (response.data && response.data.status === 'success') {
           const legalName = response.data.result.data.legalName || '';
           const address = response.data.result.data.pradr.fullAddress || '';
-
           setLegalName(legalName);
           setAddress(address);
-
-          console.log('Legal Name:', legalName);
-          console.log('Address:', address);
         } else {
           setLegalName('');
           setAddress('');
