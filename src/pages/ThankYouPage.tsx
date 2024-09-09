@@ -1,26 +1,77 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { PlayCircle } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import axios from 'axios';
 
 export default function ThankYouPage() {
+  const [videoSrc, setVideoSrc] = useState('');
+  const videoRef = useRef(null);
   const navigate = useNavigate();
+  const domainName = import.meta.env.VITE_DOMAIN;
+
+  const fetchNextVideo = async () => {
+    try {
+      const response = await axios.get(
+        `${domainName}/api/get-video?type=Careers`,
+      );
+      const newVideoSrc = response.data;
+      setVideoSrc(newVideoSrc);
+    } catch (error) {
+      console.error('Error fetching next video:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchNextVideo();
+  }, []);
+
+  useEffect(() => {
+    const handleVideoEnd = () => {
+      fetchNextVideo();
+    };
+
+    const videoElement = videoRef.current;
+    if (videoElement) {
+      videoElement.addEventListener('ended', handleVideoEnd);
+    }
+
+    return () => {
+      if (videoElement) {
+        videoElement.removeEventListener('ended', handleVideoEnd);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const videoElement = videoRef.current;
+
+    if (videoElement && videoSrc) {
+      videoElement.load(); // Reload the video with the new source
+      videoElement.play().catch((err) => {
+        console.error('Error attempting to play the video:', err);
+      });
+    }
+  }, [videoSrc]);
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-100 to-pink-100 flex flex-col items-center justify-center p-4">
       <div className="max-w-4xl w-full bg-white rounded-lg shadow-xl overflow-hidden">
         <div className="p-8 sm:p-12">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-center mb-8 text-purple-800">
-            Thank You for Your Support!
+            Your Advertisement is ready!
           </h1>
 
           <div className="relative aspect-video mb-8 rounded-lg overflow-hidden group">
-            <img
-              src="/placeholder.svg?height=720&width=1280"
-              alt="Video thumbnail"
+            <video
+              ref={videoRef}
               className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <PlayCircle className="w-16 h-16 text-white" />
-            </div>
+              controls
+              autoPlay
+              muted
+            >
+              {videoSrc && <source src={videoSrc} type="video/mp4" />}
+              Your browser does not support the video tag.
+            </video>
           </div>
 
           <div className="text-center mb-8">
