@@ -1,14 +1,20 @@
+'use strict'
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { PlayCircle } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import axios from 'axios';
+
 
 export default function ThankYouPage() {
   const [videoSrc, setVideoSrc] = useState('');
   const videoRef = useRef(null);
   const navigate = useNavigate();
   const domainName = import.meta.env.VITE_DOMAIN;
+ 
+
+
+ 
 
   const fetchNextVideo = async () => {
     try {
