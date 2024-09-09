@@ -94,8 +94,7 @@ export default function SummaryComponent() {
   const domainName = import.meta.env.VITE_DOMAIN;
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [durationDate, setDurationDate] = useState<number>(0); 
-
+  const [durationDate, setDurationDate] = useState<number>(0);
 
   console.log('summery userid', userId);
   console.log({
@@ -107,8 +106,7 @@ export default function SummaryComponent() {
 
   console.log(strategies);
 
-
-//_________________________________________________________________________________________________________________________
+  //_________________________________________________________________________________________________________________________
 
   /*
     0> to get the type of user 
@@ -189,10 +187,7 @@ export default function SummaryComponent() {
 
   // console.log(isAdd?.type_of_user);
 
-
-
-
-//______________________________________________________________________________________________________
+  //______________________________________________________________________________________________________
   /*
 1> if Agency [
         1> get the lastest campaign details of that agency id 
@@ -271,9 +266,8 @@ export default function SummaryComponent() {
     }
   }, [campaigns?.campaignBudget, strategies]);
 
-
   //______________________________________________________________________________________________________
-  
+
   //4> then send the latest Campaign and Strategy details accordingly to the bill endpoint using handle submission
   const [successFullpayment, setSuccessFullpeyment] = useState<boolean>(false);
   const [reviveUrl, setReviveUrl] = useState<any>();
@@ -398,11 +392,8 @@ export default function SummaryComponent() {
   const handlePayment = async () => {
     setbutton_disabled(true);
     try {
-      let stBal = Number(strategies?.strategyDailyBudget) * durationDate
-      if (
-        user_data &&
-        Number(user_data.walletBalance) >= stBal
-      ) {
+      let stBal = Number(strategies?.strategyDailyBudget) * durationDate;
+      if (user_data && Number(user_data.walletBalance) >= stBal) {
         const res = await fetch(`${domainName}/api/payment/wallet-pay`, {
           method: 'POST',
           headers: {
@@ -496,44 +487,47 @@ export default function SummaryComponent() {
   useEffect(() => {
     if (reviveUrl) {
       location.reload();
-      navigate(`/settings/balance-transaction`);
+      navigate(`/thank-you`);
     }
   }, [reviveUrl]);
 
  console.log(reviveUrl)
 
   //__________________________________________________________________________________________________
-  //Date Debugging 
-  let durationTimeDate = Number(new Date(campaigns?.endDate) - new Date(campaigns?.startDate))
-  let denominator = (1000 * 3600 * 24)
-  console.log(durationTimeDate / denominator)
- 
-  //getting The Date Difference 
- 
+  //Date Debugging
+  let durationTimeDate = Number(
+    new Date(campaigns?.endDate) - new Date(campaigns?.startDate),
+  );
+  let denominator = 1000 * 3600 * 24;
+  console.log(durationTimeDate / denominator);
+
+  //getting The Date Difference
+
   useEffect(() => {
-    if(campaigns?.endDate && campaigns?.startDate){
-      let durationTimeDate = Number(new Date(campaigns?.endDate) - new Date(campaigns?.startDate))
-      let denominator = (1000 * 3600 * 24)
-      if(durationTimeDate < 0){
-        setDurationDate(0)
+    if (campaigns?.endDate && campaigns?.startDate) {
+      let durationTimeDate = Number(
+        new Date(campaigns?.endDate) - new Date(campaigns?.startDate),
+      );
+      let denominator = 1000 * 3600 * 24;
+      if (durationTimeDate < 0) {
+        setDurationDate(0);
       } else {
-        let diff = durationTimeDate / denominator; 
-        setDurationDate(diff)
+        let diff = durationTimeDate / denominator;
+        setDurationDate(diff);
       }
     }
-  }, [campaigns?.endDate, campaigns?.startDate])
-  console.log(durationDate)
+  }, [campaigns?.endDate, campaigns?.startDate]);
+  console.log(durationDate);
 
   //__________________________________________________________________________________________________________
 
- // for Strategy data 
- console.log(strategies?.strategyDailyBudget * durationDate) 
+  // for Strategy data
+  console.log(strategies?.strategyDailyBudget * durationDate);
 
-
-
+  console.log(reviveUrl);
 
   if (loading) {
-    return <LoadingScreen />
+    return <LoadingScreen />;
   } else {
     return (
       <>
@@ -575,7 +569,10 @@ export default function SummaryComponent() {
             </div>
             <div className="flex items-center">
               <p>
-                Duration: {durationDate === 1 ? durationDate + ' ' + 'day' : durationDate + ' ' + 'days' }
+                Duration:{' '}
+                {durationDate === 1
+                  ? durationDate + ' ' + 'day'
+                  : durationDate + ' ' + 'days'}
               </p>
             </div>
             <div className="space-y-2">
@@ -618,7 +615,9 @@ export default function SummaryComponent() {
                   Pay Now{' '}
                   {user_data
                     ? Number(user_data.walletBalance) >=
-                      Number(Number(strategies?.strategyDailyBudget) * durationDate)
+                      Number(
+                        Number(strategies?.strategyDailyBudget) * durationDate,
+                      )
                       ? 'With Wallet'
                       : ''
                     : ''}

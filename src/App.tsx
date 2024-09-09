@@ -34,6 +34,7 @@ import AppTracking from './pages/Settings/AppTracking';
 import CorporateAds from './pages/CorporateAds';
 import NewHome from './pages/NewHome';
 import ManageCampaign from './pages/ManageCampaigns';
+import ThankYouPage from './pages/ThankYouPage';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -78,6 +79,15 @@ function App() {
           <>
             <PageTitle title="Viewing Advertisement | Sweven" />
             <CorporateAds />
+          </>
+        }
+      />
+      <Route
+        path="thank-you"
+        element={
+          <>
+            <PageTitle title="Thank you | Sweven" />
+            <ThankYouPage />
           </>
         }
       />
