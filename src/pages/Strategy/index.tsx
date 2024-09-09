@@ -29,7 +29,6 @@ import Cookies from 'js-cookie';
 import RightSidedStrategyCard from '../../components/RightSidedStrategyCard';
 import { useNavigate } from 'react-router-dom';
 
-
 const domainName = import.meta.env.VITE_DOMAIN;
 interface Goal {
   id: string;
@@ -272,8 +271,7 @@ const Strategy = () => {
   //Handling Submission of data dont taper with this
   console.log(campaignInfo[campaignInfo.length - 1]?.campaignId);
   const [getBugOfRes, setGetBugOfRes] = useState<any>();
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -322,9 +320,9 @@ const Strategy = () => {
         console.log('Cookie set successfully');
         const updatedCampaign = await response.json();
         console.log('Campaign updated successfully:', updatedCampaign);
-        localStorage.setItem('strategy', JSON.stringify(`strategy-created`))
+        localStorage.setItem('strategy', JSON.stringify(`strategy-created`));
         setGetBugOfRes(updatedCampaign);
-        location.reload()
+        location.reload();
       } else {
         throw new Error('Network response was not ok');
       }
@@ -351,7 +349,7 @@ const Strategy = () => {
     campaignId: campaignInfo[campaignInfo.length - 1]?.campaignId,
   });
 
-// for Cookie parsing
+  // for Cookie parsing
 
   useEffect(() => {
     if (strategyData) {
@@ -371,11 +369,10 @@ const Strategy = () => {
   }, [strategyData]);
   console.log('delivery type :- ', deliveryTypeval);
 
-
- const [campaigns, setCampaigns] = useState<any>();
- const [strategies, setStrategies] = useState<any>();
- //for Strategy Daily budget
-const [dailyBudget, setDailyBudget] = useState<string>(' ')
+  const [campaigns, setCampaigns] = useState<any>();
+  const [strategies, setStrategies] = useState<any>();
+  //for Strategy Daily budget
+  const [dailyBudget, setDailyBudget] = useState<string>(' ');
 
   useEffect(() => {
     const campaign_id = Cookies.get('campaignId');
@@ -390,11 +387,13 @@ const [dailyBudget, setDailyBudget] = useState<string>(' ')
       } catch (error) {
         console.error('Error fetching campaign data:', error);
       }
-};
+    };
     const fetcstrategyData = async () => {
       try {
-        const response = await axios.get(`${domainName}/api/get-strategy?strategyId=${strategy_id}`);
-        console.log("previous strategy data:- ",response.data)
+        const response = await axios.get(
+          `${domainName}/api/get-strategy?strategyId=${strategy_id}`,
+        );
+        console.log('previous strategy data:- ', response.data);
         setStrategies(response.data);
       } catch (error) {
         console.error('Error fetching strategy data:', error);
@@ -403,23 +402,18 @@ const [dailyBudget, setDailyBudget] = useState<string>(' ')
     fetchcampaignData();
     fetcstrategyData();
     console.log(campaigns);
-    
-  }, [])
+  }, []);
 
-  useEffect(()=>{
-    if(campaigns){
-      setDailyBudget(campaigns?.campaignBudget)
+  useEffect(() => {
+    if (campaigns) {
+      setDailyBudget(campaigns?.campaignBudget);
     }
-  },[campaigns])
+  }, [campaigns]);
 
-
-
-console.log(strategies);
-console.log(campaigns); 
-console.log(campaigns?.campaignBudget)
-console.log(dailyBudget)
-
-
+  console.log(strategies);
+  console.log(campaigns);
+  console.log(campaigns?.campaignBudget);
+  console.log(dailyBudget);
 
   return (
     <>
@@ -457,20 +451,22 @@ console.log(dailyBudget)
                 Strategy Daily Budget
               </h3>
             </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
-              <div className='flex items-center'>
-               <p className="text-blue-900 font-semibold text-lg dark:text-white mr-1">₹</p>
+            <div className="flex flex-col gap-5.5 p-6.5 text-center">
+              <div className="flex items-center">
+                <p className="mt-1 relative left-10 p-2 block py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white  outline-none">
+                  ₹ 
+                </p>
                 <input
-               
+                  onChange={e => setStrategyDailyBudget(e.target.value)}
                   type="text"
-                  value={dailyBudget}
+                  value={strategyDailyBudget}
                   placeholder="5000"
-                  readOnly
-                  className="mt-1 p-2 block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
+                  className="mt-1 ml-5 pl-6 p-2 block w-[75%] py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
+                
               </div>
-             
+              <p className='font-semibold text-[15px] text-blue-900 dark:text-white transition duration-500'> You have remaining : ₹{Number(campaigns?.campaignAdvertiserBudget - strategyDailyBudget) < 0 ? '0' : campaigns?.campaignAdvertiserBudget - strategyDailyBudget }</p>
             </div>
           </div>
           {/* <!-- File upload --> */}
@@ -1344,7 +1340,9 @@ console.log(dailyBudget)
             <div className="p-4 space-y-4">
               <div className="flex items-center space-x-2">
                 <BsThunderboltFill className="h-5 w-5 text-primary" />
-                <h2 className="text-blue-900 font-semibold text-[20px] dark:text-white">Bidding</h2>
+                <h2 className="text-blue-900 font-semibold text-[20px] dark:text-white">
+                  Bidding
+                </h2>
                 <FaInfoCircle className="h-4 w-4 text-muted-foreground" />
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

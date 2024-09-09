@@ -94,6 +94,8 @@ export default function SummaryComponent() {
   const domainName = import.meta.env.VITE_DOMAIN;
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [durationDate, setDurationDate] = useState<number>(0); 
+
 
   console.log('summery userid', userId);
   console.log({
@@ -104,6 +106,9 @@ export default function SummaryComponent() {
   });
 
   console.log(strategies);
+
+
+//_________________________________________________________________________________________________________________________
 
   /*
     0> to get the type of user 
@@ -184,6 +189,10 @@ export default function SummaryComponent() {
 
   // console.log(isAdd?.type_of_user);
 
+
+
+
+//______________________________________________________________________________________________________
   /*
 1> if Agency [
         1> get the lastest campaign details of that agency id 
@@ -258,10 +267,13 @@ export default function SummaryComponent() {
   //3> make changes to the Summery.tsx accordingly
   useEffect(() => {
     if (strategies) {
-      setAmount(campaigns?.campaignBudget);
+      setAmount(Number(strategies?.strategyDailyBudget) * durationDate);
     }
   }, [campaigns?.campaignBudget, strategies]);
 
+
+  //______________________________________________________________________________________________________
+  
   //4> then send the latest Campaign and Strategy details accordingly to the bill endpoint using handle submission
   const [successFullpayment, setSuccessFullpeyment] = useState<boolean>(false);
   const [reviveUrl, setReviveUrl] = useState<any>();
@@ -375,6 +387,7 @@ export default function SummaryComponent() {
     paymentConfirmation();
   }, [campaigns?.campaignId]);
 
+  //______________________________________________________________________________________________________
   // handlePayment Function
   const handlePayment = async () => {
     setbutton_disabled(true);
@@ -424,13 +437,14 @@ export default function SummaryComponent() {
     }
   };
 
+  //______________________________________________________________________________________________________
   // handlePaymentVerify Function
   const handlePaymentVerify = async (data: PaymentData) => {
     const options = {
       key: 'rzp_test_SZrvteybFNdghB', // Use your Razorpay Test Key
       amount: data.amount,
       currency: data.currency,
-      name: 'Rekoon Ads',
+      name: 'Sweven',
       description: 'Test Mode',
       order_id: data.id,
       handler: async (response: RazorpayResponse) => {
@@ -479,6 +493,36 @@ export default function SummaryComponent() {
     }
   }, [reviveUrl]);
 
+  //__________________________________________________________________________________________________
+  //Date Debugging 
+  let durationTimeDate = Number(new Date(campaigns?.endDate) - new Date(campaigns?.startDate))
+  let denominator = (1000 * 3600 * 24)
+  console.log(durationTimeDate / denominator)
+ 
+  //getting The Date Difference 
+ 
+  useEffect(() => {
+    if(campaigns?.endDate && campaigns?.startDate){
+      let durationTimeDate = Number(new Date(campaigns?.endDate) - new Date(campaigns?.startDate))
+      let denominator = (1000 * 3600 * 24)
+      if(durationTimeDate < 0){
+        setDurationDate(0)
+      } else {
+        let diff = durationTimeDate / denominator; 
+        setDurationDate(diff)
+      }
+    }
+  }, [campaigns?.endDate, campaigns?.startDate])
+  console.log(durationDate)
+
+  //__________________________________________________________________________________________________________
+
+ // for Strategy data 
+ console.log(strategies?.strategyDailyBudget * durationDate) 
+
+
+
+
   if (loading) {
     return <LoadingScreen />
   } else {
@@ -520,6 +564,11 @@ export default function SummaryComponent() {
                 {campaigns?.endDate}
               </p>
             </div>
+            <div className="flex items-center">
+              <p>
+                Duration: {durationDate === 1 ? durationDate + ' ' + 'day' : durationDate + ' ' + 'days' }
+              </p>
+            </div>
             <div className="space-y-2">
               <p className="font-semibold">
                 Strategy Name : {strategies?.strategyName}
@@ -544,7 +593,7 @@ export default function SummaryComponent() {
           <CardFooter className="flex justify-between pt-4 border-t">
             <p className="text-muted-foreground">Total campaign budget</p>
             <p className="text-lg font-semibold">
-              ₹{campaigns?.campaignBudget}
+              ₹{Number(strategies?.strategyDailyBudget) * durationDate}
             </p>
           </CardFooter>
           <div className="justify-end">
@@ -560,7 +609,7 @@ export default function SummaryComponent() {
                   Pay Now{' '}
                   {user_data
                     ? Number(user_data.walletBalance) >=
-                      Number(campaigns?.campaignBudget)
+                      Number(Number(strategies?.strategyDailyBudget) * durationDate)
                       ? 'With Wallet'
                       : ''
                     : ''}
