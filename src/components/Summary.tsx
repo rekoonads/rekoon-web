@@ -479,8 +479,10 @@ export default function SummaryComponent() {
     }
   }, [reviveUrl]);
 
+  console.log(reviveUrl);
+
   if (loading) {
-    return <LoadingScreen />
+    return <LoadingScreen />;
   } else {
     return (
       <>
