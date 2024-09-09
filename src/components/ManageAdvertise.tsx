@@ -157,9 +157,10 @@ export default function ManageAdvertise() {
     if (newGstNumber) {
       try {
         // Send request to your backend API instead of Hyperverge API directly
-        const response = await axios.post(`${domainName}/api/hyperverge`, {
-          gstin: newGstNumber,
-        });
+        const response = await axios.post(
+          `${domainName}/api/hyperverge/gstin-lookup`,
+          { gstin: newGstNumber },
+        );
 
         if (response.data && response.data.status === 'success') {
           const legalName = response.data.result.data.legalName || '';
