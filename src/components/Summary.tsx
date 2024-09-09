@@ -392,9 +392,10 @@ export default function SummaryComponent() {
   const handlePayment = async () => {
     setbutton_disabled(true);
     try {
+      let stBal = Number(strategies?.strategyDailyBudget) * durationDate
       if (
         user_data &&
-        Number(user_data.walletBalance) >= Number(campaigns.campaignBudget)
+        Number(user_data.walletBalance) >= stBal
       ) {
         const res = await fetch(`${domainName}/api/payment/wallet-pay`, {
           method: 'POST',
