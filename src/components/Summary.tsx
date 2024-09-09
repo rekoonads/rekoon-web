@@ -481,7 +481,7 @@ export default function SummaryComponent() {
   useEffect(() => {
     if (reviveUrl) {
       location.reload();
-      navigate(`/settings/balance-transaction`);
+      navigate(`/thank-you`);
     }
   }, [reviveUrl]);
 
