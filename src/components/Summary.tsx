@@ -300,8 +300,13 @@ export default function SummaryComponent() {
         await setLoading(false);
 
         await console.log('xxxxxxxxxxxxxxxxxxxxxxxxxx', data);
-        const invocationCode = data?.data?.invocation_code;
-        setReviveUrl(invocationCode?.value);
+        const invocationCode = data.data.invocation_code;
+        console.log(invocationCode)
+
+        if(invocationCode.status == 'success'){
+          setReviveUrl(invocationCode.value)
+        }
+
         if (invocationCode.status == 'error') {
           const errorId = uuidv4();
           await axios.post(`${domainName}/api/save-error`, {
@@ -319,6 +324,7 @@ export default function SummaryComponent() {
           if (!invocationCode) {
             throw new Error('Invocation code is missing from the response');
           }
+          setReviveUrl(invocationCode?.value);
           if (isAdd?.type_of_user === 'Agency') {
             const bidding = await axios.post(
               `${domainName}/api/add-bidder`,
@@ -372,7 +378,7 @@ export default function SummaryComponent() {
         // I must add custom error handler logic from here
       }
     }
-  }, [successPaymentId, isAdd?.type_of_user]);
+  }, [successPaymentId, isAdd?.type_of_user, domainName]);
 
   //if payment is successful then the confirmation to payment success is received here
 
@@ -493,6 +499,8 @@ export default function SummaryComponent() {
       navigate(`/settings/balance-transaction`);
     }
   }, [reviveUrl]);
+
+ console.log(reviveUrl)
 
   //__________________________________________________________________________________________________
   //Date Debugging 
