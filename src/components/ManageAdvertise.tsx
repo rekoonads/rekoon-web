@@ -421,8 +421,17 @@ useEffect(()=> {
             {userType === 'Agency' ? <OrganizationSwitcher /> : null}
           </div>
         </div>
-
+        
         <div className="flex items-center gap-4">
+          {isAdd?.user?.admin && isAdd?.user?.admin === 'true' && (
+            <div className="flex flex-col">
+              <a href="/admin-dashboard">
+                <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+                  Admin Dashboard
+                </button>
+              </a>
+            </div>
+          )}
           <div className="flex flex-col">
             <p className="flex flex-col text-sm mb-1 font-[400] text-slate-600 dark:text-white">
               Account balance
