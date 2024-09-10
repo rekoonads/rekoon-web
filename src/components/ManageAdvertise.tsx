@@ -396,6 +396,7 @@ export default function ManageAdvertise() {
   }, [respondedData]);
 
 //______________________________________________________________________________________________________
+
 const [walletBal, setWalletBal] = useState<any>(); 
 useEffect(()=> {
  if(isAdd?.user?.walletBalance){
