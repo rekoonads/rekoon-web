@@ -48,7 +48,7 @@ export default function AdminDashboard() {
 
   console.log(campaignData);
 //________________________________________________________________________________
-//The Campaign Budget data has '₹' symbol to it for some and many numbers, which are in a string format, in order to have there sum I (Kunal Mukherjee) had to create this function which is written down bellow 
+//The Campaign Budget data has '₹' symbol to it for some and many numbers, which are in a string format, in order to have there sum it was required to create this function which is written down bellow 
 const numbersCollection = campaignData.map(item => item?.campaignBudget);
 console.log(numbersCollection)
 function rupeeSegregatorAndSummer (arr){
