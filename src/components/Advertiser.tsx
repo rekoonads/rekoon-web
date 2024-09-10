@@ -140,14 +140,14 @@ export default function Advertiser({
         <CardContent className="flex items-center justify-between p-4">
           {/* <Toast/> */}
           <div className="flex items-center  w-full">
-            <p className="text-blue-900 font-semibold text-lg dark:text-white mr-1">₹</p>
+            <p className="relative left-5 p-2 block py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white  outline-none">₹</p>
             <input
               onChange={advertiserBudget}
               value={ budget || advertiserBud}
               type="number"
               min="5000"
               placeholder="Minimum ₹5000"
-              className="block w-full px-3 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
+              className="block w-full px-6 py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
           </div>

@@ -491,9 +491,7 @@ export default function SummaryComponent() {
 
   //navigate to billing page once the revive link is gotten
   useEffect(() => {
-    const waitingToReload = async() =>{
-      await location.reload()
-    }
+   
     if (reviveUrl) {
       navigate(`/thank-you`);
     }

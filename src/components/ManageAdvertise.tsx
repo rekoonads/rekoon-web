@@ -395,6 +395,16 @@ export default function ManageAdvertise() {
     }
   }, [respondedData]);
 
+//______________________________________________________________________________________________________
+const [walletBal, setWalletBal] = useState<any>(); 
+useEffect(()=> {
+ if(isAdd?.user?.walletBalance){
+  setWalletBal(isAdd?.user?.walletBalance)
+ }
+},[isAdd?.user?.walletBalance])
+
+
+
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="flex items-center justify-between p-4 bg-white text-white">
@@ -417,7 +427,7 @@ export default function ManageAdvertise() {
               Account balance
             </p>
             <div className="flex items-center -mt-3 ml-4">
-              <p className="text-slate-600">₹{isAdd?.user?.walletBalance}</p>
+              <p className="text-slate-600">₹{walletBal}</p>
               <Button
                 variant={'outline'}
                 className="border-none"

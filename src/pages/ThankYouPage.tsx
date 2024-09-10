@@ -13,7 +13,9 @@ export default function ThankYouPage() {
   const domainName = import.meta.env.VITE_DOMAIN;
  
 
-
+const loadingBefore = () => {
+  return location.reload()
+}
  
 
   const fetchNextVideo = async () => {
@@ -60,7 +62,7 @@ export default function ThankYouPage() {
     }
   }, [videoSrc]);
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-100 to-pink-100 flex flex-col items-center justify-center p-4">
+    <div onLoad={loadingBefore} className="min-h-screen bg-gradient-to-b from-purple-100 to-pink-100 flex flex-col items-center justify-center p-4">
       <div className="max-w-4xl w-full bg-white rounded-lg shadow-xl overflow-hidden">
         <div className="p-8 sm:p-12">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-center mb-8 text-purple-800">
