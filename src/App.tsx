@@ -35,6 +35,7 @@ import CorporateAds from './pages/CorporateAds';
 import NewHome from './pages/NewHome';
 import ManageCampaign from './pages/ManageCampaigns';
 import ThankYouPage from './pages/ThankYouPage';
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -79,6 +80,15 @@ function App() {
           <>
             <PageTitle title="Viewing Advertisement | Sweven" />
             <CorporateAds />
+          </>
+        }
+      />
+      <Route
+        path="admin-dashboard"
+        element={
+          <>
+            <PageTitle title="Admin Dashboard | Sweven" />
+            <AdminDashboard />
           </>
         }
       />
