@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
+const domainName = import.meta.env.VITE_DOMAIN;
 import {
   Table,
   TableBody,
@@ -20,8 +21,30 @@ import {
   Settings,
   Users,
 } from 'lucide-react';
+import axios from 'axios';
 
+async function fetchCampaignData() {
+  try {
+    const response = await axios.get(`${domainName}/api/campaign-data`);
+    const campaign_data = response.data; // Extract the data from the response
+    return campaign_data; // Do something with the fetched data
+  } catch (error) {
+    console.error("Error fetching campaign data:", error);
+  }
+}
 export default function AdminDashboard() {
+let campaign_data;
+
+  useEffect(() => {
+    const campaign_data_get = async ()=> {
+       campaign_data = await fetchCampaignData();
+       console.log(campaign_data?.totalCampaign.length)
+    }
+    campaign_data_get();
+   
+  }, [])
+  
+  
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const campaigns = [
@@ -141,7 +164,7 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { label: 'Total Campaigns', value: '12' },
+              { label: 'Total Campaigns', value: `${campaign_data ? campaign_data?.totalCampaign.length:"10"}` },
               { label: 'Active Campaigns', value: '5' },
               { label: 'Total Revenue', value: '$31,500' },
               { label: 'Avg. Campaign Duration', value: '45 days' },
