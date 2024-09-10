@@ -405,9 +405,11 @@ useEffect(()=> {
 },[isAdd?.user?.walletBalance])
 
 
+//_____________________________________________________________________________________________
+console.log(isAdd?.user.firstName )
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100" >
       <header className="flex items-center justify-between p-4 bg-white text-white">
         {userType === 'Advertiser' ? (
           <div className="flex items-start ">
@@ -452,7 +454,7 @@ useEffect(()=> {
               />
             </div>
           </div>
-          <DropdownMenuDemo name="Kunal" email="mkkm@gmail.com" />
+          <DropdownMenuDemo name={isAdd?.user.firstName + ' ' + isAdd?.user.lastName} email={isAdd?.user.email} />
           <Link to={'/dashboard'}>
             <Button>Go to Dashboard</Button>
           </Link>
