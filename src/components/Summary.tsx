@@ -10,7 +10,7 @@ import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { CalendarIcon, ClipboardPenIcon, PresentationIcon } from 'lucide-react';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth, useUser } from '@clerk/clerk-react';
@@ -95,6 +95,12 @@ export default function SummaryComponent() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [durationDate, setDurationDate] = useState<number>(0);
+
+  // useLayoutEffect(()=> {
+  //   location.reload()
+  // },[])
+
+
 
   console.log('summery userid', userId);
   console.log({
@@ -294,8 +300,13 @@ export default function SummaryComponent() {
         await setLoading(false);
 
         await console.log('xxxxxxxxxxxxxxxxxxxxxxxxxx', data);
-        const invocationCode = data?.data?.invocation_code;
-        setReviveUrl(invocationCode?.value);
+        const invocationCode = data.data.invocation_code;
+        console.log(invocationCode)
+
+        if(invocationCode.status == 'success'){
+          setReviveUrl(invocationCode.value)
+        }
+
         if (invocationCode.status == 'error') {
           const errorId = uuidv4();
           await axios.post(`${domainName}/api/save-error`, {
@@ -313,6 +324,7 @@ export default function SummaryComponent() {
           if (!invocationCode) {
             throw new Error('Invocation code is missing from the response');
           }
+          setReviveUrl(invocationCode?.value);
           if (isAdd?.type_of_user === 'Agency') {
             const bidding = await axios.post(
               `${domainName}/api/add-bidder`,
@@ -366,7 +378,7 @@ export default function SummaryComponent() {
         // I must add custom error handler logic from here
       }
     }
-  }, [successPaymentId, isAdd?.type_of_user]);
+  }, [successPaymentId, isAdd?.type_of_user, domainName]);
 
   //if payment is successful then the confirmation to payment success is received here
 
@@ -479,11 +491,15 @@ export default function SummaryComponent() {
 
   //navigate to billing page once the revive link is gotten
   useEffect(() => {
+    const waitingToReload = async() =>{
+      await location.reload()
+    }
     if (reviveUrl) {
-      location.reload();
       navigate(`/thank-you`);
     }
   }, [reviveUrl]);
+
+ console.log(reviveUrl)
 
   //__________________________________________________________________________________________________
   //Date Debugging
