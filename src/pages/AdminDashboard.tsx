@@ -23,77 +23,58 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 
-async function fetchCampaignData() {
-  try {
-    const response = await axios.get(`${domainName}/api/campaign-data`);
-    const campaign_data = response.data; // Extract the data from the response
-    return campaign_data; // Do something with the fetched data
-  } catch (error) {
-    console.error("Error fetching campaign data:", error);
-  }
-}
+
+
+
 export default function AdminDashboard() {
-let campaign_data;
 
-  useEffect(() => {
-    const campaign_data_get = async ()=> {
-       campaign_data = await fetchCampaignData();
-       console.log(campaign_data?.totalCampaign.length)
+  //____________________________________________________________________________________________________
+  // for getting Campaign Data
+
+  const [campaignData, setCampaignData] = useState<any>([]); 
+  useEffect(()=>{
+    const getCampData = async() =>{
+      try {
+        const dataCamp = await axios.get(`${domainName}/api/get-all-campaigns`); 
+        console.log(dataCamp); 
+        setCampaignData(dataCamp?.data)
+      } catch (error) {
+        console.log(error)
+      }
+      
     }
-    campaign_data_get();
-   
-  }, [])
-  
-  
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+    getCampData()
+  },[domainName])
 
-  const campaigns = [
-    {
-      customerId: 'C001',
-      customerName: 'Acme Corp',
-      campaignName: 'Summer Sale',
-      campaignId: 'CAM001',
-      startDate: '2023-06-01',
-      endDate: '2023-08-31',
-      amount: '$5,000',
-    },
-    {
-      customerId: 'C002',
-      customerName: 'TechGiant Inc',
-      campaignName: 'Product Launch',
-      campaignId: 'CAM002',
-      startDate: '2023-07-15',
-      endDate: '2023-09-15',
-      amount: '$10,000',
-    },
-    {
-      customerId: 'C003',
-      customerName: 'Global Services LLC',
-      campaignName: 'Brand Awareness',
-      campaignId: 'CAM003',
-      startDate: '2023-08-01',
-      endDate: '2023-10-31',
-      amount: '$7,500',
-    },
-    {
-      customerId: 'C004',
-      customerName: 'Local Shop Co',
-      campaignName: 'Holiday Special',
-      campaignId: 'CAM004',
-      startDate: '2023-11-15',
-      endDate: '2023-12-31',
-      amount: '$3,000',
-    },
-    {
-      customerId: 'C005',
-      customerName: 'StartUp Innovators',
-      campaignName: 'Q4 Push',
-      campaignId: 'CAM005',
-      startDate: '2023-10-01',
-      endDate: '2023-12-15',
-      amount: '$6,000',
-    },
-  ];
+  console.log(campaignData);
+//________________________________________________________________________________
+//The Campaign Budget data has '₹' symbol to it for some and many numbers, which are in a string format, in order to have there sum I (Kunal Mukherjee) had to create this function which is written down bellow 
+const numbersCollection = campaignData.map(item => item?.campaignBudget);
+console.log(numbersCollection)
+function rupeeSegregatorAndSummer (arr){
+  let onlyNumberArr = [];
+  for (let numbers of arr){
+    console.log(numbers); 
+    if(numbers.charAt(0) === '₹'){
+      onlyNumberArr.push(numbers.substring(1))
+    } else {
+      onlyNumberArr.push(numbers)
+    }
+  };
+  const totalSum = onlyNumberArr.reduce((acc, crnt) => acc + Number(crnt) , 0)
+  console.log(totalSum);
+  return [onlyNumberArr,totalSum]
+}
+const [_,totalSum] = rupeeSegregatorAndSummer(numbersCollection)
+console.log(totalSum)
+
+
+
+
+//______________________________________________________________________________
+  //for side bar
+
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
     <div className="flex h-screen bg-zinc-900 text-white">
@@ -164,10 +145,10 @@ let campaign_data;
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { label: 'Total Campaigns', value: `${campaign_data ? campaign_data?.totalCampaign.length:"10"}` },
-              { label: 'Active Campaigns', value: '5' },
-              { label: 'Total Revenue', value: '$31,500' },
-              { label: 'Avg. Campaign Duration', value: '45 days' },
+              { label: 'Total Campaigns', value:  campaignData.length || `Nill` },
+              { label: 'Active Campaigns', value: 'Later Work' },
+              { label: 'Total Revenue', value: '₹' +totalSum || `₹0` },
+              { label: 'Avg. Campaign Duration', value: 'Later Work' },
             ].map((stat, index) => (
               <div
                 key={index}
@@ -206,14 +187,14 @@ let campaign_data;
                   <TableHead className="text-zinc-300">Amount</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
-                {campaigns.map((campaign) => (
+              {/* <TableBody>
+                {campaignData.map((campaign) => (
                   <TableRow
                     key={campaign.campaignId}
                     className="hover:bg-zinc-700"
                   >
                     <TableCell className="font-medium">
-                      {campaign.customerId}
+                      {campaign.campaignId}
                     </TableCell>
                     <TableCell>{campaign.customerName}</TableCell>
                     <TableCell>{campaign.campaignName}</TableCell>
@@ -223,7 +204,7 @@ let campaign_data;
                     <TableCell>{campaign.amount}</TableCell>
                   </TableRow>
                 ))}
-              </TableBody>
+              </TableBody> */}
             </Table>
           </div>
         </div>
