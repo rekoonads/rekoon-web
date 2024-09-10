@@ -51,7 +51,7 @@ export function DropdownMenuDemo({name, email}:DropdownMenuDemoProps) {
       <DropdownMenu >
       <DropdownMenuTrigger asChild >
       <div className='transition duration-700'>
-      <Button variant="outline" className="text-black dark:text-white transition duration-700">
+      <Button variant="outline" className="text-black dark:text-white transition ">
         Settings
       </Button>
       </div>
@@ -63,7 +63,7 @@ export function DropdownMenuDemo({name, email}:DropdownMenuDemoProps) {
             <p className='text-sm text-black'>{name}</p>
             <h2 className='text-md text-black font-[400]'>{email}</h2>
           </div>
-          <div className='w-[20px] h-[20px] mb-3 '>
+          <div className='w-[30px] h-[30px] mb-3 '>
             <UserButton />
           </div>
         </div>

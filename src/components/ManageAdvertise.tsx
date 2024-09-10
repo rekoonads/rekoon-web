@@ -15,6 +15,7 @@ import { events } from '@react-three/fiber';
 import { PlusCircle } from 'lucide-react';
 import { toast } from 'react-toastify';
 import PaymentPopup from './popup/addBalance';
+import DarkModeSwitcher from './Header/DarkModeSwitcher';
 
 declare global {
   interface Window {
@@ -434,6 +435,7 @@ console.log(isAdd?.user.firstName )
               </a>
             </div>
           )}
+         
           <div className="flex flex-col">
             <p className="flex flex-col text-sm mb-1 font-[400] text-slate-600 dark:text-white">
               Account balance
