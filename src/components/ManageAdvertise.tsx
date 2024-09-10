@@ -15,6 +15,7 @@ import { events } from '@react-three/fiber';
 import { PlusCircle } from 'lucide-react';
 import { toast } from 'react-toastify';
 import PaymentPopup from './popup/addBalance';
+import DarkModeSwitcher from './Header/DarkModeSwitcher';
 
 declare global {
   interface Window {
@@ -396,6 +397,7 @@ export default function ManageAdvertise() {
   }, [respondedData]);
 
 //______________________________________________________________________________________________________
+
 const [walletBal, setWalletBal] = useState<any>(); 
 useEffect(()=> {
  if(isAdd?.user?.walletBalance){
@@ -404,9 +406,11 @@ useEffect(()=> {
 },[isAdd?.user?.walletBalance])
 
 
+//_____________________________________________________________________________________________
+console.log(isAdd?.user.firstName )
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100" >
       <header className="flex items-center justify-between p-4 bg-white text-white">
         {userType === 'Advertiser' ? (
           <div className="flex items-start ">
@@ -431,6 +435,7 @@ useEffect(()=> {
               </a>
             </div>
           )}
+         
           <div className="flex flex-col">
             <p className="flex flex-col text-sm mb-1 font-[400] text-slate-600 dark:text-white">
               Account balance
@@ -451,7 +456,7 @@ useEffect(()=> {
               />
             </div>
           </div>
-          <DropdownMenuDemo name="Kunal" email="mkkm@gmail.com" />
+          <DropdownMenuDemo name={isAdd?.user.firstName + ' ' + isAdd?.user.lastName} email={isAdd?.user.email} />
           <Link to={'/dashboard'}>
             <Button>Go to Dashboard</Button>
           </Link>

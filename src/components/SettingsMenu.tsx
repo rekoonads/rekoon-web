@@ -49,22 +49,21 @@ export function DropdownMenuDemo({name, email}:DropdownMenuDemoProps) {
   return (
     <div className='transition duration-700'> 
       <DropdownMenu >
-    <DropdownMenuTrigger asChild >
+      <DropdownMenuTrigger asChild >
       <div className='transition duration-700'>
-      <Button variant="outline" className="text-black dark:text-white transition duration-700">
+      <Button variant="outline" className="text-black dark:text-white transition ">
         Settings
       </Button>
       </div>
-      
-    </DropdownMenuTrigger>
-    <DropdownMenuContent className="w-56 transition duration-600">
+      </DropdownMenuTrigger>
+    <DropdownMenuContent className="w-72 transition duration-600">
       <DropdownMenuLabel>
-        <div className="flex justify-between w-full items-center">
+        <div className="flex justify-between w-[100%] items-center">
           <div className='flex flex-col items-start'>
             <p className='text-sm text-black'>{name}</p>
             <h2 className='text-md text-black font-[400]'>{email}</h2>
           </div>
-          <div className='w-[20px] h-[20px] mb-3 '>
+          <div className='w-[30px] h-[30px] mb-3 '>
             <UserButton />
           </div>
         </div>
