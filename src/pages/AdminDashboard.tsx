@@ -155,9 +155,9 @@ const navigate = useNavigate();
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {[
               { label: 'Total Campaigns', value:  campaignData.totalCampaign?campaignData.totalCampaign?.length : `Nill` },
-              { label: 'Active Campaigns', value: campaignData.totalCampaign?campaignData.activeCampaign?.length : `Nill` },
+              { label: 'Active Campaigns', value: campaignData.activeCampaign ? campaignData.activeCampaign?.length : `Nill` },
               { label: 'Total Revenue', value: '₹' +totalSum || `₹0` },
-              { label: 'Avg. Campaign Duration', value: 'Later Work' },
+              { label: 'Avg. Campaign Duration', value: campaignData.average },
             ].map((stat, index) => (
               <div
                 key={index}
