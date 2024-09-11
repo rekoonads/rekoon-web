@@ -31,12 +31,11 @@ export default function AdminDashboard() {
   //____________________________________________________________________________________________________
   // for getting Campaign Data
 
-  const [campaignData, setCampaignData] = useState<any>([]); 
+  const [campaignData, setCampaignData] = useState<any>({}); 
   useEffect(()=>{
     const getCampData = async() =>{
       try {
         const dataCamp = await axios.get(`${domainName}/api/get-all-campaigns`); 
-        console.log(dataCamp); 
         setCampaignData(dataCamp?.data)
       } catch (error) {
         console.log(error)
@@ -46,27 +45,29 @@ export default function AdminDashboard() {
     getCampData()
   },[domainName])
 
-  console.log(campaignData);
+  console.log(JSON.stringify(campaignData));
 //________________________________________________________________________________
 //The Campaign Budget data has '₹' symbol to it for some and many numbers, which are in a string format, in order to have there sum it was required to create this function which is written down bellow 
-const numbersCollection = campaignData.map(item => item?.campaignBudget);
-console.log(numbersCollection)
-function rupeeSegregatorAndSummer (arr){
-  let onlyNumberArr = [];
-  for (let numbers of arr){
-    console.log(numbers); 
-    if(numbers.charAt(0) === '₹'){
-      onlyNumberArr.push(numbers.substring(1))
-    } else {
-      onlyNumberArr.push(numbers)
-    }
-  };
-  const totalSum = onlyNumberArr.reduce((acc, crnt) => acc + Number(crnt) , 0)
-  console.log(totalSum);
-  return [onlyNumberArr,totalSum]
-}
-const [_,totalSum] = rupeeSegregatorAndSummer(numbersCollection)
-console.log(totalSum)
+// if(campaignData.totalCampaign){
+  const numbersCollection = campaignData.totalCampaign?campaignData.totalCampaign?.map(item => item?.campaignBudget):0;
+  console.log(numbersCollection)
+  function rupeeSegregatorAndSummer (arr){
+    let onlyNumberArr = [];
+    for (let numbers of arr){
+      console.log(numbers); 
+      if(numbers.charAt(0) === '₹'){
+        onlyNumberArr.push(numbers.substring(1))
+      } else {
+        onlyNumberArr.push(numbers)
+      }
+    };
+    const totalSum = onlyNumberArr.reduce((acc, crnt) => acc + Number(crnt) , 0)
+    console.log(totalSum);
+    return [onlyNumberArr,totalSum]
+  }
+  const [_,totalSum] = numbersCollection==0?"":rupeeSegregatorAndSummer(numbersCollection)
+  console.log(totalSum)
+// }
 
 
 
@@ -145,8 +146,8 @@ console.log(totalSum)
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { label: 'Total Campaigns', value:  campaignData.length || `Nill` },
-              { label: 'Active Campaigns', value: 'Later Work' },
+              { label: 'Total Campaigns', value:  campaignData.totalCampaign?campaignData.totalCampaign?.length : `Nill` },
+              { label: 'Active Campaigns', value: campaignData.totalCampaign?campaignData.activeCampaign?.length : `Nill` },
               { label: 'Total Revenue', value: '₹' +totalSum || `₹0` },
               { label: 'Avg. Campaign Duration', value: 'Later Work' },
             ].map((stat, index) => (
