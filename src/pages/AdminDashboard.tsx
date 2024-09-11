@@ -22,6 +22,7 @@ import {
   Users,
 } from 'lucide-react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -49,7 +50,7 @@ export default function AdminDashboard() {
 //________________________________________________________________________________
 //The Campaign Budget data has '₹' symbol to it for some and many numbers, which are in a string format, in order to have there sum it was required to create this function which is written down bellow 
 // if(campaignData.totalCampaign){
-  const numbersCollection = campaignData.totalCampaign?campaignData.totalCampaign?.map(item => item?.campaignBudget):0;
+  const numbersCollection = campaignData.totalCampaign ? campaignData.totalCampaign?.map(item => item?.campaignBudget):0;
   console.log(numbersCollection)
   function rupeeSegregatorAndSummer (arr){
     let onlyNumberArr = [];
@@ -65,13 +66,14 @@ export default function AdminDashboard() {
     console.log(totalSum);
     return [onlyNumberArr,totalSum]
   }
-  const [_,totalSum] = numbersCollection==0?"":rupeeSegregatorAndSummer(numbersCollection)
+  const [_,totalSum] = numbersCollection == 0 ? "" : rupeeSegregatorAndSummer(numbersCollection)
   console.log(totalSum)
 // }
 
+console.log(campaignData?.totalCampaign)
 
-
-
+//_______________________________________________________
+const navigate = useNavigate();
 //______________________________________________________________________________
   //for side bar
 
@@ -123,12 +125,18 @@ export default function AdminDashboard() {
           <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <h2 className="text-3xl font-bold text-white">Campaign Overview</h2>
             <div className="flex items-center">
+            <Button
+              onClick={() => navigate('/manage-advertise')}
+              className="bg-yellow-950 mr-4 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full text-lg transition duration-300 ease-in-out transform hover:scale-105"
+            >
+              Return to Dashboard
+            </Button>
               <Input
                 type="search"
                 placeholder="Search..."
                 className="mr-4 bg-zinc-700 text-white placeholder-zinc-400 border-zinc-600"
               />
-              <Button variant="outline" size="icon" className="text-white">
+              {/* <Button variant="outline" size="icon" className="text-white">
                 <Search className="h-4 w-4" />
               </Button>
               <Button variant="ghost" size="icon" className="ml-2">
@@ -139,7 +147,7 @@ export default function AdminDashboard() {
                   width={32}
                   height={32}
                 />
-              </Button>
+              </Button> */}
             </div>
           </div>
         </header>
@@ -188,24 +196,24 @@ export default function AdminDashboard() {
                   <TableHead className="text-zinc-300">Amount</TableHead>
                 </TableRow>
               </TableHeader>
-              {/* <TableBody>
-                {campaignData.map((campaign) => (
+              {<TableBody>
+                {campaignData.totalCampaign?.map((campaign) => (
                   <TableRow
                     key={campaign.campaignId}
                     className="hover:bg-zinc-700"
                   >
                     <TableCell className="font-medium">
-                      {campaign.campaignId}
+                      {campaign.agencyId || campaign.advertiserId}
                     </TableCell>
-                    <TableCell>{campaign.customerName}</TableCell>
+                     <TableCell>tobe</TableCell> 
                     <TableCell>{campaign.campaignName}</TableCell>
                     <TableCell>{campaign.campaignId}</TableCell>
                     <TableCell>{campaign.startDate}</TableCell>
                     <TableCell>{campaign.endDate}</TableCell>
-                    <TableCell>{campaign.amount}</TableCell>
+                    <TableCell>{campaign.campaignBudget}</TableCell>
                   </TableRow>
                 ))}
-              </TableBody> */}
+              </TableBody> }
             </Table>
           </div>
         </div>
