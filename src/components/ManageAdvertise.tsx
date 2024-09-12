@@ -396,21 +396,20 @@ export default function ManageAdvertise() {
     }
   }, [respondedData]);
 
-//______________________________________________________________________________________________________
+  //______________________________________________________________________________________________________
 
-const [walletBal, setWalletBal] = useState<any>(); 
-useEffect(()=> {
- if(isAdd?.user?.walletBalance){
-  setWalletBal(isAdd?.user?.walletBalance)
- }
-},[isAdd?.user?.walletBalance])
+  const [walletBal, setWalletBal] = useState<any>();
+  useEffect(() => {
+    if (isAdd?.user?.walletBalance) {
+      setWalletBal(isAdd?.user?.walletBalance);
+    }
+  }, [isAdd?.user?.walletBalance]);
 
-
-//_____________________________________________________________________________________________
-console.log(isAdd?.user.firstName )
+  //_____________________________________________________________________________________________
+  console.log(isAdd?.user.firstName);
 
   return (
-    <div className="min-h-screen bg-gray-100" >
+    <div className="min-h-screen bg-gray-100">
       <header className="flex items-center justify-between p-4 bg-white text-white">
         {userType === 'Advertiser' ? (
           <div className="flex items-start ">
@@ -424,7 +423,7 @@ console.log(isAdd?.user.firstName )
             {userType === 'Agency' ? <OrganizationSwitcher /> : null}
           </div>
         </div>
-        
+
         <div className="flex items-center gap-4">
           {isAdd?.user?.admin && isAdd?.user?.admin === 'true' && (
             <div className="flex flex-col">
@@ -435,7 +434,7 @@ console.log(isAdd?.user.firstName )
               </a>
             </div>
           )}
-         
+
           <div className="flex flex-col">
             <p className="flex flex-col text-sm mb-1 font-[400] text-slate-600 dark:text-white">
               Account balance
@@ -456,7 +455,10 @@ console.log(isAdd?.user.firstName )
               />
             </div>
           </div>
-          <DropdownMenuDemo name={isAdd?.user.firstName + ' ' + isAdd?.user.lastName} email={isAdd?.user.email} />
+          <DropdownMenuDemo
+            name={isAdd?.user.firstName + ' ' + isAdd?.user.lastName}
+            email={isAdd?.user.email}
+          />
           <Link to={'/dashboard'}>
             <Button>Go to Dashboard</Button>
           </Link>
@@ -474,7 +476,7 @@ console.log(isAdd?.user.firstName )
                 </a>
               </div>
               <p className="text-gray-600 mb-4">
-                Create, plan or manage campaigns on Disney+ Hotstar
+                Create, plan or manage campaigns on Sweven
               </p>
               <div className="flex gap-4">
                 <Button className="bg-blue-600 text-white">
@@ -491,7 +493,7 @@ console.log(isAdd?.user.firstName )
                 <h2 className="text-xl font-semibold">Measurement</h2>
               </div>
               <p className="text-gray-600 mb-4">
-                Create or view reports of campaigns run on Disney+ Hotstar
+                Create or view reports of campaigns run on Sweven
               </p>
               <div className="flex gap-4">
                 <Button
