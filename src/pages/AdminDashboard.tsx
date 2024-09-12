@@ -1,9 +1,6 @@
-'use client';
-
 import { useEffect, useState } from 'react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-const domainName = import.meta.env.VITE_DOMAIN;
 import {
   Table,
   TableBody,
@@ -17,67 +14,182 @@ import {
   ChevronLeft,
   Menu,
   Package,
-  Search,
   Settings,
   Users,
+  MoreHorizontal,
+  Edit,
+  Trash2,
 } from 'lucide-react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../components/ui/dropdown-menu';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../components/ui/dialog';
+import { Label } from '../components/ui/label';
 
+interface Campaign {
+  campaignId: string;
+  campaignName: string;
+  agencyId?: string;
+  advertiserId?: string;
+  startDate: string;
+  endDate: string;
+  campaignBudget: string;
+}
 
-
+interface CampaignData {
+  totalCampaign: Campaign[];
+  activeCampaign: Campaign[];
+  average: string;
+}
 
 export default function AdminDashboard() {
+  const domainName = import.meta.env.VITE_DOMAIN;
+  const [campaignData, setCampaignData] = useState<CampaignData>({
+    totalCampaign: [],
+    activeCampaign: [],
+    average: '',
+  });
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
+  const [campaignToDelete, setCampaignToDelete] = useState<string | null>(null);
+  const [campaignToUpdate, setCampaignToUpdate] = useState<Campaign | null>(
+    null,
+  );
 
-  //____________________________________________________________________________________________________
-  // for getting Campaign Data
+  const navigate = useNavigate();
 
-  const [campaignData, setCampaignData] = useState<any>({}); 
-  useEffect(()=>{
-    const getCampData = async() =>{
+  useEffect(() => {
+    const getCampData = async () => {
       try {
-        const dataCamp = await axios.get(`${domainName}/api/get-all-campaigns`); 
-        setCampaignData(dataCamp?.data)
+        const response = await axios.get<CampaignData>(
+          `${domainName}/api/get-all-campaigns`,
+        );
+        setCampaignData(response.data);
       } catch (error) {
-        console.log(error)
-      }
-      
-    }
-    getCampData()
-  },[domainName])
-
-  console.log(JSON.stringify(campaignData));
-//________________________________________________________________________________
-//The Campaign Budget data has '₹' symbol to it for some and many numbers, which are in a string format, in order to have there sum it was required to create this function which is written down bellow 
-// if(campaignData.totalCampaign){
-  const numbersCollection = campaignData.totalCampaign ? campaignData.totalCampaign?.map(item => item?.campaignBudget):0;
-  console.log(numbersCollection)
-  function rupeeSegregatorAndSummer (arr){
-    let onlyNumberArr = [];
-    for (let numbers of arr){
-      console.log(numbers); 
-      if(numbers.charAt(0) === '₹'){
-        onlyNumberArr.push(numbers.substring(1))
-      } else {
-        onlyNumberArr.push(numbers)
+        console.error('Error fetching campaign data:', error);
       }
     };
-    const totalSum = onlyNumberArr.reduce((acc, crnt) => acc + Number(crnt) , 0)
-    console.log(totalSum);
-    return [onlyNumberArr,totalSum]
+    getCampData();
+  }, [domainName]);
+
+  const filteredCampaigns = campaignData.totalCampaign.filter((campaign) => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      campaign.campaignName.toLowerCase().includes(searchLower) ||
+      campaign.campaignId.toLowerCase().includes(searchLower) ||
+      (campaign.advertiserId &&
+        campaign.advertiserId.toLowerCase().includes(searchLower))
+    );
+  });
+
+  const numbersCollection = campaignData.totalCampaign.map(
+    (item) => item.campaignBudget,
+  );
+
+  function rupeeSegregatorAndSummer(arr: string[]): [string[], number] {
+    const onlyNumberArr = arr.map((number) =>
+      number.charAt(0) === '₹' ? number.substring(1) : number,
+    );
+    const totalSum = onlyNumberArr.reduce((acc, crnt) => acc + Number(crnt), 0);
+    return [onlyNumberArr, totalSum];
   }
-  const [_,totalSum] = numbersCollection == 0 ? "" : rupeeSegregatorAndSummer(numbersCollection)
-  console.log(totalSum)
-// }
 
-console.log(campaignData?.totalCampaign)
+  const [_, totalSum] = rupeeSegregatorAndSummer(numbersCollection);
 
-//_______________________________________________________
-const navigate = useNavigate();
-//______________________________________________________________________________
-  //for side bar
+  const handleUpdateClick = (campaign: Campaign) => {
+    setCampaignToUpdate(campaign);
+    setUpdateDialogOpen(true);
+  };
 
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const handleUpdateSubmit = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+
+    if (campaignToUpdate) {
+      try {
+        const response = await axios.post(`${domainName}/api/edit-campaign`, {
+          campaignId: campaignToUpdate.campaignId,
+          campaignName: campaignToUpdate.campaignName,
+        });
+
+        if (response.status === 200) {
+          // Assuming the response contains updated campaign data
+          const updatedCampaign = response.data;
+          // Update the campaign data state with the new details
+          setCampaignData((prevData) => ({
+            ...prevData,
+            totalCampaign: prevData.totalCampaign.map((campaign) =>
+              campaign.campaignId === updatedCampaign.campaignId
+                ? updatedCampaign
+                : campaign,
+            ),
+          }));
+          console.log(
+            `Updated campaign with ID: ${campaignToUpdate.campaignId}`,
+          );
+          location.reload();
+        } else {
+          console.error('Failed to update campaign');
+        }
+      } catch (error) {
+        console.error('Error updating campaign:', error);
+      } finally {
+        setUpdateDialogOpen(false);
+        setCampaignToUpdate(null);
+      }
+    }
+  };
+  const handleDeleteClick = (campaignId: string) => {
+    setCampaignToDelete(campaignId);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (campaignToDelete) {
+      try {
+        // Send a DELETE request to the server to delete the campaign
+        const response = await axios.delete(
+          `${domainName}/api/delete-campaign?campaignId=${campaignToDelete.campaignId}`,
+          {
+            data: { campaignId: campaignToDelete },
+          },
+        );
+
+        if (response.status === 200) {
+          // Remove the deleted campaign from the state
+          setCampaignData((prevData) => ({
+            ...prevData,
+            totalCampaign: prevData.totalCampaign.filter(
+              (campaign) => campaign.campaignId !== campaignToDelete,
+            ),
+          }));
+          console.log(`Deleted campaign with ID: ${campaignToDelete}`);
+        } else {
+          console.error('Failed to delete campaign');
+        }
+      } catch (error) {
+        console.error('Error deleting campaign:', error);
+      } finally {
+        setDeleteDialogOpen(false);
+        setCampaignToDelete(null);
+      }
+    }
+  };
 
   return (
     <div className="flex h-screen bg-zinc-900 text-white">
@@ -125,38 +237,34 @@ const navigate = useNavigate();
           <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <h2 className="text-3xl font-bold text-white">Campaign Overview</h2>
             <div className="flex items-center">
-            <Button
-              onClick={() => navigate('/manage-advertise')}
-              className="bg-yellow-950 mr-4 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full text-lg transition duration-300 ease-in-out transform hover:scale-105"
-            >
-              Return to Dashboard
-            </Button>
+              <Button
+                onClick={() => navigate('/manage-advertise')}
+                className="bg-yellow-950 mr-4 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full text-lg transition duration-300 ease-in-out transform hover:scale-105"
+              >
+                Return to Dashboard
+              </Button>
               <Input
                 type="search"
                 placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="mr-4 bg-zinc-700 text-white placeholder-zinc-400 border-zinc-600"
               />
-              {/* <Button variant="outline" size="icon" className="text-white">
-                <Search className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" className="ml-2">
-                <img
-                  src="/placeholder.svg?height=32&width=32"
-                  alt="User"
-                  className="rounded-full"
-                  width={32}
-                  height={32}
-                />
-              </Button> */}
             </div>
           </div>
         </header>
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { label: 'Total Campaigns', value:  campaignData.totalCampaign?campaignData.totalCampaign?.length : `Nill` },
-              { label: 'Active Campaigns', value: campaignData.activeCampaign ? campaignData.activeCampaign?.length : `Nill` },
-              { label: 'Total Revenue', value: '₹' +totalSum || `₹0` },
+              {
+                label: 'Total Campaigns',
+                value: campaignData.totalCampaign.length || 'Nil',
+              },
+              {
+                label: 'Active Campaigns',
+                value: campaignData.activeCampaign.length || 'Nil',
+              },
+              { label: 'Total Revenue', value: `₹${totalSum || 0}` },
               { label: 'Avg. Campaign Duration', value: campaignData.average },
             ].map((stat, index) => (
               <div
@@ -194,10 +302,11 @@ const navigate = useNavigate();
                   <TableHead className="text-zinc-300">Start Date</TableHead>
                   <TableHead className="text-zinc-300">End Date</TableHead>
                   <TableHead className="text-zinc-300">Amount</TableHead>
+                  <TableHead className="text-zinc-300">Actions</TableHead>
                 </TableRow>
               </TableHeader>
-              {<TableBody>
-                {campaignData.totalCampaign?.map((campaign) => (
+              <TableBody>
+                {filteredCampaigns.map((campaign) => (
                   <TableRow
                     key={campaign.campaignId}
                     className="hover:bg-zinc-700"
@@ -205,19 +314,161 @@ const navigate = useNavigate();
                     <TableCell className="font-medium">
                       {campaign.agencyId || campaign.advertiserId}
                     </TableCell>
-                     <TableCell>tobe</TableCell> 
+                    <TableCell>N/A</TableCell>
                     <TableCell>{campaign.campaignName}</TableCell>
                     <TableCell>{campaign.campaignId}</TableCell>
                     <TableCell>{campaign.startDate}</TableCell>
                     <TableCell>{campaign.endDate}</TableCell>
                     <TableCell>{campaign.campaignBudget}</TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Open menu</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                          align="end"
+                          className="w-36 bg-zinc-700 text-white border border-zinc-600"
+                        >
+                          <DropdownMenuItem
+                            onClick={() => handleUpdateClick(campaign)}
+                            className="flex items-center cursor-pointer hover:bg-zinc-600 focus:bg-zinc-600 text-black hover:text-white"
+                          >
+                            <Edit className="mr-2 h-4 w-4" />
+                            <span>Update</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() =>
+                              handleDeleteClick(campaign.campaignId)
+                            }
+                            className="flex items-center cursor-pointer hover:bg-zinc-600 focus:bg-zinc-600 text-red-400 hover:text-red-300"
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            <span>Delete</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
                   </TableRow>
                 ))}
-              </TableBody> }
+              </TableBody>
             </Table>
           </div>
         </div>
       </main>
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="sm:max-w-[425px] bg-zinc-800 text-white">
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogDescription className="text-zinc-400">
+              Are you sure you want to delete this campaign? This action cannot
+              be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="sm:justify-start">
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleDeleteConfirm}
+            >
+              Yes, Delete
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+              className="ml-3"
+            >
+              Cancel
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={updateDialogOpen} onOpenChange={setUpdateDialogOpen}>
+        <DialogContent className="sm:max-w-[425px] bg-zinc-800 text-white">
+          <DialogHeader>
+            <DialogTitle>Update Campaign</DialogTitle>
+            <DialogDescription className="text-zinc-400">
+              Make changes to the campaign details below.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleUpdateSubmit}>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="campaignName" className="text-right">
+                  Name
+                </Label>
+                <Input
+                  id="campaignName"
+                  value={campaignToUpdate?.campaignName}
+                  onChange={(e) =>
+                    setCampaignToUpdate(
+                      (prev) =>
+                        prev && { ...prev, campaignName: e.target.value },
+                    )
+                  }
+                  className="col-span-3 bg-zinc-700 text-white border-zinc-600"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="startDate" className="text-right">
+                  Start Date
+                </Label>
+                <Input
+                  id="startDate"
+                  type="date"
+                  value={campaignToUpdate?.startDate}
+                  onChange={(e) =>
+                    setCampaignToUpdate(
+                      (prev) => prev && { ...prev, startDate: e.target.value },
+                    )
+                  }
+                  className="col-span-3 bg-zinc-700 text-white border-zinc-600"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="endDate" className="text-right">
+                  End Date
+                </Label>
+                <Input
+                  id="endDate"
+                  type="date"
+                  value={campaignToUpdate?.endDate}
+                  onChange={(e) =>
+                    setCampaignToUpdate(
+                      (prev) => prev && { ...prev, endDate: e.target.value },
+                    )
+                  }
+                  className="col-span-3 bg-zinc-700 text-white border-zinc-600"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="budget" className="text-right">
+                  Budget
+                </Label>
+                <Input
+                  id="budget"
+                  value={campaignToUpdate?.campaignBudget}
+                  onChange={(e) =>
+                    setCampaignToUpdate(
+                      (prev) =>
+                        prev && { ...prev, campaignBudget: e.target.value },
+                    )
+                  }
+                  className="col-span-3 bg-zinc-700 text-white border-zinc-600"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+                Save changes
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
