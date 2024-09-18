@@ -1,15 +1,13 @@
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 
-
-
-
 const CorporateAds = () => {
   const [currentDesign, setCurrentDesign] = useState(0);
   const [videoSrc, setVideoSrc] = useState('');
   const videoRef = useRef(null);
   const designs = [DesignOne, DesignTwo];
-  const domainName = import.meta.env.VITE_DOMAIN
+  const domainName = import.meta.env.VITE_DOMAIN;
+
   const nextDesign = () => {
     setCurrentDesign((prev) => (prev + 1) % designs.length);
   };
@@ -19,7 +17,7 @@ const CorporateAds = () => {
   };
 
   const CurrentDesign = designs[currentDesign];
-  
+
   const fetchNextVideo = async () => {
     try {
       const response = await axios.get(
@@ -64,6 +62,36 @@ const CorporateAds = () => {
     }
   }, [videoSrc]);
 
+  const createMetaAds = async () => {
+    try {
+      const meta_ads_res = await fetch(`${domainName}/api/create-meta-ads`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          videoUrl:
+            'https://res.cloudinary.com/donhrlmxp/video/upload/v1725860546/lbu8dh9orddjab04fnew.mp4',
+        }),
+      });
+
+      if (!meta_ads_res.ok) {
+        const errorMessage = await meta_ads_res.text();
+        console.error('Error creating Meta ads:', errorMessage);
+        return;
+      }
+
+      const metaAdsData = await meta_ads_res.json();
+      console.log('Meta ads created:', metaAdsData);
+    } catch (error) {
+      console.error('Error during Meta ad creation:', error);
+    }
+  };
+
+  useEffect(() => {
+    createMetaAds();
+  }, []);
+
   return (
     <div className="h-screen w-screen bg-black flex items-center justify-center">
       <video
@@ -76,20 +104,6 @@ const CorporateAds = () => {
         {videoSrc && <source src={videoSrc} type="video/mp4" />}
         Your browser does not support the video tag.
       </video>
-      {/* <div className="fixed bottom-4 right-4 flex space-x-2">
-        <button
-          onClick={prevDesign}
-          className="bg-blue-500 text-white p-2 rounded-full"
-        >
-          &lt;
-        </button>
-        <button
-          onClick={nextDesign}
-          className="bg-blue-500 text-white p-2 rounded-full"
-        >
-          &gt;
-        </button>
-      </div> */}
     </div>
   );
 };

@@ -37,6 +37,8 @@ import {
   DialogTitle,
 } from '../components/ui/dialog';
 import { Label } from '../components/ui/label';
+import BrandsTable from './BrandsTable';
+import Charts from './Charts';
 
 interface Campaign {
   campaignId: string;
@@ -69,6 +71,7 @@ export default function AdminDashboard() {
   const [campaignToUpdate, setCampaignToUpdate] = useState<Campaign | null>(
     null,
   );
+  const [activeTab, setActiveTab] = useState('campaigns');
 
   const navigate = useNavigate();
 
@@ -213,14 +216,15 @@ export default function AdminDashboard() {
         </div>
         <ul className="mt-4">
           {[
-            { icon: Package, label: 'Campaigns' },
-            { icon: Users, label: 'Customers' },
-            { icon: BarChart3, label: 'Analytics' },
-            { icon: Settings, label: 'Settings' },
+            { icon: Package, label: 'Campaigns', value: 'campaigns' },
+            { icon: Users, label: 'Customers', value: 'customers' },
+            { icon: BarChart3, label: 'Analytics', value: 'analytics' },
+            { icon: Settings, label: 'Settings', value: 'settings' },
           ].map((item, index) => (
             <li key={index}>
               <Button
                 variant="ghost"
+                onClick={() => setActiveTab(item.value)} // Set the active tab
                 className={`w-full justify-start text-white hover:bg-zinc-700 ${
                   sidebarOpen ? 'px-4' : 'px-0'
                 }`}
@@ -235,7 +239,11 @@ export default function AdminDashboard() {
       <main className="flex-1 overflow-x-hidden overflow-y-auto">
         <header className="bg-zinc-800 shadow-md">
           <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-            <h2 className="text-3xl font-bold text-white">Campaign Overview</h2>
+            <h2 className="text-3xl font-bold text-white">
+              {activeTab === 'campaigns' && 'Campaign Overview'}
+              {activeTab === 'customers' && 'Customers Overview'}
+              {activeTab === 'analytics' && 'Analytics Overview'}
+            </h2>
             <div className="flex items-center">
               <Button
                 onClick={() => navigate('/manage-advertise')}
@@ -254,221 +262,258 @@ export default function AdminDashboard() {
           </div>
         </header>
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                label: 'Total Campaigns',
-                value: campaignData.totalCampaign.length || 'Nil',
-              },
-              {
-                label: 'Active Campaigns',
-                value: campaignData.activeCampaign.length || 'Nil',
-              },
-              { label: 'Total Revenue', value: `₹${totalSum || 0}` },
-              { label: 'Avg. Campaign Duration', value: campaignData.average },
-            ].map((stat, index) => (
-              <div
-                key={index}
-                className="bg-zinc-800 overflow-hidden shadow rounded-lg"
-              >
-                <div className="p-5">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 bg-indigo-500 rounded-md p-3">
-                      <BarChart3 className="h-6 w-6 text-white" />
-                    </div>
-                    <div className="ml-5 w-0 flex-1">
-                      <dl>
-                        <dt className="text-sm font-medium text-zinc-400 truncate">
-                          {stat.label}
-                        </dt>
-                        <dd className="text-lg font-semibold text-white">
-                          {stat.value}
-                        </dd>
-                      </dl>
+          {activeTab === 'campaigns' && (
+            <div>
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                {[
+                  {
+                    label: 'Total Campaigns',
+                    value: campaignData.totalCampaign.length || 'Nil',
+                  },
+                  {
+                    label: 'Active Campaigns',
+                    value: campaignData.activeCampaign.length || 'Nil',
+                  },
+                  { label: 'Total Revenue', value: `₹${totalSum || 0}` },
+                  {
+                    label: 'Avg. Campaign Duration',
+                    value: campaignData.average,
+                  },
+                ].map((stat, index) => (
+                  <div
+                    key={index}
+                    className="bg-zinc-800 overflow-hidden shadow rounded-lg"
+                  >
+                    <div className="p-5">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 bg-indigo-500 rounded-md p-3">
+                          <BarChart3 className="h-6 w-6 text-white" />
+                        </div>
+                        <div className="ml-5 w-0 flex-1">
+                          <dl>
+                            <dt className="text-sm font-medium text-zinc-400 truncate">
+                              {stat.label}
+                            </dt>
+                            <dd className="text-lg font-semibold text-white">
+                              {stat.value}
+                            </dd>
+                          </dl>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-8 bg-zinc-800 shadow-md rounded-lg overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-zinc-300">Customer ID</TableHead>
-                  <TableHead className="text-zinc-300">Customer Name</TableHead>
-                  <TableHead className="text-zinc-300">Campaign Name</TableHead>
-                  <TableHead className="text-zinc-300">Campaign ID</TableHead>
-                  <TableHead className="text-zinc-300">Start Date</TableHead>
-                  <TableHead className="text-zinc-300">End Date</TableHead>
-                  <TableHead className="text-zinc-300">Amount</TableHead>
-                  <TableHead className="text-zinc-300">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredCampaigns.map((campaign) => (
-                  <TableRow
-                    key={campaign.campaignId}
-                    className="hover:bg-zinc-700"
-                  >
-                    <TableCell className="font-medium">
-                      {campaign.agencyId || campaign.advertiserId}
-                    </TableCell>
-                    <TableCell>N/A</TableCell>
-                    <TableCell>{campaign.campaignName}</TableCell>
-                    <TableCell>{campaign.campaignId}</TableCell>
-                    <TableCell>{campaign.startDate}</TableCell>
-                    <TableCell>{campaign.endDate}</TableCell>
-                    <TableCell>{campaign.campaignBudget}</TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent
-                          align="end"
-                          className="w-36 bg-zinc-700 text-white border border-zinc-600"
-                        >
-                          <DropdownMenuItem
-                            onClick={() => handleUpdateClick(campaign)}
-                            className="flex items-center cursor-pointer hover:bg-zinc-600 focus:bg-zinc-600 text-black hover:text-white"
-                          >
-                            <Edit className="mr-2 h-4 w-4" />
-                            <span>Update</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() =>
-                              handleDeleteClick(campaign.campaignId)
-                            }
-                            className="flex items-center cursor-pointer hover:bg-zinc-600 focus:bg-zinc-600 text-red-400 hover:text-red-300"
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            <span>Delete</span>
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
                 ))}
-              </TableBody>
-            </Table>
-          </div>
+              </div>
+              <div className="mt-8 bg-zinc-800 shadow-md rounded-lg overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="text-zinc-300">
+                        Customer ID
+                      </TableHead>
+                      <TableHead className="text-zinc-300">
+                        Customer Name
+                      </TableHead>
+                      <TableHead className="text-zinc-300">
+                        Campaign Name
+                      </TableHead>
+                      <TableHead className="text-zinc-300">
+                        Campaign ID
+                      </TableHead>
+                      <TableHead className="text-zinc-300">
+                        Start Date
+                      </TableHead>
+                      <TableHead className="text-zinc-300">End Date</TableHead>
+                      <TableHead className="text-zinc-300">Amount</TableHead>
+                      <TableHead className="text-zinc-300">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredCampaigns.map((campaign) => (
+                      <TableRow
+                        key={campaign.campaignId}
+                        className="hover:bg-zinc-700"
+                      >
+                        <TableCell className="font-medium">
+                          {campaign.agencyId || campaign.advertiserId}
+                        </TableCell>
+                        <TableCell>N/A</TableCell>
+                        <TableCell>{campaign.campaignName}</TableCell>
+                        <TableCell>{campaign.campaignId}</TableCell>
+                        <TableCell>{campaign.startDate}</TableCell>
+                        <TableCell>{campaign.endDate}</TableCell>
+                        <TableCell>{campaign.campaignBudget}</TableCell>
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Open menu</span>
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                              align="end"
+                              className="w-36 bg-zinc-700 text-white border border-zinc-600"
+                            >
+                              <DropdownMenuItem
+                                onClick={() => handleUpdateClick(campaign)}
+                                className="flex items-center cursor-pointer hover:bg-zinc-600 focus:bg-zinc-600 text-black hover:text-white"
+                              >
+                                <Edit className="mr-2 h-4 w-4" />
+                                <span>Update</span>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  handleDeleteClick(campaign.campaignId)
+                                }
+                                className="flex items-center cursor-pointer hover:bg-zinc-600 focus:bg-zinc-600 text-red-400 hover:text-red-300"
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                <span>Delete</span>
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              <Dialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+              >
+                <DialogContent className="sm:max-w-[425px] bg-zinc-800 text-white">
+                  <DialogHeader>
+                    <DialogTitle>Confirm Deletion</DialogTitle>
+                    <DialogDescription className="text-zinc-400">
+                      Are you sure you want to delete this campaign? This action
+                      cannot be undone.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter className="sm:justify-start">
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      onClick={handleDeleteConfirm}
+                    >
+                      Yes, Delete
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setDeleteDialogOpen(false)}
+                      className="ml-3"
+                    >
+                      Cancel
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+              <Dialog
+                open={updateDialogOpen}
+                onOpenChange={setUpdateDialogOpen}
+              >
+                <DialogContent className="sm:max-w-[425px] bg-zinc-800 text-white">
+                  <DialogHeader>
+                    <DialogTitle>Update Campaign</DialogTitle>
+                    <DialogDescription className="text-zinc-400">
+                      Make changes to the campaign details below.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handleUpdateSubmit}>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="campaignName" className="text-right">
+                          Name
+                        </Label>
+                        <Input
+                          id="campaignName"
+                          value={campaignToUpdate?.campaignName}
+                          onChange={(e) =>
+                            setCampaignToUpdate(
+                              (prev) =>
+                                prev && {
+                                  ...prev,
+                                  campaignName: e.target.value,
+                                },
+                            )
+                          }
+                          className="col-span-3 bg-zinc-700 text-white border-zinc-600"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="startDate" className="text-right">
+                          Start Date
+                        </Label>
+                        <Input
+                          id="startDate"
+                          type="date"
+                          value={campaignToUpdate?.startDate}
+                          onChange={(e) =>
+                            setCampaignToUpdate(
+                              (prev) =>
+                                prev && { ...prev, startDate: e.target.value },
+                            )
+                          }
+                          className="col-span-3 bg-zinc-700 text-white border-zinc-600"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="endDate" className="text-right">
+                          End Date
+                        </Label>
+                        <Input
+                          id="endDate"
+                          type="date"
+                          value={campaignToUpdate?.endDate}
+                          onChange={(e) =>
+                            setCampaignToUpdate(
+                              (prev) =>
+                                prev && { ...prev, endDate: e.target.value },
+                            )
+                          }
+                          className="col-span-3 bg-zinc-700 text-white border-zinc-600"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="budget" className="text-right">
+                          Budget
+                        </Label>
+                        <Input
+                          id="budget"
+                          value={campaignToUpdate?.campaignBudget}
+                          onChange={(e) =>
+                            setCampaignToUpdate(
+                              (prev) =>
+                                prev && {
+                                  ...prev,
+                                  campaignBudget: e.target.value,
+                                },
+                            )
+                          }
+                          className="col-span-3 bg-zinc-700 text-white border-zinc-600"
+                        />
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button
+                        type="submit"
+                        className="bg-blue-600 hover:bg-blue-700"
+                      >
+                        Save changes
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            </div>
+          )}
+          {activeTab === 'customers' && <BrandsTable />}
+          {activeTab === 'analytics' && <Charts />}
         </div>
       </main>
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent className="sm:max-w-[425px] bg-zinc-800 text-white">
-          <DialogHeader>
-            <DialogTitle>Confirm Deletion</DialogTitle>
-            <DialogDescription className="text-zinc-400">
-              Are you sure you want to delete this campaign? This action cannot
-              be undone.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="sm:justify-start">
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleDeleteConfirm}
-            >
-              Yes, Delete
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setDeleteDialogOpen(false)}
-              className="ml-3"
-            >
-              Cancel
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      <Dialog open={updateDialogOpen} onOpenChange={setUpdateDialogOpen}>
-        <DialogContent className="sm:max-w-[425px] bg-zinc-800 text-white">
-          <DialogHeader>
-            <DialogTitle>Update Campaign</DialogTitle>
-            <DialogDescription className="text-zinc-400">
-              Make changes to the campaign details below.
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleUpdateSubmit}>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="campaignName" className="text-right">
-                  Name
-                </Label>
-                <Input
-                  id="campaignName"
-                  value={campaignToUpdate?.campaignName}
-                  onChange={(e) =>
-                    setCampaignToUpdate(
-                      (prev) =>
-                        prev && { ...prev, campaignName: e.target.value },
-                    )
-                  }
-                  className="col-span-3 bg-zinc-700 text-white border-zinc-600"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="startDate" className="text-right">
-                  Start Date
-                </Label>
-                <Input
-                  id="startDate"
-                  type="date"
-                  value={campaignToUpdate?.startDate}
-                  onChange={(e) =>
-                    setCampaignToUpdate(
-                      (prev) => prev && { ...prev, startDate: e.target.value },
-                    )
-                  }
-                  className="col-span-3 bg-zinc-700 text-white border-zinc-600"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="endDate" className="text-right">
-                  End Date
-                </Label>
-                <Input
-                  id="endDate"
-                  type="date"
-                  value={campaignToUpdate?.endDate}
-                  onChange={(e) =>
-                    setCampaignToUpdate(
-                      (prev) => prev && { ...prev, endDate: e.target.value },
-                    )
-                  }
-                  className="col-span-3 bg-zinc-700 text-white border-zinc-600"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="budget" className="text-right">
-                  Budget
-                </Label>
-                <Input
-                  id="budget"
-                  value={campaignToUpdate?.campaignBudget}
-                  onChange={(e) =>
-                    setCampaignToUpdate(
-                      (prev) =>
-                        prev && { ...prev, campaignBudget: e.target.value },
-                    )
-                  }
-                  className="col-span-3 bg-zinc-700 text-white border-zinc-600"
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-                Save changes
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
