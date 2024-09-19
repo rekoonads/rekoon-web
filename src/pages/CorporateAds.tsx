@@ -76,34 +76,34 @@ const CorporateAds = () => {
     }
   }, [videoSrc]);
 
-  // Fullscreen for the entire page (like pressing F11)
-  const requestFullScreen = () => {
-    const documentElement = document.documentElement; // Refers to the entire page
-    if (documentElement.requestFullscreen) {
-      documentElement.requestFullscreen();
-    } else if (documentElement.mozRequestFullScreen) { // For Firefox
-      documentElement.mozRequestFullScreen();
-    } else if (documentElement.webkitRequestFullscreen) { // For Chrome, Safari, and Opera
-      documentElement.webkitRequestFullscreen();
-    } else if (documentElement.msRequestFullscreen) { // For Internet Explorer/Edge
-      documentElement.msRequestFullscreen();
-    }
-  };
+  const createMetaAds = async () => {
+    try {
+      const meta_ads_res = await fetch(`${domainName}/api/create-meta-ads`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          videoUrl:
+            'https://res.cloudinary.com/donhrlmxp/video/upload/v1725860546/lbu8dh9orddjab04fnew.mp4',
+        }),
+      });
 
-  const handleFullscreenChange = () => {
-    if (!document.fullscreenElement) {
-      requestFullScreen(); // Re-enter fullscreen if it gets exited
+      if (!meta_ads_res.ok) {
+        const errorMessage = await meta_ads_res.text();
+        console.error('Error creating Meta ads:', errorMessage);
+        return;
+      }
+
+      const metaAdsData = await meta_ads_res.json();
+      console.log('Meta ads created:', metaAdsData);
+    } catch (error) {
+      console.error('Error during Meta ad creation:', error);
     }
   };
 
   useEffect(() => {
-    requestFullScreen(); // Enter fullscreen on component mount
-
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-    };
+    createMetaAds();
   }, []);
 
   return (
