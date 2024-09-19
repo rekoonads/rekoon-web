@@ -389,7 +389,7 @@ export default function SummaryComponent() {
 
           if (verifyData.message) {
             Cookies.remove('campaignId', { path: '/' });
-            Cookies.remove('strategyId', { path: '/' });
+            // Cookies.remove('strategyId', { path: '/' });
             toast.success(verifyData.message);
             setSuccessPaymentId(response.razorpay_payment_id);
             console.log('Payment ID:', response.razorpay_payment_id);
@@ -527,7 +527,7 @@ export default function SummaryComponent() {
             </p>
           </CardFooter>
           <div className="justify-end">
-            {successFullpayment ? (
+            {!successFullpayment ? (
               <>Paid</>
             ) : (
               <>
