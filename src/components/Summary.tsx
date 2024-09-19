@@ -191,81 +191,7 @@ export default function SummaryComponent() {
   }, [user?.id]);
   console.log('user data', user_data);
 
-  // console.log(isAdd?.type_of_user);
 
-  //______________________________________________________________________________________________________
-  /*
-1> if Agency [
-        1> get the lastest campaign details of that agency id 
-        2> to get the agency Id need to use orgId 
-        3> get the strategy details for that campaign id 
-    ]
-    2> if Advertiser [
-        1> get the latest campaign details of that user id [or get the advertiserId using the user?.id then use that to get the latest campaign details ]
-        2> to get this.id user?.id is required 
-        3> get the strategy details for that campaign id 
-    ] 
-*/
-  // const [campaignInfo, setCampaignInfo] = useState<string>('');
-
-  // console.log(isAdd?.type_of_user);
-  //getting the latest campign details
-  // useEffect(() => {
-  //   const fetchCampaignId = async (url: string) => {
-  //     try {
-  //       const response = await fetch(url, {
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //       });
-
-  //       if (!response.ok) {
-  //         throw new Error(`Error: ${response.statusText}`);
-  //       }
-
-  //       const idData = await response.json();
-  //       setCampaignInfo(idData);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-
-  //   if (isAdd?.type_of_user === 'Advertiser') {
-  //     fetchCampaignId(`${domainName}/api/campaigns/${user?.id}`);
-  //   } else if (isAdd?.type_of_user === 'Agency') {
-  //     fetchCampaignId(`${domainName}/api/campaigns-agency/${orgId}`);
-  //   }
-  // }, [isAdd?.type_of_user, user?.id, orgId]);
-  // console.log(campaignInfo[campaignInfo.length - 1]);
-
-  // useEffect(() => {
-  //   if (campaignInfo) {
-  //     setCampaigns(campaignInfo[campaignInfo.length - 1]);
-  //   }
-  // }, [campaignInfo]);
-  // console.log(campaigns?.campaignId);
-
-  //getting the latest strategy details
-  // useEffect(() => {
-  //   if (campaignInfo) {
-  //     const fetchStrategyDetails = async (url: string) => {
-  //       try {
-  //         const { data } = await axios.get(url);
-  //         setStrategies(data);
-  //         console.log(data);
-  //       } catch (error) {
-  //         console.log(error);
-  //       }
-  //     };
-
-  //     fetchStrategyDetails(
-  //       `${domainName}/api/strategy-campaign/${campaigns?.campaignId}`,
-  //     );
-  //   }
-  // }, [campaigns?.campaignId]);
-  // console.log(strategies);
-
-  //3> make changes to the Summery.tsx accordingly
   useEffect(() => {
     if (strategies) {
       setAmount(Number(strategies?.strategyDailyBudget) * durationDate);
@@ -302,10 +228,6 @@ export default function SummaryComponent() {
         await console.log('xxxxxxxxxxxxxxxxxxxxxxxxxx', data);
         const invocationCode = data.data.invocation_code;
         console.log(invocationCode)
-
-        if(invocationCode.status == 'success'){
-          setReviveUrl(invocationCode.value)
-        }
 
         if (invocationCode.status == 'error') {
           const errorId = uuidv4();
