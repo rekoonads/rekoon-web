@@ -100,8 +100,6 @@ export default function SummaryComponent() {
   //   location.reload()
   // },[])
 
-
-
   console.log('summery userid', userId);
   console.log({
     userId: userId,
@@ -191,7 +189,6 @@ export default function SummaryComponent() {
   }, [user?.id]);
   console.log('user data', user_data);
 
-
   useEffect(() => {
     if (strategies) {
       setAmount(Number(strategies?.strategyDailyBudget) * durationDate);
@@ -227,7 +224,7 @@ export default function SummaryComponent() {
 
         await console.log('xxxxxxxxxxxxxxxxxxxxxxxxxx', data);
         const invocationCode = data.data.invocation_code;
-        console.log(invocationCode)
+        console.log(invocationCode);
 
         if (invocationCode.status == 'error') {
           const errorId = uuidv4();
@@ -335,7 +332,7 @@ export default function SummaryComponent() {
         const data = await res.json();
         if (data.message == 'Payment successful') {
           Cookies.remove('campaignId', { path: '/' });
-          Cookies.remove('strategyId', { path: '/' });
+          // Cookies.remove('strategyId', { path: '/' });
           toast.success(data.message);
           setSuccessPaymentId(`wallet-${uuidv4()}`);
           setbutton_disabled(false);
@@ -413,13 +410,12 @@ export default function SummaryComponent() {
 
   //navigate to billing page once the revive link is gotten
   useEffect(() => {
-   
     if (reviveUrl) {
       navigate(`/thank-you`);
     }
   }, [reviveUrl]);
 
- console.log(reviveUrl)
+  console.log(reviveUrl);
 
   //__________________________________________________________________________________________________
   //Date Debugging

@@ -1,32 +1,45 @@
-'use strict'
+'use strict';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { PlayCircle } from 'lucide-react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import axios from 'axios';
-
+import Cookies from 'js-cookie';
 
 export default function ThankYouPage() {
   const [videoSrc, setVideoSrc] = useState('');
   const videoRef = useRef(null);
   const navigate = useNavigate();
   const domainName = import.meta.env.VITE_DOMAIN;
- 
 
-const loadingBefore = () => {
-  return location.reload()
-}
- 
+  const strategy_id = Cookies.get('strategyId');
+
+  const [strategies, setStrategies] = useState([]);
+
+  const loadingBefore = () => {
+    return location.reload();
+  };
 
   const fetchNextVideo = async () => {
     try {
-      const response = await axios.get(
-        `${domainName}/api/get-video?type=Careers`,
-      );
-      const newVideoSrc = response.data;
+      fetcstrategyData();
+      const newVideoSrc = strategies?.creatives;
       setVideoSrc(newVideoSrc);
+      Cookies.remove('strategyId', { path: '/' });
     } catch (error) {
       console.error('Error fetching next video:', error);
+    }
+  };
+
+  const fetcstrategyData = async () => {
+    try {
+      const response = await axios.get(
+        `${domainName}/api/get-strategy?strategyId=${strategy_id}`,
+      );
+      console.log('previous strategy data:- ', response.data);
+      setStrategies(response.data);
+    } catch (error) {
+      console.error('Error fetching strategy data:', error);
     }
   };
 
@@ -62,7 +75,10 @@ const loadingBefore = () => {
     }
   }, [videoSrc]);
   return (
-    <div onLoad={loadingBefore} className="min-h-screen bg-gradient-to-b from-purple-100 to-pink-100 flex flex-col items-center justify-center p-4">
+    <div
+      onLoad={loadingBefore}
+      className="min-h-screen bg-gradient-to-b from-purple-100 to-pink-100 flex flex-col items-center justify-center p-4"
+    >
       <div className="max-w-4xl w-full bg-white rounded-lg shadow-xl overflow-hidden">
         <div className="p-8 sm:p-12">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-center mb-8 text-purple-800">
