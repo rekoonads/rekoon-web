@@ -16,53 +16,68 @@ export default function ThankYouPage() {
 
   const [strategies, setStrategies] = useState([]);
 
+  const fetcstrategyData = async () => {
+      try {
+        const response = await axios.get(
+          `${domainName}/api/get-strategy?strategyId=${strategy_id}`,
+        );
+        console.log('previous strategy data:- ', response.data);
+        setStrategies(response.data);
+      } catch (error) {
+        console.error('Error fetching strategy data:', error);
+      }
+  };
+
   const loadingBefore = () => {
     return location.reload();
   };
+  // useEffect( () => {
+  //  await fetcstrategyData();
+  //     const newVideoSrc = strategies?.creatives;
+  //     setVideoSrc(newVideoSrc);
+  //     Cookies.remove('strategyId', { path: '/' });
+  // }, [strategies])
 
-  const fetchNextVideo = async () => {
-    try {
+  // const fetchNextVideo = async () => {
+  //   try {
+      
+  //   } catch (error) {
+  //     console.error('Error fetching next video:', error);
+  //   }
+  // };
+
+  
+
+  useEffect(() => {
+    fetcstrategyData();
+  }, []);
+
+  useEffect(() => {
+    if(!strategies){
       fetcstrategyData();
-      const newVideoSrc = strategies?.creatives;
-      setVideoSrc(newVideoSrc);
-      Cookies.remove('strategyId', { path: '/' });
-    } catch (error) {
-      console.error('Error fetching next video:', error);
     }
-  };
+    const newVideoSrc = strategies?.creatives;
+    setVideoSrc(newVideoSrc);
+    Cookies.remove('strategyId', { path: '/' });
+  }, [strategies])
+  
 
-  const fetcstrategyData = async () => {
-    try {
-      const response = await axios.get(
-        `${domainName}/api/get-strategy?strategyId=${strategy_id}`,
-      );
-      console.log('previous strategy data:- ', response.data);
-      setStrategies(response.data);
-    } catch (error) {
-      console.error('Error fetching strategy data:', error);
-    }
-  };
+  // useEffect(() => {
+  //   const handleVideoEnd = () => {
+  //     fetchNextVideo();
+  //   };
 
-  useEffect(() => {
-    fetchNextVideo();
-  }, []);
+  //   const videoElement = videoRef.current;
+  //   if (videoElement) {
+  //     videoElement.addEventListener('ended', handleVideoEnd);
+  //   }
 
-  useEffect(() => {
-    const handleVideoEnd = () => {
-      fetchNextVideo();
-    };
-
-    const videoElement = videoRef.current;
-    if (videoElement) {
-      videoElement.addEventListener('ended', handleVideoEnd);
-    }
-
-    return () => {
-      if (videoElement) {
-        videoElement.removeEventListener('ended', handleVideoEnd);
-      }
-    };
-  }, []);
+  //   return () => {
+  //     if (videoElement) {
+  //       videoElement.removeEventListener('ended', handleVideoEnd);
+  //     }
+  //   };
+  // }, []);
 
   useEffect(() => {
     const videoElement = videoRef.current;
