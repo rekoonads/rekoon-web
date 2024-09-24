@@ -527,7 +527,7 @@ export default function SummaryComponent() {
             </p>
           </CardFooter>
           <div className="justify-end">
-            {!successFullpayment ? (
+            {successFullpayment ? (
               <>Paid</>
             ) : (
               <>
