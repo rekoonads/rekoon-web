@@ -36,6 +36,7 @@ import NewHome from './pages/NewHome';
 import ManageCampaign from './pages/ManageCampaigns';
 import ThankYouPage from './pages/ThankYouPage';
 import AdminDashboard from './pages/AdminDashboard';
+import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -43,6 +44,8 @@ function App() {
   const { user, isLoaded, isSignedIn } = useUser();
   const navigate = useNavigate();
   console.log(user);
+
+  useGoogleAnalytics();
 
   useEffect(() => {
     window.scrollTo(0, 0);
