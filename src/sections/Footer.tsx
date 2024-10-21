@@ -34,48 +34,48 @@ export const Footer = () => {
           >
             Careers
           </Link>
-          <a
+          <Link
             href="https://utfs.io/f/e4a9e629-d2b5-4c3c-b087-24bd8b8363e9-skm4rz.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-gray-300 transition-colors"
           >
             Privacy & Policy
-          </a>
+          </Link>
         </nav>
         <div className="flex justify-center gap-6 mt-6">
-          <a
+          <Link
             href="https://x.com/getsweven"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Follow us on Twitter"
           >
             <Twitter className="w-6 h-6 hover:text-blue-400 transition-colors" />
-          </a>
-          <a
+          </Link>
+          <Link
             href="#"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Follow us on Instagram"
           >
             <Instagram className="w-6 h-6 hover:text-pink-400 transition-colors" />
-          </a>
-          <a
+          </Link>
+          <Link
             href="https://www.linkedin.com/company/getsweven"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Connect with us on LinkedIn"
           >
             <Linkedin className="w-6 h-6 hover:text-blue-700 transition-colors" />
-          </a>
-          <a
+          </Link>
+          <Link
             href="#"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Subscribe to our YouTube channel"
           >
             <Youtube className="w-6 h-6 hover:text-red-600 transition-colors" />
-          </a>
+          </Link>
         </div>
         <div className="flex justify-center gap-6 mt-6">
           <address className="not-italic">Delhi, India 110055</address>
