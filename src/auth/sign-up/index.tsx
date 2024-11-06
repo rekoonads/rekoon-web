@@ -70,7 +70,7 @@ const SignUpPage: React.FC = () => {
                 footerActionLink: 'hidden',
               },
             }}
-            redirectUrl="/login-options"
+            fallbackRedirectUrl="/login-options"
           />
           <div className="mt-4 text-center">
             <span className="text-sm text-gray-600">
