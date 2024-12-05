@@ -10,7 +10,7 @@ export const Footer = () => {
             src="/logo/SWEVEN_LOGO.png"
             width={150}
             height={150}
-            alt="my12twelve logo"
+            alt="sweven logo"
             className="relative"
           />
         </div>
@@ -31,7 +31,7 @@ export const Footer = () => {
             Careers
           </Link>
           <Link
-            to="https://utfs.io/f/e4a9e629-d2b5-4c3c-b087-24bd8b8363e9-skm4rz.pdf"
+            to="/privacy-policy"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-gray-300 transition-colors"

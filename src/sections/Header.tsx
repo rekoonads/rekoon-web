@@ -20,9 +20,7 @@ export const Header = () => {
               <a href="#features">Features</a>
               <a href="#updates">Updates</a>
               <a href="#contact">Help</a>
-              <a href="https://utfs.io/f/e4a9e629-d2b5-4c3c-b087-24bd8b8363e9-skm4rz.pdf">
-                Privacy & Policy
-              </a>
+              <a href="/privacy-policy">Privacy & Policy</a>
               <button className="bg-black text-white px-4 py-2 rounded-lg font-medium inline-flex items-center justify-center tracking-tight">
                 <Link to={'/auth/sign-up'}>Sign Up For Free</Link>
               </button>

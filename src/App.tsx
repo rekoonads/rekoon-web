@@ -37,6 +37,9 @@ import ManageCampaign from './pages/ManageCampaigns';
 import ThankYouPage from './pages/ThankYouPage';
 import AdminDashboard from './pages/AdminDashboard';
 import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
+import YouTubeAdPublisherPage from './pages/youtube-ad-publisher';
+import IPTrack from './pages/IPTrack';
+import PrivacyPolicy from './pages/Privacy';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -77,6 +80,9 @@ function App() {
       <Route path="/report" element={<ReportPage />} />
       <Route path="/auth/sign-in" element={<SignInPage />} />
       <Route path="/auth/sign-up" element={<SignUpPage />} />
+      <Route path="/dv360-integration" element={<YouTubeAdPublisherPage />} />
+      <Route path="/iptrack" element={<IPTrack />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route
         path="view-advertisement"
         element={
