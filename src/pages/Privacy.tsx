@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Accordion,
   AccordionContent,
@@ -5,8 +6,11 @@ import {
   AccordionTrigger,
 } from '../components/ui/accordion';
 import { ScrollArea } from '../components/ui/scroll-area';
+import { Button } from '../components/ui/button';
 
 export default function PrivacyPolicy() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -24,6 +28,15 @@ export default function PrivacyPolicy() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12">
+        <div className="mb-6">
+          <Button
+            variant="outline"
+            className="text-blue-600 border-blue-600 hover:bg-blue-100"
+            onClick={() => window.history.back()}
+          >
+            ← Back to Home
+          </Button>
+        </div>
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg">
           <ScrollArea className="h-[600px] p-6 md:p-8">
             <Accordion type="single" collapsible className="w-full">
