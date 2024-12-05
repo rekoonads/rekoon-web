@@ -16,7 +16,7 @@ export const Header = () => {
             />
             <MenuIcon className="h-5 w-5 md:hidden" />
             <nav className="hidden md:flex gap-6 text-black font-bold items-center">
-              <a href="#">About</a>
+              {/* <a href="#">About</a> */}
               <a href="#features">Features</a>
               <a href="#updates">Updates</a>
               <a href="#contact">Help</a>
