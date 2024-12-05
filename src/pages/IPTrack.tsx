@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Globe, Clock, Smartphone } from 'lucide-react';
+import { MapPin, Globe, Clock, Wifi, Smartphone, Laptop } from 'lucide-react';
 
 interface TrackingData {
   ip: string;
@@ -9,15 +9,8 @@ interface TrackingData {
   latitude: number;
   longitude: number;
   timezone: string;
-  deviceInfo: {
-    browser: string;
-    version: string;
-    os: string;
-    platform: string;
-    isMobile: boolean;
-    isDesktop: boolean;
-    isBot: boolean;
-  };
+  isp: string;
+  deviceType: string;
 }
 
 const IPTracker: React.FC = () => {
@@ -31,9 +24,13 @@ const IPTracker: React.FC = () => {
     setError('');
     try {
       const url = ip
-        ? `http://localhost:8080/api/track-ip?ip=${ip}`
-        : 'http://localhost:8080/api/track-ip';
+        ? `http://localhost:3001/api/track-ip?ip=${ip}`
+        : 'http://localhost:3001/api/track-ip';
+      console.log(`Fetching from URL: ${url}`);
       const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
       if (data.error) {
         setError(data.error);
@@ -42,7 +39,8 @@ const IPTracker: React.FC = () => {
         setTrackingData(data);
       }
     } catch (err) {
-      setError('Failed to fetch tracking data');
+      console.error('Error fetching data:', err);
+      setError('Failed to fetch tracking data. Please try again later.');
       setTrackingData(null);
     } finally {
       setLoading(false);
@@ -80,12 +78,20 @@ const IPTracker: React.FC = () => {
       >
         {loading ? 'Loading...' : 'Track Random IP'}
       </button>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+      {error && (
+        <div
+          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+          role="alert"
+        >
+          <strong className="font-bold">Error: </strong>
+          <span className="block sm:inline">{error}</span>
+        </div>
+      )}
       {trackingData && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-gray-100 p-4 rounded-lg">
             <h3 className="text-lg font-semibold mb-2 flex items-center">
-              <Globe className="mr-2" /> Geolocation Information
+              <Globe className="mr-2" /> IP Information
             </h3>
             <p>
               <strong>IP:</strong> {trackingData.ip}
@@ -110,29 +116,18 @@ const IPTracker: React.FC = () => {
           </div>
           <div className="bg-gray-100 p-4 rounded-lg">
             <h3 className="text-lg font-semibold mb-2 flex items-center">
-              <Smartphone className="mr-2" /> Device Information
+              <Wifi className="mr-2" /> Network Information
             </h3>
             <p>
-              <strong>Browser:</strong> {trackingData.deviceInfo.browser}{' '}
-              {trackingData.deviceInfo.version}
+              <strong>ISP:</strong> {trackingData.isp}
             </p>
-            <p>
-              <strong>OS:</strong> {trackingData.deviceInfo.os}
-            </p>
-            <p>
-              <strong>Platform:</strong> {trackingData.deviceInfo.platform}
-            </p>
-            <p>
-              <strong>Type:</strong>{' '}
-              {trackingData.deviceInfo.isMobile
-                ? 'Mobile'
-                : trackingData.deviceInfo.isDesktop
-                ? 'Desktop'
-                : 'Other'}
-            </p>
-            <p>
-              <strong>Is Bot:</strong>{' '}
-              {trackingData.deviceInfo.isBot ? 'Yes' : 'No'}
+            <p className="flex items-center mt-2">
+              {trackingData.deviceType === 'Mobile' ? (
+                <Smartphone className="mr-2" />
+              ) : (
+                <Laptop className="mr-2" />
+              )}
+              <strong>Device Type:</strong> {trackingData.deviceType}
             </p>
           </div>
         </div>
