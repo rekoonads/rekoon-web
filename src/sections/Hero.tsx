@@ -43,7 +43,7 @@ export const Hero = () => {
             </div>
           </div>
           <div className="mt-20 md:mt-0 md:h-[648px] md:flex-1 relative">
-            <motion.img
+            {/* <motion.img
               src={ipadImage}
               alt="Cog Image"
               className="md:absolute md:h-full md:w-auto md:max-w-none md:-left-16 lg:-left-12"
@@ -56,7 +56,7 @@ export const Hero = () => {
                 duration: 2,
                 ease: 'easeInOut',
               }}
-            />
+            /> */}
             {/* <motion.img
               src={cylinderImage}
               width={220}
