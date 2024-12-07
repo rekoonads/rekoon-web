@@ -42,7 +42,7 @@ export const CallToAction = () => {
                 translateY,
               }}
             />
-            {/* <motion.img
+            <motion.img
               src={springImage}
               alt="Spring Image"
               width={600}
@@ -50,7 +50,7 @@ export const CallToAction = () => {
               style={{
                 translateY,
               }}
-            /> */}
+            />
           </div>
           <div className="flex gap-2 mt-10 justify-center">
             <button className="btn btn-primary">
