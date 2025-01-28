@@ -25,9 +25,12 @@ import { useAuth, useUser } from '@clerk/clerk-react';
 import axios from 'axios';
 import InputSelect from '../../components/InputSelect';
 import VideoUpload from '../../components/VideoUpload';
+import BannerUpload from '../../components/BannerUpload';
 import Cookies from 'js-cookie';
 import RightSidedStrategyCard from '../../components/RightSidedStrategyCard';
 import { useNavigate } from 'react-router-dom';
+import { Input } from '../../components/ui/input';
+import RealTimeBidding from './RealTimeBidding';
 
 const domainName = import.meta.env.VITE_DOMAIN;
 interface Goal {
@@ -85,12 +88,23 @@ const Strategy = () => {
   const [strategyDailyBudget, setStrategyDailyBudget] = useState<string>('');
   const [audience_location, setAudienceLocation] = useState<string>('');
   const [deliveryTypeval, setDeliveryType] = useState<String>();
+  const [targetedIPs, setTargetedIPs] = useState<string[]>([]);
+  const [locationIPs, setLocationIPs] = useState<string[]>([]); // Added state for IP addresses
+  const [targetedAgeGroups, setTargetedAgeGroups] = useState<string[]>([]); // Added state for targeted age groups
+  const [isAgeVerified, setIsAgeVerified] = useState<boolean | null>(null);
+  const [ipsFetched, setIpsFetched] = useState(false); // Added state for IP fetch confirmation
+  const [mediaType, setMediaType] = useState<'video' | 'banner'>('video'); // Added state for media type
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const [videoDuration, setVideoDuration] = useState<number | null>(null);
+  const [currentBid, setCurrentBid] = useState<number>(0);
 
   const { user } = useUser();
   const handleReset = () => {
     setSelectedTab('18-20');
     setSelectedGender('Women');
     setSelectedDevice('TV');
+    setTargetedAgeGroups([]); // Reset targeted age groups
+    setTargetedIPs([]); // Reset targeted IPs
   };
 
   // if(audienceArr.includes(text)){
@@ -105,6 +119,11 @@ const Strategy = () => {
       setSelectedCheckbox(null);
       setAudienceArr((prevState) => prevState.filter((item) => item !== text));
     }
+  };
+
+  const handleBidChange = (newBid: number) => {
+    setCurrentBid(newBid);
+    // You can add logic here to update the strategy or send the new bid to your backend
   };
 
   useEffect(() => {
@@ -154,10 +173,6 @@ const Strategy = () => {
   };
 
   //Video Upload
-  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
-
-  const [videoDuration, setVideoDuration] = useState<number | null>(null);
-
   const handleFileNameChange = (fileName: string | null) => {
     setUploadedFileName(fileName);
   };
@@ -284,6 +299,7 @@ const Strategy = () => {
         userId: userId,
         strategyId: strategy_id_data,
         ageRange: selectedTab,
+        targetedAgeGroups: targetedAgeGroups, // Added targetedAgeGroups to payload
         gender: selectedGender,
         screens: selectedDevice,
         audiences: audienceArr,
@@ -296,8 +312,11 @@ const Strategy = () => {
         deliveryTimeSlots: daySettings,
         deliveryType: deliveryTypeval,
         creatives: uploadedFileName,
-        duration: videoDuration,
+        currentBid: currentBid,
+        mediaType: mediaType,
+        duration: mediaType === 'video' ? videoDuration : null,
         campaignId: campaignInfo[campaignInfo.length - 1]?.campaignId,
+        targetedIPs: targetedIPs, // Added targetedIPs to payload
       };
 
       if (isAdd?.type_of_user === 'Agency') {
@@ -361,10 +380,15 @@ const Strategy = () => {
       setStrategyDailyBudget(strategyData.strategyDailyBudget || '');
       setAudienceLocation(strategyData.audienceLocation || '');
       setUploadedFileName(strategyData.creatives);
-      setVideoDuration(strategyData.duration);
+      setMediaType(strategyData.mediaType || 'video');
+      setVideoDuration(
+        strategyData.mediaType === 'video' ? strategyData.duration : null,
+      );
       setDeliveryType(strategyData.deliveryType);
       setSelectedOption(strategyData.selectedOption);
       setSelectedGoal(strategyData.selectedGoal);
+      setTargetedAgeGroups(strategyData.targetedAgeGroups || []); //Added for targeted age groups
+      setTargetedIPs(strategyData.targetedIPs || []); //Added for targeted IPs
     }
   }, [strategyData]);
   console.log('delivery type :- ', deliveryTypeval);
@@ -415,6 +439,43 @@ const Strategy = () => {
   console.log(campaigns?.campaignBudget);
   console.log(dailyBudget);
 
+  const fetchLocationIPs = async (location: string) => {
+    try {
+      const response = await fetch(
+        `${domainName}/api/location-ips?location=${encodeURIComponent(
+          location,
+        )}`,
+      );
+      if (!response.ok) {
+        throw new Error('Failed to fetch IP addresses');
+      }
+      const data = await response.json();
+      setLocationIPs(data.ips);
+      setTargetedIPs(data.ips); // Automatically set all fetched IPs as targeted
+      setIpsFetched(true); // Set ipsFetched to true after successful fetch
+    } catch (error) {
+      console.error('Error fetching IP addresses:', error);
+      // Handle error (e.g., show an error message to the user)
+      setIpsFetched(false); // Set ipsFetched to false if there's an error
+    }
+  };
+
+  const handleAgeGroupSelection = (ageGroup: string) => {
+    setSelectedTab(ageGroup);
+    if (targetedAgeGroups.includes(ageGroup)) {
+      setTargetedAgeGroups(
+        targetedAgeGroups.filter((group) => group !== ageGroup),
+      );
+    } else {
+      setTargetedAgeGroups([...targetedAgeGroups, ageGroup]);
+    }
+  };
+
+  const handleAgeVerification = (isInTargetGroup: boolean) => {
+    setIsAgeVerified(isInTargetGroup);
+    // Here you would typically trigger the ad display if isInTargetGroup is true
+  };
+
   return (
     <>
       <Breadcrumb pageName="Strategy" />
@@ -454,19 +515,26 @@ const Strategy = () => {
             <div className="flex flex-col gap-5.5 p-6.5 text-center">
               <div className="flex items-center">
                 <p className="mt-1 relative left-10 p-2 block py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white  outline-none">
-                  ₹ 
+                  ₹
                 </p>
                 <input
-                  onChange={e => setStrategyDailyBudget(e.target.value)}
+                  onChange={(e) => setStrategyDailyBudget(e.target.value)}
                   type="text"
                   value={strategyDailyBudget}
                   placeholder="5000"
                   className="mt-1 ml-5 pl-6 p-2 block w-[75%] py-2 rounded-md bg-slate-200 text-blue-900 font-semibold dark:bg-black dark:text-white shadow-md outline-none
       [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
-                
               </div>
-              <p className='font-semibold text-[15px] text-blue-900 dark:text-white transition duration-500'> You have remaining : ₹{Number(campaigns?.campaignAdvertiserBudget - strategyDailyBudget) < 0 ? '0' : campaigns?.campaignAdvertiserBudget - strategyDailyBudget }</p>
+              <p className="font-semibold text-[15px] text-blue-900 dark:text-white transition duration-500">
+                {' '}
+                You have remaining : ₹
+                {Number(
+                  campaigns?.campaignAdvertiserBudget - strategyDailyBudget,
+                ) < 0
+                  ? '0'
+                  : campaigns?.campaignAdvertiserBudget - strategyDailyBudget}
+              </p>
             </div>
           </div>
           {/* <!-- File upload --> */}
@@ -484,50 +552,49 @@ const Strategy = () => {
                 className="flex flex-col justify-between "
               >
                 <TabsList className="space-x-4 ">
-                  <TabsTrigger
-                    value="18-20"
-                    className="px-4 py-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
-                  >
-                    18-20
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="21-24"
-                    className="px-4 py-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
-                  >
-                    21-24
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="25-34"
-                    className="px-4 py-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
-                  >
-                    25-34
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="35-44"
-                    className="px-4 py-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
-                  >
-                    35-44
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="45-54"
-                    className="px-4 py-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
-                  >
-                    45-54
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="55-64"
-                    className="px-4 py-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
-                  >
-                    55-64
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="64+"
-                    className="px-4 py-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
-                  >
-                    64+
-                  </TabsTrigger>
+                  {[
+                    '18-20',
+                    '21-24',
+                    '25-34',
+                    '35-44',
+                    '45-54',
+                    '55-64',
+                    '64+',
+                  ].map((ageGroup) => (
+                    <TabsTrigger
+                      key={ageGroup}
+                      value={ageGroup}
+                      className={`px-4 py-2 rounded-lg transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 ${
+                        targetedAgeGroups.includes(ageGroup)
+                          ? 'bg-primary text-white'
+                          : 'data-[state=active]:bg-accent data-[state=active]:text-accent-foreground'
+                      }`}
+                      onClick={() => handleAgeGroupSelection(ageGroup)}
+                    >
+                      {ageGroup}
+                    </TabsTrigger>
+                  ))}
                 </TabsList>
               </Tabs>
+              <div className="mt-4">
+                <h3 className="text-lg font-semibold mb-2">
+                  Selected Age Groups for Targeting:
+                </h3>
+                {targetedAgeGroups.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {targetedAgeGroups.map((ageGroup) => (
+                      <span
+                        key={ageGroup}
+                        className="bg-primary text-white px-2 py-1 rounded"
+                      >
+                        {ageGroup}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p>No age groups selected for targeting.</p>
+                )}
+              </div>
               <div className="flex justify-end">
                 <Button
                   variant={'ghost'}
@@ -589,7 +656,7 @@ const Strategy = () => {
             </div>
           </div>
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className=" flex gap-2 item-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+            <div className="flex gap-2 item-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <FaPeopleArrows className="text-[20px]" />
               <h3 className="text-blue-900 font-semibold text-[20px] dark:text-white">
                 Audiences
@@ -727,6 +794,7 @@ const Strategy = () => {
                   <CheckboxOne text="Distance Learning" />
                   <CheckboxOne text="English as a 2nd Language" />
                   <CheckboxOne text="Language Learning" />
+                  <CheckboxOne text="Graduate School" /><continuation_point>
                   <CheckboxOne text="Graduate School" />
                   <CheckboxOne text="Homeschooling" />
                   <CheckboxOne text="Homwork/Study Tips" />
@@ -754,7 +822,7 @@ const Strategy = () => {
                   <CheckboxOne text="Parenting teens" />
                   <CheckboxOne text="Pregnancy" />
                   <CheckboxOne text="Special Needs Kids" />
-                  <CheckboxOne text="Eldcare" />
+                  <CheckboxOne text"Eldcare" />
                 </div>
               )} */}
                 <CheckboxOne
@@ -908,7 +976,7 @@ const Strategy = () => {
                 <div className='ml-2 flex flex-col gap-2'>
                   <CheckboxOne text="International News" />
                   <CheckboxOne text="National News" />
-                  <CheckboxOne text="Local News" />=
+                  <CheckboxOne text="Local News" />
                 </div>
               )} */}
                 <CheckboxOne
@@ -1263,56 +1331,20 @@ const Strategy = () => {
                 </div>
                 <div className="mt-4 mb-4">
                   <InputSelect
-                    onchange={setAudienceLocation}
+                    onchange={(location) => {
+                      setAudienceLocation(location);
+                      fetchLocationIPs(location);
+                    }}
                     value={audience_location}
                   />
                 </div>
+                {ipsFetched && (
+                  <p className="mt-2 text-sm text-green-600">
+                    IP addresses for this location have been fetched and will be
+                    used for targeting.
+                  </p>
+                )}
               </div>
-              <div className="flex justify-end">
-                <Button
-                  variant={'ghost'}
-                  className="text-black gap-2 dark:text-white font-semibold"
-                  onClick={handleReset}
-                >
-                  <Redo2 /> Reset
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="flex gap-2 item-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <MdOutlineScreenshotMonitor className="text-[20px]" />
-              <h3 className="text-blue-900 font-semibold text-[20px] dark:text-white">
-                Screens
-              </h3>
-            </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
-              <Tabs
-                value={selectedDevice}
-                onValueChange={setSelectedDevice}
-                className="flex flex-col justify-between"
-              >
-                <TabsList className="space-x-4">
-                  <TabsTrigger
-                    value="tv"
-                    className="flex items-center gap-4 px-4 py-2 rounded-lg text-blue-900 font-semibold text-[15px] dark:text-white transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
-                  >
-                    <Tv /> TV
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="tablet"
-                    className="flex items-center gap-4 px-4 py-2 rounded-lg text-blue-900 font-semibold text-[15px] dark:text-white transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
-                  >
-                    <Tablet /> Tablet
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="mobile"
-                    className="flex items-center gap-4 px-4 py-2 rounded-lg text-blue-900 font-semibold text-[15px] dark:text-white transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
-                  >
-                    <Smartphone /> Mobile
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
               <div className="flex justify-end">
                 <Button
                   variant={'ghost'}
@@ -1380,6 +1412,14 @@ const Strategy = () => {
                   </Card>
                 ))}
               </div>
+              <RealTimeBidding
+                strategyId={strategyData?.strategyId || `ST-${uuidv4()}`}
+                initialBid={84.0}
+                onBidChange={handleBidChange}
+                biddingType={
+                  selectedGoal === 'automatic' ? 'automatic' : 'manual'
+                }
+              />
               <div className="border-t border-stroke py-4 px-6.5 dark:border-strokedark">
                 <div className="flex items-center space-x-2">
                   <h2 className="text-lg font-semibold">Advance Options</h2>
@@ -1396,13 +1436,54 @@ const Strategy = () => {
           </div>
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <VideoUpload
-                onURLSet={handleFileNameChange}
-                onVideoDuration={saveVideoDuration}
-                vidUrl={uploadedFileName}
-              />
+              <div className="mb-4">
+                <label className="mb-2.5 block text-black dark:text-white">
+                  Select Media Type
+                </label>
+                <div className="relative z-20 bg-transparent dark:bg-form-input">
+                  <select
+                    value={mediaType}
+                    onChange={(e) =>
+                      setMediaType(e.target.value as 'video' | 'banner')
+                    }
+                    className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  >
+                    <option value="video">Video</option>
+                    <option value="banner">Banner</option>
+                  </select>
+                  <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
+                    <svg
+                      className="fill-current"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g opacity="0.8">
+                        <path
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                          d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
+                          fill=""
+                        ></path>
+                      </g>
+                    </svg>
+                  </span>
+                </div>
+              </div>
+              {mediaType === 'video' ? (
+                <VideoUpload
+                  onURLSet={handleFileNameChange}
+                  onVideoDuration={saveVideoDuration}
+                  vidUrl={uploadedFileName || ''}
+                />
+              ) : (
+                <BannerUpload onURLSet={handleFileNameChange} />
+              )}
             </div>
           </div>
+
           <form onSubmit={handleSubmit}>
             <button
               type="submit"

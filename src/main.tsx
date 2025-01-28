@@ -8,6 +8,7 @@ import 'jsvectormap/dist/css/jsvectormap.css';
 import 'flatpickr/dist/flatpickr.min.css';
 import { ClerkProvider } from '@clerk/clerk-react';
 import { Toaster } from './components/ui/toaster';
+import CrispChat from './components/CrispChat';
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -20,6 +21,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
       <Router>
         <App />
+        <CrispChat websiteId="4f6dce7a-88d1-46dd-8463-f09ba4d9538e" />
         <Toaster />
       </Router>
     </ClerkProvider>

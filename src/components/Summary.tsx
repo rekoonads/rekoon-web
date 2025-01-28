@@ -1,3 +1,10 @@
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth, useUser } from '@clerk/clerk-react';
+import Cookies from 'js-cookie';
+import { v4 as uuidv4 } from 'uuid';
 import {
   Card,
   CardHeader,
@@ -9,14 +16,7 @@ import {
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { CalendarIcon, ClipboardPenIcon, PresentationIcon } from 'lucide-react';
-import axios from 'axios';
-import { useEffect, useLayoutEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth, useUser } from '@clerk/clerk-react';
-import { v4 as uuidv4 } from 'uuid';
 import { BarChart, Signal } from 'lucide-react';
-import Cookies from 'js-cookie';
 
 // Extend the Window interface
 declare global {
@@ -37,9 +37,10 @@ interface RazorpayResponse {
   razorpay_signature: string;
 }
 
-const LoadingScreen = () => {
+const LoadingScreen: React.FC = () => {
   const [mounted, setMounted] = useState(false);
   const [progress, setProgress] = useState(0);
+
   useEffect(() => {
     localStorage.removeItem('campaign');
     localStorage.removeItem('strategy');
@@ -81,84 +82,49 @@ const LoadingScreen = () => {
   );
 };
 
-export default function SummaryComponent() {
-  const [amount, setAmount] = useState<number>();
+const SummaryComponent: React.FC = () => {
+  const [amount, setAmount] = useState<number>(0);
   const { userId, orgId } = useAuth();
-  const [campaigns, setCampaigns] = useState([]);
-  const [user_data, setUser_data] = useState();
-  const [error, setError] = useState(null);
-  const [strategies, setStrategies] = useState([]);
-  const [button_disabled, setbutton_disabled] = useState<false>();
+  const [campaigns, setCampaigns] = useState<any>(null);
+  const [user_data, setUser_data] = useState<any>(null);
+  const [strategies, setStrategies] = useState<any>(null);
+  const [button_disabled, setButtonDisabled] = useState<boolean>(false);
   const [successPaymentId, setSuccessPaymentId] = useState<string>('');
   const { user } = useUser();
   const domainName = import.meta.env.VITE_DOMAIN;
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const [durationDate, setDurationDate] = useState<number>(0);
+  const [isAdd, setIsAdd] = useState<any>(null);
+  const [successFullPayment, setSuccessFullPayment] = useState<boolean>(false);
+  const [reviveUrl, setReviveUrl] = useState<string | null>(null);
+  const [adServerDataSent, setAdServerDataSent] = useState<boolean>(false);
 
-  // useLayoutEffect(()=> {
-  //   location.reload()
-  // },[])
-
-  console.log('summery userid', userId);
-  console.log({
-    userId: userId,
-    campaignId: campaigns?.campaignId,
-    strategyId: strategies?.strategyId,
-    successPaymentId: successPaymentId,
-  });
-
-  console.log(strategies);
-
-  //_________________________________________________________________________________________________________________________
-
-  /*
-    0> to get the type of user 
-    1> if Agency [
-        1> get the lastest campaign details of that agency id 
-        2> to get the agency Id need to use orgId 
-        3> get the strategy details for that campaign id 
-    ]
-    2> if Advertiser [
-        1> get the latest campaign details of that user id [or get the advertiserId using the user?.id then use that to get the latest campaign details ]
-        2> to get this.id user?.id is required 
-        3> get the strategy details for that campaign id 
-    ]
-    3> make changes to the Summery.tsx accordingly 
-    4> then send the latest Campaign and Strategy details accordingly to the bill endpoint using handle submission 
-*/
-
-  // 0> get the type of user
-
-  const [isAdd, setIsAdd] = useState<string>('');
   useEffect(() => {
     const campaign_id = Cookies.get('campaignId');
     const strategy_id = Cookies.get('strategyId');
-    const fetchcampaignData = async () => {
+    const fetchCampaignData = async () => {
       try {
         const response = await axios.get(
           `${domainName}/api/get-campaign?campaignId=${campaign_id}`,
         );
-        console.log('previous campaign data:- ', response.data);
         setCampaigns(response.data);
       } catch (error) {
         console.error('Error fetching campaign data:', error);
       }
     };
-    const fetcstrategyData = async () => {
+    const fetchStrategyData = async () => {
       try {
         const response = await axios.get(
           `${domainName}/api/get-strategy?strategyId=${strategy_id}`,
         );
-        console.log('previous strategy data:- ', response.data);
         setStrategies(response.data);
       } catch (error) {
         console.error('Error fetching strategy data:', error);
       }
     };
-    fetchcampaignData();
-    fetcstrategyData();
-    console.log(campaigns);
+    fetchCampaignData();
+    fetchStrategyData();
   }, []);
 
   useEffect(() => {
@@ -174,10 +140,9 @@ export default function SummaryComponent() {
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-        const data: UserData = await response.json();
+        const data = await response.json();
         setUser_data(data.user);
         setIsAdd(data);
-        console.log(data);
       } catch (error) {
         console.log(error);
       }
@@ -187,135 +152,154 @@ export default function SummaryComponent() {
       fetchData(user.id);
     }
   }, [user?.id]);
-  console.log('user data', user_data);
 
   useEffect(() => {
-    if (strategies) {
-      setAmount(Number(strategies?.strategyDailyBudget) * durationDate);
+    if (strategies && durationDate) {
+      setAmount(Number(strategies.strategyDailyBudget) * durationDate);
     }
-  }, [campaigns?.campaignBudget, strategies]);
+  }, [strategies, durationDate]);
 
-  //______________________________________________________________________________________________________
+  const sendDataToAdServer = async (retries = 3) => {
+    try {
+      const dataToSend = {
+        campaignDetails: campaigns,
+        strategyDetails: strategies,
+        userDetails: user_data,
+        paymentDetails: {
+          amount: amount,
+          paymentId: successPaymentId,
+        },
+      };
 
-  //4> then send the latest Campaign and Strategy details accordingly to the bill endpoint using handle submission
-  const [successFullpayment, setSuccessFullpeyment] = useState<boolean>(false);
-  const [reviveUrl, setReviveUrl] = useState<any>();
+      const response = await axios.post(
+        `${domainName}/api/send-to-adserver`,
+        dataToSend,
+      );
+
+      if (response.data.success) {
+        toast.success('Data successfully sent to ad server');
+        setAdServerDataSent(true);
+        console.log('Ad server response:', response.data);
+      } else {
+        throw new Error('Failed to send data to ad server');
+      }
+    } catch (error) {
+      console.error('Error sending data to ad server:', error);
+      if (retries > 0) {
+        toast.info('Retrying to send data to ad server...');
+        await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for 2 seconds before retrying
+        await sendDataToAdServer(retries - 1);
+      } else {
+        toast.error(
+          'Failed to send data to ad server after multiple attempts. Please contact support.',
+        );
+      }
+    }
+  };
+
   useEffect(() => {
-    if (successPaymentId) {
+    if (successPaymentId && !adServerDataSent) {
       const postBillData = async () => {
         setLoading(true);
 
-        const data = await axios.post(
-          `${domainName}/api/bill`,
-          {
-            userId: userId,
-            campaignId: campaigns?.campaignId,
-            strategyId: strategies?.strategyId,
-            successPaymentId: successPaymentId,
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
+        try {
+          const data = await axios.post(
+            `${domainName}/api/bill`,
+            {
+              userId: userId,
+              campaignId: campaigns?.campaignId,
+              strategyId: strategies?.strategyId,
+              successPaymentId: successPaymentId,
             },
-          },
-        );
-
-        await setLoading(false);
-
-        await console.log('xxxxxxxxxxxxxxxxxxxxxxxxxx', data);
-        const invocationCode = data.data.invocation_code;
-        console.log(invocationCode);
-
-        if (invocationCode.status == 'error') {
-          const errorId = uuidv4();
-          await axios.post(`${domainName}/api/save-error`, {
-            errorId: errorId,
-            userId: userId,
-            campaignId: campaigns?.campaignId,
-            strategyId: strategies?.strategyId,
-            errorMessage: invocationCode.message,
-            status: 'Active',
-          });
-          toast.error(
-            `Something went wrong. Please contact support with this ID: ${errorId}`,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            },
           );
-        } else {
-          if (!invocationCode) {
-            throw new Error('Invocation code is missing from the response');
-          }
-          setReviveUrl(invocationCode?.value);
-          if (isAdd?.type_of_user === 'Agency') {
-            const bidding = await axios.post(
-              `${domainName}/api/add-bidder`,
-              {
-                agencyId: campaigns?.agencyId,
-                deliveryTimeSlots: strategies?.deliveryTimeSlots,
-                campaignBudget: campaigns?.campaignBudget,
-                reviveUrl: invocationCode.value,
-                audiences: strategies?.audiences,
-                startDate: campaigns?.startDate,
-                endDate: campaigns?.endDate,
-                status: 'Active',
-              },
-              {
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-              },
-            );
-            console.log(bidding);
-          } else if (isAdd?.type_of_user === 'Advertiser') {
-            const bidding = await axios.post(
-              `${domainName}/api/add-bidder`,
-              {
-                advertiserId: campaigns?.advertiserId,
-                deliveryTimeSlots: strategies?.deliveryTimeSlots,
-                campaignBudget: campaigns?.campaignBudget,
-                reviveUrl: invocationCode.value,
-                audiences: strategies?.audiences,
-                startDate: campaigns?.startDate,
-                endDate: campaigns?.endDate,
-                status: 'Active',
-              },
-              {
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-              },
-            );
-            console.log(bidding);
-          }
 
-          console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', data);
-          console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', bidding);
+          console.log('Bill data response:', data);
+          const invocationCode = data.data.invocation_code;
+
+          if (invocationCode.status === 'error') {
+            const errorId = uuidv4();
+            await axios.post(`${domainName}/api/save-error`, {
+              errorId: errorId,
+              userId: userId,
+              campaignId: campaigns?.campaignId,
+              strategyId: strategies?.strategyId,
+              errorMessage: invocationCode.message,
+              status: 'Active',
+            });
+            toast.error(
+              `Something went wrong. Please contact support with this ID: ${errorId}`,
+            );
+          } else {
+            if (!invocationCode) {
+              throw new Error('Invocation code is missing from the response');
+            }
+            setReviveUrl(invocationCode?.value);
+
+            const bidderData = {
+              deliveryTimeSlots: strategies?.deliveryTimeSlots,
+              campaignBudget: campaigns?.campaignBudget,
+              reviveUrl: invocationCode.value,
+              audiences: strategies?.audiences,
+              startDate: campaigns?.startDate,
+              endDate: campaigns?.endDate,
+              status: 'Active',
+            };
+
+            if (isAdd?.type_of_user === 'Agency') {
+              bidderData.agencyId = campaigns?.agencyId;
+            } else if (isAdd?.type_of_user === 'Advertiser') {
+              bidderData.advertiserId = campaigns?.advertiserId;
+            }
+
+            const bidding = await axios.post(
+              `${domainName}/api/add-bidder`,
+              bidderData,
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              },
+            );
+            console.log('Bidding response:', bidding);
+
+            await sendDataToAdServer();
+
+            if (adServerDataSent) {
+              // Proceed with navigation or further actions
+              navigate(`/thank-you`);
+            }
+          }
+        } catch (error) {
+          console.error('Error in postBillData:', error);
+          toast.error(
+            'An error occurred while processing your payment. Please contact support.',
+          );
+        } finally {
+          setLoading(false);
         }
       };
-      try {
-        postBillData();
-      } catch (error) {
-        console.log(error);
-        // I must add custom error handler logic from here
-      }
-    }
-  }, [successPaymentId, isAdd?.type_of_user, domainName]);
 
-  //if payment is successful then the confirmation to payment success is received here
+      postBillData();
+    }
+  }, [successPaymentId, adServerDataSent]);
 
   useEffect(() => {
     const paymentConfirmation = async () => {
       const payStData = await axios.get(
         `${domainName}/api/bill/${campaigns?.campaignId}`,
       );
-      console.log(payStData?.data.paymentSuccess);
-      setSuccessFullpeyment(payStData?.data.paymentSuccess);
+      setSuccessFullPayment(payStData?.data.paymentSuccess);
     };
     paymentConfirmation();
   }, [campaigns?.campaignId]);
 
-  //______________________________________________________________________________________________________
-  // handlePayment Function
   const handlePayment = async () => {
-    setbutton_disabled(true);
+    setButtonDisabled(true);
     try {
       let stBal = Number(strategies?.strategyDailyBudget) * durationDate;
       if (user_data && Number(user_data.walletBalance) >= stBal) {
@@ -332,10 +316,9 @@ export default function SummaryComponent() {
         const data = await res.json();
         if (data.message == 'Payment successful') {
           Cookies.remove('campaignId', { path: '/' });
-          // Cookies.remove('strategyId', { path: '/' });
           toast.success(data.message);
           setSuccessPaymentId(`wallet-${uuidv4()}`);
-          setbutton_disabled(false);
+          setButtonDisabled(false);
         } else {
           toast.warning(data.message);
         }
@@ -350,9 +333,8 @@ export default function SummaryComponent() {
           }),
         });
         const data = await res.json();
-        console.log(data);
         await handlePaymentVerify(data.data);
-        setbutton_disabled(false);
+        setButtonDisabled(false);
       }
     } catch (error) {
       console.error('Error creating order:', error);
@@ -360,18 +342,15 @@ export default function SummaryComponent() {
     }
   };
 
-  //______________________________________________________________________________________________________
-  // handlePaymentVerify Function
   const handlePaymentVerify = async (data: PaymentData) => {
     const options = {
-      key: 'rzp_test_SZrvteybFNdghB', // Use your Razorpay Test Key
+      key: 'rzp_test_SZrvteybFNdghB',
       amount: data.amount,
       currency: data.currency,
       name: 'Sweven',
       description: 'Test Mode',
       order_id: data.id,
       handler: async (response: RazorpayResponse) => {
-        console.log('response', response);
         try {
           const res = await fetch(`${domainName}/api/payment/verify`, {
             method: 'POST',
@@ -389,10 +368,8 @@ export default function SummaryComponent() {
 
           if (verifyData.message) {
             Cookies.remove('campaignId', { path: '/' });
-            // Cookies.remove('strategyId', { path: '/' });
             toast.success(verifyData.message);
             setSuccessPaymentId(response.razorpay_payment_id);
-            console.log('Payment ID:', response.razorpay_payment_id);
           }
         } catch (error) {
           console.error('Error verifying payment:', error);
@@ -406,151 +383,119 @@ export default function SummaryComponent() {
     const rzp1 = new window.Razorpay(options);
     rzp1.open();
   };
-  console.log(campaigns);
-
-  //navigate to billing page once the revive link is gotten
-  useEffect(() => {
-    if (reviveUrl) {
-      navigate(`/thank-you`);
-    }
-  }, [reviveUrl]);
-
-  console.log(reviveUrl);
-
-  //__________________________________________________________________________________________________
-  //Date Debugging
-  let durationTimeDate = Number(
-    new Date(campaigns?.endDate) - new Date(campaigns?.startDate),
-  );
-  let denominator = 1000 * 3600 * 24;
-  console.log(durationTimeDate / denominator);
-
-  //getting The Date Difference
 
   useEffect(() => {
     if (campaigns?.endDate && campaigns?.startDate) {
       let durationTimeDate = Number(
-        new Date(campaigns?.endDate) - new Date(campaigns?.startDate),
+        new Date(campaigns?.endDate).getTime() -
+          new Date(campaigns?.startDate).getTime(),
       );
       let denominator = 1000 * 3600 * 24;
       if (durationTimeDate < 0) {
         setDurationDate(0);
       } else {
-        let diff = durationTimeDate / denominator;
+        let diff = Math.ceil(durationTimeDate / denominator);
         setDurationDate(diff);
       }
     }
   }, [campaigns?.endDate, campaigns?.startDate]);
-  console.log(durationDate);
-
-  //__________________________________________________________________________________________________________
-
-  // for Strategy data
-  console.log(strategies?.strategyDailyBudget * durationDate);
-
-  console.log(reviveUrl);
 
   if (loading) {
     return <LoadingScreen />;
-  } else {
-    return (
-      <>
-        <Card className="w-full max-w-lg p-4 rounded-lg border border-stroke bg-white shadow-2xl dark:border-strokedark dark:bg-boxdark">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg font-semibold text-blue-700">
-              <PresentationIcon className="inline-block w-5 h-5 mr-2" />
-              Campaign summary
-            </CardTitle>
-            <CardDescription>
-              Review carefully your campaign details
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-semibold">
-                  Campaign Name: {campaigns?.campaignName}
-                </p>
-                <Link to={'/campaign'}>
-                  <Button variant="ghost" className="p-0 text-sm text-blue-700">
-                    <ClipboardPenIcon className="inline-block w-4 h-4 mr-1" />
-                    Edit
-                  </Button>
-                </Link>
-              </div>
-              <div className="text-right">
-                <p className="font-semibold">
-                  Campaign budget ₹{campaigns?.campaignBudget}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <CalendarIcon className="w-5 h-5 mr-2" />
-              <p>
-                Start Date: {campaigns?.startDate} and End Date:{' '}
-                {campaigns?.endDate}
-              </p>
-            </div>
-            <div className="flex items-center">
-              <p>
-                Duration:{' '}
-                {durationDate === 1
-                  ? durationDate + ' ' + 'day'
-                  : durationDate + ' ' + 'days'}
-              </p>
-            </div>
-            <div className="space-y-2">
-              <p className="font-semibold">
-                Strategy Name : {strategies?.strategyName}
-              </p>
-              <div className="flex items-center justify-between">
-                <p>Selected Channels goes here</p>
-                <Link to={'/strategy'}>
-                  <Button variant="ghost" className="p-0 text-sm text-blue-700">
-                    <ClipboardPenIcon className="inline-block w-4 h-4 mr-1" />
-                    Edit
-                  </Button>
-                </Link>
-              </div>
-              <div className="flex items-center justify-between">
-                <p>Deliverability forecast</p>
-                <Badge variant="secondary" className="text-green-700">
-                  Excellent
-                </Badge>
-              </div>
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-between pt-4 border-t">
-            <p className="text-muted-foreground">Total campaign budget</p>
-            <p className="text-lg font-semibold">
-              ₹{Number(strategies?.strategyDailyBudget) * durationDate}
-            </p>
-          </CardFooter>
-          <div className="justify-end">
-            {successFullpayment ? (
-              <>Paid</>
-            ) : (
-              <>
-                <Button
-                  disabled={button_disabled}
-                  className="text-white"
-                  onClick={handlePayment}
-                >
-                  Pay Now{' '}
-                  {user_data
-                    ? Number(user_data.walletBalance) >=
-                      Number(
-                        Number(strategies?.strategyDailyBudget) * durationDate,
-                      )
-                      ? 'With Wallet'
-                      : ''
-                    : ''}
-                </Button>
-              </>
-            )}
-          </div>
-        </Card>
-      </>
-    );
   }
-}
+
+  return (
+    <Card className="w-full max-w-lg p-4 rounded-lg border border-stroke bg-white shadow-2xl dark:border-strokedark dark:bg-boxdark">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-lg font-semibold text-blue-700">
+          <PresentationIcon className="inline-block w-5 h-5 mr-2" />
+          Campaign summary
+        </CardTitle>
+        <CardDescription>
+          Review carefully your campaign details
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="font-semibold">
+              Campaign Name: {campaigns?.campaignName}
+            </p>
+            <Link to="/campaign">
+              <Button variant="ghost" className="p-0 text-sm text-blue-700">
+                <ClipboardPenIcon className="inline-block w-4 h-4 mr-1" />
+                Edit
+              </Button>
+            </Link>
+          </div>
+          <div className="text-right">
+            <p className="font-semibold">
+              Campaign budget ₹{campaigns?.campaignBudget}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center">
+          <CalendarIcon className="w-5 h-5 mr-2" />
+          <p>
+            Start Date: {campaigns?.startDate} and End Date:{' '}
+            {campaigns?.endDate}
+          </p>
+        </div>
+        <div className="flex items-center">
+          <p>
+            Duration:{' '}
+            {durationDate === 1
+              ? durationDate + ' day'
+              : durationDate + ' days'}
+          </p>
+        </div>
+        <div className="space-y-2">
+          <p className="font-semibold">
+            Strategy Name: {strategies?.strategyName}
+          </p>
+          <div className="flex items-center justify-between">
+            <p>Selected Channels: {strategies?.selectedChannels?.join(', ')}</p>
+            <Link to="/strategy">
+              <Button variant="ghost" className="p-0 text-sm text-blue-700">
+                <ClipboardPenIcon className="inline-block w-4 h-4 mr-1" />
+                Edit
+              </Button>
+            </Link>
+          </div>
+          <div className="flex items-center justify-between">
+            <p>Deliverability forecast</p>
+            <Badge variant="secondary" className="text-green-700">
+              Excellent
+            </Badge>
+          </div>
+        </div>
+      </CardContent>
+      <CardFooter className="flex justify-between pt-4 border-t">
+        <p className="text-muted-foreground">Total campaign budget</p>
+        <p className="text-lg font-semibold">
+          ₹{Number(strategies?.strategyDailyBudget) * durationDate}
+        </p>
+      </CardFooter>
+      <div className="justify-end">
+        {successFullPayment ? (
+          <Badge className="text-white bg-green-500">Paid</Badge>
+        ) : (
+          <Button
+            disabled={button_disabled}
+            className="text-white"
+            onClick={handlePayment}
+          >
+            Pay Now{' '}
+            {user_data &&
+            Number(user_data.walletBalance) >=
+              Number(Number(strategies?.strategyDailyBudget) * durationDate)
+              ? 'With Wallet'
+              : ''}
+          </Button>
+        )}
+      </div>
+    </Card>
+  );
+};
+
+export default SummaryComponent;

@@ -40,6 +40,10 @@ import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
 import YouTubeAdPublisherPage from './pages/youtube-ad-publisher';
 import IPTrack from './pages/IPTrack';
 import PrivacyPolicy from './pages/Privacy';
+import DeviceAtlasInfo from './pages/DeviceAtlas';
+import AnalyticsPage from './pages/Analytics';
+import PublishersDashboard from './pages/PublishersDashboard';
+import AnalyticsDashboard from './components/PublishersAnalyticsDashboard';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -60,9 +64,17 @@ function App() {
 
   useEffect(() => {
     if (isLoaded && isSignedIn) {
+      console.log('User metadata:', user.publicMetadata);
       const hasAgency = user.publicMetadata?.hasAgency;
+      const isPublisher = user.publicMetadata?.isPublisher;
       if (pathname === '/') {
-        navigate(!hasAgency ? '/manage-advertise' : '/login-options');
+        if (isPublisher) {
+          navigate('/publishers-dashboard');
+        } else if (!hasAgency) {
+          navigate('/manage-advertise');
+        } else {
+          navigate('/login-options');
+        }
       }
     }
   }, [isLoaded, isSignedIn, pathname, navigate, user]);
@@ -76,12 +88,16 @@ function App() {
       <Route path="/" element={<NewHome />} />
       <Route path="/login-options" element={<LoginWays />} />
       <Route path="/manage-advertise" element={<AdvertiseManagement />} />
+      <Route path="/publishers-dashboard" element={<PublishersDashboard />} />
+      <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
       <Route path="/manage-campaign" element={<ManageCampaign />} />
       <Route path="/report" element={<ReportPage />} />
       <Route path="/auth/sign-in" element={<SignInPage />} />
       <Route path="/auth/sign-up" element={<SignUpPage />} />
       <Route path="/dv360-integration" element={<YouTubeAdPublisherPage />} />
+      <Route path="/analytics" element={<AnalyticsPage />} />
       <Route path="/iptrack" element={<IPTrack />} />
+      <Route path="/device-atlas" element={<DeviceAtlasInfo />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route
         path="view-advertisement"
