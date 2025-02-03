@@ -161,20 +161,23 @@ const SummaryComponent: React.FC = () => {
 
   const sendDataToAdServer = async (retries = 3) => {
     try {
+      // const dataToSend = {
+      //   campaignDetails: campaigns,
+      //   strategyDetails: strategies,
+      //   userDetails: user_data,
+      //   paymentDetails: {
+      //     amount: amount,
+      //     paymentId: successPaymentId,
+      //   },
+      // };
       const dataToSend = {
-        campaignDetails: campaigns,
-        strategyDetails: strategies,
-        userDetails: user_data,
-        paymentDetails: {
-          amount: amount,
-          paymentId: successPaymentId,
-        },
+        userId: user_data.userId,
+        campaignId: campaigns?.campaignId,
+        strategyId: strategies?.strategyId,
+        successPaymentId: successPaymentId,
       };
 
-      const response = await axios.post(
-        `${domainName}/api/send-to-adserver`,
-        dataToSend,
-      );
+      const response = await axios.post(`${domainName}/api/bill`, dataToSend);
 
       if (response.data.success) {
         toast.success('Data successfully sent to ad server');

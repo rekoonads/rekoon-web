@@ -48,6 +48,55 @@ const Campaigns = () => {
   const [modifiedCampaignBud, setModifiedCampaignBud] = useState<any>();
   // const secretKey = import.meta.env.VITE_ENCRYPT_SECRET_KEY;
 
+  // Add new state variables for campaign status tracking
+  const [campaignStatus, setCampaignStatus] = useState<string>('scheduled');
+  const [remainingTime, setRemainingTime] = useState<number | null>(null);
+
+  // Add campaign status checking function
+  const checkCampaignStatus = async (campaignId: string) => {
+    try {
+      const response = await axios.get(
+        `${domainName}/api/campaigns/${campaignId}/status`,
+      );
+
+      console.log('Status Check Response:', response.data); // Debug log
+
+      if (response.data.status) {
+        setCampaignStatus(response.data.status);
+        setRemainingTime(response.data.remainingTime);
+
+        // Show status toast
+        toast({
+          title: `Campaign ${response.data.status}`,
+          description: response.data.remainingTime
+            ? `${Math.floor(
+                response.data.remainingTime / (60 * 60 * 24),
+              )} days remaining`
+            : undefined,
+        });
+      }
+
+      return response.data.status;
+    } catch (error) {
+      console.error('Error checking campaign status:', error);
+      toast({
+        title: 'Error checking campaign status',
+        variant: 'destructive',
+      });
+      return null;
+    }
+  };
+  // Add periodic status checking
+  useEffect(() => {
+    const campaignId = Cookies.get('campaignId');
+    if (campaignId) {
+      checkCampaignStatus(campaignId);
+      const interval = setInterval(() => {
+        checkCampaignStatus(campaignId);
+      }, 60000); // Check every minute
+      return () => clearInterval(interval);
+    }
+  }, []);
   // searches for the type of user
   const [isAdd, setIsAdd] = useState<string>('');
   useEffect(() => {
@@ -78,6 +127,7 @@ const Campaigns = () => {
   console.log(isAdd?.type_of_user);
 
   const [campaigndata, setcampaigndata] = useState<any>(null);
+  // Modify campaign data fetching
   useEffect(() => {
     const cookies_data = Cookies.get('campaignId');
     const fetchUserData = async () => {
@@ -85,12 +135,17 @@ const Campaigns = () => {
         const response = await axios.get(
           `${domainName}/api/get-campaign?campaignId=${cookies_data}`,
         );
-        console.log('previous campaign data:- ', response.data);
         setcampaigndata(response.data);
+
+        // Add status check for existing campaign
+        if (cookies_data) {
+          await checkCampaignStatus(cookies_data);
+        }
       } catch (error) {
         console.error('Error fetching campaign data:', error);
       }
     };
+
     if (cookies_data) {
       setUpdate(true);
       fetchUserData();
@@ -345,6 +400,7 @@ const Campaigns = () => {
               body: JSON.stringify({
                 userId: user?.id,
                 campaignId: campignid,
+                status: 'scheduled', // Add status field
                 agencyId: orgId,
                 campaignName,
                 campaignGoal,
@@ -357,8 +413,8 @@ const Campaigns = () => {
                 campaignAdvertiserBudget: modifiedAdvertiserBudget,
                 campaignBudget: modifiedCampaignBud,
                 campaignType,
-                startDate: startDate,
-                endDate: endDate,
+                startDate: new Date(startDate).toISOString(),
+                endDate: new Date(endDate).toISOString(),
               }),
             });
 
@@ -367,10 +423,12 @@ const Campaigns = () => {
               Cookies.set('campaignId', campignid, { expires: 7 });
               console.log('Campaign created successfully:', data);
               setReceived(true);
-              localStorage.setItem(`campaign`, JSON.stringify(`campaign-created`))
+              localStorage.setItem(
+                `campaign`,
+                JSON.stringify(`campaign-created`),
+              );
               toast({ title: 'Campaign Created Successfully' });
-              location.reload()
-             
+              location.reload();
             } else {
               console.error('Failed to create campaign:', data);
               toast({ title: 'Failed to submit campaign.' });
@@ -391,6 +449,7 @@ const Campaigns = () => {
               body: JSON.stringify({
                 userId: user?.id,
                 campaignId: campignid,
+                status: 'scheduled', // Add status field
                 advertiserId: addData?.advertiserId,
                 campaignName,
                 campaignGoal,
@@ -405,8 +464,8 @@ const Campaigns = () => {
                 campaignAdvertiserBudget: modifiedAdvertiserBudget,
                 campaignBudget: modifiedCampaignBud,
                 campaignType,
-                startDate: startDate,
-                endDate: endDate,
+                startDate: new Date(startDate).toISOString(),
+                endDate: new Date(endDate).toISOString(),
               }),
             });
 
@@ -416,9 +475,11 @@ const Campaigns = () => {
               console.log('Campaign created successfully:', data);
               setReceived(true);
               toast({ title: 'Campaign submitted successfully!' });
-              localStorage.setItem(`campaign`, JSON.stringify(`campaign-created`))
-              location.reload()
-          
+              localStorage.setItem(
+                `campaign`,
+                JSON.stringify(`campaign-created`),
+              );
+              location.reload();
             } else {
               console.error('Failed to create campaign:', data);
               toast({
@@ -740,7 +801,8 @@ const Campaigns = () => {
           </form>
         </div>
 
-        <div className="flex flex-col gap-1 md:fixed right-5  h-[70vh]  ">
+        {/* Modify right column to include status */}
+        <div className="flex flex-col gap-1 md:fixed right-5 h-[70vh]">
           <div className="rounded-sm border md:mr-10 md:mt-1 border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             {startDate && endDate && campaignType && (
               <div className="md:mr-2">
@@ -748,7 +810,36 @@ const Campaigns = () => {
                   title="Campaign Budget"
                   dailyBudget={cardDailyEstimate}
                   weeklyEstimate={cardWeeklyEstimate}
+                  campaignStatus={campaignStatus}
+                  remainingTime={remainingTime}
                 />
+                {/* Add status display */}
+                {campaignStatus && (
+                  <div className="mt-4 p-4 rounded-md bg-gray-100 dark:bg-gray-800">
+                    <div
+                      className={`text-sm font-semibold ${
+                        campaignStatus === 'active'
+                          ? 'text-green-500'
+                          : campaignStatus === 'scheduled'
+                          ? 'text-blue-500'
+                          : 'text-red-500'
+                      }`}
+                    >
+                      Status: {campaignStatus}
+                    </div>
+                    {remainingTime && (
+                      <div className="text-sm mt-1">
+                        {campaignStatus === 'scheduled'
+                          ? `Starts in ${Math.floor(
+                              remainingTime / (60 * 60 * 24),
+                            )} days`
+                          : `Ends in ${Math.floor(
+                              remainingTime / (60 * 60 * 24),
+                            )} days`}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </div>
