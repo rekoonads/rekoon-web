@@ -673,6 +673,47 @@ const Strategy = () => {
               </div>
             </div>
           </div>
+
+          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+            <div className="flex gap-1 item-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+              <FaGenderless className="text-[22px]" />
+              <h3 className="text-blue-900 font-semibold text-[20px] dark:text-white">
+                Genders
+              </h3>
+            </div>
+            <div className="flex flex-col gap-5.5 p-6.5">
+              <Tabs
+                value={selectedGender}
+                onValueChange={setSelectedGender}
+                className="flex flex-col justify-between"
+              >
+                <TabsList className="space-x-4">
+                  <TabsTrigger
+                    value="Female"
+                    className="p-9 py-2 mr-8 text-[18px] rounded-lg transition-colors font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
+                  >
+                    Female
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="Male"
+                    className="px-9 py-2 ml-8 text-[18px] rounded-lg transition-colors font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
+                  >
+                    Male
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+              <div className="flex justify-end">
+                <Button
+                  variant={'ghost'}
+                  className="text-black gap-2 dark:text-white font-semibold"
+                  onClick={handleReset}
+                >
+                  <Redo2 /> Reset
+                </Button>
+              </div>
+            </div>
+          </div>
+
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="flex gap-2 item-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <FaPeopleArrows className="text-[20px]" />
@@ -714,220 +755,175 @@ const Strategy = () => {
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="flex gap-1 item-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <FaGenderless className="text-[22px]" />
-              <h3 className="text-blue-900 font-semibold text-[20px] dark:text-white">
-                Genders
-              </h3>
-            </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
-              <Tabs
-                value={selectedGender}
-                onValueChange={setSelectedGender}
-                className="flex flex-col justify-between"
-              >
-                <TabsList className="space-x-4">
-                  <TabsTrigger
-                    value="Female"
-                    className="p-9 py-2 mr-8 text-[18px] rounded-lg transition-colors font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
-                  >
-                    Female
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="Male"
-                    className="px-9 py-2 ml-8 text-[18px] rounded-lg transition-colors font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 data-[state=active]:bg-primary data-[state=active]:text-white"
-                  >
-                    Male
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
-              <div className="flex justify-end">
-                <Button
-                  variant={'ghost'}
-                  className="text-black gap-2 dark:text-white font-semibold"
-                  onClick={handleReset}
-                >
-                  <Redo2 /> Reset
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-stroke py-4 px-6.5 dark:border-strokedark">
-            <div className="flex items-center gap-2 justify-between text-blue-900 font-semibold text-[15px] dark:text-white">
               <h2>Audience located in</h2>
               <button className="btn btn-outline">
                 Upload ZIP codes in bulk
               </button>
             </div>
-            <div className="mt-4 mb-4">
-              <InputSelect
-                onchange={(location) => {
-                  setAudienceLocation(location);
-                  fetchLocationIPs(location);
-                }}
-                value={audience_location}
-              />
-            </div>
-            {ipsFetched && (
-              <p className="mt-2 text-sm text-green-600">
-                IP addresses for this location have been fetched and will be
-                used for targeting.
-              </p>
-            )}
-          </div>
 
-          <div className="flex justify-end">
-            <Button
-              variant={'ghost'}
-              className="text-black gap-2 dark:text-white font-semibold"
-              onClick={handleReset}
-            >
-              <Redo2 /> Reset
-            </Button>
-          </div>
-        </div>
-      </div>
-      <div className="rounded-sm border text-blue-900 font-semibold  dark:text-white border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        {/* <Channels /> */}
-        <Channels onSelectedChannelsChange={handleSelectedChannelsChange} />
-      </div>
-      <div className="rounded-sm border border-stroke text-blue-900 font-semibold  dark:text-white bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        <DateSection
-          deliveryType={setDeliveryType}
-          daySettings={daySettings}
-          onDaySettingsChange={handleDaySettingsChange}
-          deliveryTypeval={deliveryTypeval}
-        />
-      </div>
-      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="p-4 space-y-4">
-          <div className="flex items-center space-x-2">
-            <BsThunderboltFill className="h-5 w-5 text-primary" />
-            <h2 className="text-blue-900 font-semibold text-[20px] dark:text-white">
-              Bidding
-            </h2>
-            <FaInfoCircle className="h-4 w-4 text-muted-foreground" />
-          </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {goals.map((goal) => (
-              <Card
-                key={goal.id}
-                className={`border-2 ${
-                  selectedGoal === goal.id
-                    ? 'border-primary'
-                    : 'border-gray-300'
-                }`}
-                onClick={() => handleSelect(goal.id)}
-              >
-                <CardContent className="space-y-2 mt-2">
-                  <div className="flex items-center space-x-2">
-                    {goal.icon.map((Icon, index) => (
-                      <Icon
-                        key={index}
-                        className={`h-5 w-5 ${
-                          selectedGoal === goal.id
-                            ? 'text-primary'
-                            : 'text-muted-foreground'
-                        }`}
-                      />
-                    ))}
+            <div className="border-t border-stroke py-4 px-6.5 dark:border-strokedark">
+              <div className="mt-4 mb-4">
+                <InputSelect
+                  onchange={(location) => {
+                    setAudienceLocation(location);
+                    fetchLocationIPs(location);
+                  }}
+                  value={audience_location}
+                />
+                {ipsFetched && (
+                  <div className="flex justify-end">
+                    <Button
+                      variant={'ghost'}
+                      className="text-black gap-2 dark:text-white font-semibold"
+                      onClick={handleReset}
+                    >
+                      <Redo2 /> Reset
+                    </Button>
                   </div>
-                  <h3 className="text-base font-semibold">{goal.title}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {goal.description}
-                  </p>
-                  <a href="#" className="text-sm font-medium text-primary">
-                    Learn more
-                  </a>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          <RealTimeBidding
-            strategyId={strategyData?.strategyId || `ST-${uuidv4()}`}
-            initialBid={84.0}
-            onBidChange={handleBidChange}
-            biddingType={selectedGoal === 'automatic' ? 'automatic' : 'manual'}
-          />
-          <div className="border-t border-stroke py-4 px-6.5 dark:border-strokedark">
-            <div className="flex items-center space-x-2">
-              <h2 className="text-lg font-semibold">Advance Options</h2>
-              <FaInfoCircle className="h-4 w-4 text-muted-foreground" />
-            </div>
-            {/* <SelectGroupOne /> */}
-            <SelectGroupOne
-              label="Choose maximum ad frequency per household"
-              selected={selectedOption}
-              onSelect={handleSelectChange}
-            />
-          </div>
-        </div>
-      </div>
-      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-          <div className="mb-4">
-            <label className="mb-2.5 block text-black dark:text-white">
-              Select Media Type
-            </label>
-            <div className="relative z-20 bg-transparent dark:bg-form-input">
-              <select
-                value={mediaType}
-                onChange={(e) =>
-                  setMediaType(e.target.value as 'video' | 'banner')
-                }
-                className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-              >
-                <option value="video">Video</option>
-                <option value="banner">Banner</option>
-              </select>
-              <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
-                <svg
-                  className="fill-current"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <g opacity="0.8">
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
-                      fill=""
-                    ></path>
-                  </g>
-                </svg>
-              </span>
+                )}
+              </div>
             </div>
           </div>
-          {mediaType === 'video' ? (
-            <VideoUpload
-              onURLSet={handleFileNameChange}
-              onVideoDuration={saveVideoDuration}
-              vidUrl={uploadedFileName || ''}
-            />
-          ) : (
-            <BannerUpload onURLSet={handleFileNameChange} />
-          )}
-        </div>
-      </div>
-      <form onSubmit={handleSubmit}>
-        <button
-          type="submit"
-          className="cursor-pointer p-2 rounded-lg text-white bg-blue-600 w-[10rem] hover:bg-slate-600 transition relative left-[50%] translate-x-[-50%]  mb-8"
-        >
-          Complete Strategy
-        </button>
-      </form>
 
-      <div className="flex flex-col gap-9 md:absolute right-5 mb-4">
-        <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-          {/* <div className="flex flex-col gap-5.5 p-6.5 ">
+          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+            {/* <Channels /> */}
+            <Channels onSelectedChannelsChange={handleSelectedChannelsChange} />
+          </div>
+          <div className="rounded-sm border border-stroke text-blue-900 font-semibold  dark:text-white bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+            <DateSection
+              deliveryType={setDeliveryType}
+              daySettings={daySettings}
+              onDaySettingsChange={handleDaySettingsChange}
+              deliveryTypeval={deliveryTypeval}
+            />
+          </div>
+          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+            <div className="p-4 space-y-4">
+              <div className="flex items-center space-x-2">
+                <BsThunderboltFill className="h-5 w-5 text-primary" />
+                <h2 className="text-blue-900 font-semibold text-[20px] dark:text-white">
+                  Bidding
+                </h2>
+                <FaInfoCircle className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {goals.map((goal) => (
+                  <Card
+                    key={goal.id}
+                    className={`border-2 ${
+                      selectedGoal === goal.id
+                        ? 'border-primary'
+                        : 'border-gray-300'
+                    }`}
+                    onClick={() => handleSelect(goal.id)}
+                  >
+                    <CardContent className="space-y-2 mt-2">
+                      <div className="flex items-center space-x-2">
+                        {goal.icon.map((Icon, index) => (
+                          <Icon
+                            key={index}
+                            className={`h-5 w-5 ${
+                              selectedGoal === goal.id
+                                ? 'text-primary'
+                                : 'text-muted-foreground'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <h3 className="text-base font-semibold">{goal.title}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {goal.description}
+                      </p>
+                      <a href="#" className="text-sm font-medium text-primary">
+                        Learn more
+                      </a>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              <RealTimeBidding
+                strategyId={strategyData?.strategyId || `ST-${uuidv4()}`}
+                initialBid={84.0}
+                onBidChange={handleBidChange}
+                biddingType={
+                  selectedGoal === 'automatic' ? 'automatic' : 'manual'
+                }
+              />
+              <div className="border-t border-stroke py-4 px-6.5 dark:border-strokedark">
+                <div className="flex items-center space-x-2">
+                  <h2 className="text-lg font-semibold">Advance Options</h2>
+                  <FaInfoCircle className="h-4 w-4 text-muted-foreground" />
+                </div>
+                {/* <SelectGroupOne /> */}
+                <SelectGroupOne
+                  label="Choose maximum ad frequency per household"
+                  selected={selectedOption}
+                  onSelect={handleSelectChange}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+              <div className="mb-4">
+                <label className="mb-2.5 block text-black dark:text-white">
+                  Select Media Type
+                </label>
+                <div className="relative z-20 bg-transparent dark:bg-form-input">
+                  <select
+                    value={mediaType}
+                    onChange={(e) =>
+                      setMediaType(e.target.value as 'video' | 'banner')
+                    }
+                    className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  >
+                    <option value="video">Video</option>
+                    <option value="banner">Banner</option>
+                  </select>
+                  <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
+                    <svg
+                      className="fill-current"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g opacity="0.8">
+                        <path
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                          d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
+                          fill=""
+                        ></path>
+                      </g>
+                    </svg>
+                  </span>
+                </div>
+              </div>
+              {mediaType === 'video' ? (
+                <VideoUpload
+                  onURLSet={handleFileNameChange}
+                  onVideoDuration={saveVideoDuration}
+                  vidUrl={uploadedFileName || ''}
+                />
+              ) : (
+                <BannerUpload onURLSet={handleFileNameChange} />
+              )}
+            </div>
+          </div>
+          <form onSubmit={handleSubmit}>
+            <button
+              type="submit"
+              className="cursor-pointer p-2 rounded-lg text-white bg-blue-600 w-[10rem] hover:bg-slate-600 transition relative left-[50%] translate-x-[-50%]  mb-8"
+            >
+              Complete Strategy
+            </button>
+          </form>
+
+          <div className="flex flex-col gap-9 md:absolute right-5 mb-4">
+            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+              {/* <div className="flex flex-col gap-5.5 p-6.5 ">
               <RightSidedStrategyCard
                 userId={String(userId)}
                 ageRange={selectedTab}
@@ -940,6 +936,8 @@ const Strategy = () => {
                 audiences={audienceArr}
               />
             </div> */}
+            </div>
+          </div>
         </div>
       </div>
     </>

@@ -59,7 +59,7 @@ const channelsData: Channel[] = [
 ];
 
 interface ChannelsProps {
-  onSelectedChannelsChange: (channels: string[]) => void; 
+  onSelectedChannelsChange: (channels: string[]) => void;
 }
 
 const Channels: React.FC<ChannelsProps> = ({ onSelectedChannelsChange }) => {
@@ -99,7 +99,6 @@ const Channels: React.FC<ChannelsProps> = ({ onSelectedChannelsChange }) => {
     ...channelsData.filter((channel) => !filteredChannels.includes(channel)),
   ];
 
-  
   return (
     <div className="p-4">
       <div className="flex items-center justify-between pb-4 border-b">
